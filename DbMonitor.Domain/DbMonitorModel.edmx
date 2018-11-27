@@ -1,0 +1,541 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=E:\SQLite\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Authority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AName" Type="nvarchar" MaxLength="20" />
+          <Property Name="ACode" Type="varchar" MaxLength="20" />
+          <Property Name="AType" Type="varchar" MaxLength="20" />
+          <Property Name="AIcon" Type="varchar" MaxLength="50" />
+          <Property Name="AIconType" Type="varchar" MaxLength="10" />
+          <Property Name="AClassName" Type="varchar" MaxLength="255" />
+          <Property Name="AShowNumber" Type="smallint" />
+          <Property Name="AIsCommon" Type="smallint" />
+          <Property Name="IsEnabled" Type="smallint" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="varchar" MaxLength="30" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="Module">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MName" Type="nvarchar" MaxLength="20" />
+          <Property Name="MUrl" Type="varchar" MaxLength="255" />
+          <Property Name="MType" Type="varchar" MaxLength="10" />
+          <Property Name="MIcon" Type="varchar" MaxLength="50" />
+          <Property Name="MIconType" Type="varchar" MaxLength="10" />
+          <Property Name="MLevel" Type="smallint" />
+          <Property Name="MParentID" Type="int" />
+          <Property Name="MSortingNumber" Type="smallint" />
+          <Property Name="IsEnabled" Type="smallint" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="varchar" MaxLength="30" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="ModuleAuthority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MID" Type="integer" />
+          <Property Name="AID" Type="integer" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RName" Type="nvarchar" MaxLength="20" />
+          <Property Name="RCode" Type="varchar" MaxLength="20" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="varchar" MaxLength="30" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="RoleAuthority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RID" Type="integer" />
+          <Property Name="MAID" Type="integer" />
+          <Property Name="IsEnabled" Type="smallint" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ULoginName" Type="nvarchar" MaxLength="50" />
+          <Property Name="UPassword" Type="varchar" MaxLength="50" />
+          <Property Name="UName" Type="nvarchar" MaxLength="50" />
+          <Property Name="UUserType" Type="smallint" />
+          <Property Name="UIsLock" Type="smallint" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="varchar" MaxLength="30" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UID" Type="integer" />
+          <Property Name="RID" Type="integer" />
+        </EntityType>
+        <Association Name="FK_ModuleAuthority_0_0">
+          <End Role="Authority" Type="Self.Authority" Multiplicity="0..1" />
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Authority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAuthority">
+              <PropertyRef Name="AID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ModuleAuthority_1_0">
+          <End Role="Module" Type="Self.Module" Multiplicity="0..1" />
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Module">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAuthority">
+              <PropertyRef Name="MID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoleAuthority_0_0">
+          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="RoleAuthority" Type="Self.RoleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RoleAuthority">
+              <PropertyRef Name="RID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoleAuthority_1_0">
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="0..1" />
+          <End Role="RoleAuthority" Type="Self.RoleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ModuleAuthority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RoleAuthority">
+              <PropertyRef Name="MAID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserRole_0_0">
+          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserRole">
+              <PropertyRef Name="RID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserRole_1_0">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserRole">
+              <PropertyRef Name="UID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DbMonitorModelStoreContainer">
+          <EntitySet Name="Authority" EntityType="Self.Authority" store:Type="Tables" />
+          <EntitySet Name="Module" EntityType="Self.Module" store:Type="Tables" />
+          <EntitySet Name="ModuleAuthority" EntityType="Self.ModuleAuthority" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" store:Type="Tables" />
+          <EntitySet Name="RoleAuthority" EntityType="Self.RoleAuthority" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" store:Type="Tables" />
+          <EntitySet Name="UserRole" EntityType="Self.UserRole" store:Type="Tables" />
+          <AssociationSet Name="FK_ModuleAuthority_0_0" Association="Self.FK_ModuleAuthority_0_0">
+            <End Role="Authority" EntitySet="Authority" />
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ModuleAuthority_1_0" Association="Self.FK_ModuleAuthority_1_0">
+            <End Role="Module" EntitySet="Module" />
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoleAuthority_0_0" Association="Self.FK_RoleAuthority_0_0">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="RoleAuthority" EntitySet="RoleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoleAuthority_1_0" Association="Self.FK_RoleAuthority_1_0">
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+            <End Role="RoleAuthority" EntitySet="RoleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserRole_0_0" Association="Self.FK_UserRole_0_0">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="UserRole" EntitySet="UserRole" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserRole_1_0" Association="Self.FK_UserRole_1_0">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserRole" EntitySet="UserRole" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DbMonitorModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Authority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ACode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AIcon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="AClassName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AShowNumber" Type="Int16" />
+          <Property Name="AIsCommon" Type="Int16" />
+          <Property Name="IsEnabled" Type="Int16" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ModuleAuthority" Relationship="Self.FK_ModuleAuthority_0_0" FromRole="Authority" ToRole="ModuleAuthority" />
+        </EntityType>
+        <EntityType Name="Module">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MIcon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MLevel" Type="Int16" />
+          <Property Name="MParentID" Type="Int32" />
+          <Property Name="MSortingNumber" Type="Int16" />
+          <Property Name="IsEnabled" Type="Int16" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ModuleAuthority" Relationship="Self.FK_ModuleAuthority_1_0" FromRole="Module" ToRole="ModuleAuthority" />
+        </EntityType>
+        <EntityType Name="ModuleAuthority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MID" Type="Int64" />
+          <Property Name="AID" Type="Int64" />
+          <NavigationProperty Name="Authority" Relationship="Self.FK_ModuleAuthority_0_0" FromRole="ModuleAuthority" ToRole="Authority" />
+          <NavigationProperty Name="Module" Relationship="Self.FK_ModuleAuthority_1_0" FromRole="ModuleAuthority" ToRole="Module" />
+          <NavigationProperty Name="RoleAuthority" Relationship="Self.FK_RoleAuthority_1_0" FromRole="ModuleAuthority" ToRole="RoleAuthority" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="RoleAuthority" Relationship="Self.FK_RoleAuthority_0_0" FromRole="Role" ToRole="RoleAuthority" />
+          <NavigationProperty Name="UserRole" Relationship="Self.FK_UserRole_0_0" FromRole="Role" ToRole="UserRole" />
+        </EntityType>
+        <EntityType Name="RoleAuthority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RID" Type="Int64" />
+          <Property Name="MAID" Type="Int64" />
+          <Property Name="IsEnabled" Type="Int16" />
+          <NavigationProperty Name="ModuleAuthority" Relationship="Self.FK_RoleAuthority_1_0" FromRole="RoleAuthority" ToRole="ModuleAuthority" />
+          <NavigationProperty Name="Role" Relationship="Self.FK_RoleAuthority_0_0" FromRole="RoleAuthority" ToRole="Role" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ULoginName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UUserType" Type="Int16" />
+          <Property Name="UIsLock" Type="Int16" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="UserRole" Relationship="Self.FK_UserRole_1_0" FromRole="User" ToRole="UserRole" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UID" Type="Int64" />
+          <Property Name="RID" Type="Int64" />
+          <NavigationProperty Name="Role" Relationship="Self.FK_UserRole_0_0" FromRole="UserRole" ToRole="Role" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UserRole_1_0" FromRole="UserRole" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_ModuleAuthority_0_0">
+          <End Role="Authority" Type="Self.Authority" Multiplicity="0..1" />
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Authority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAuthority">
+              <PropertyRef Name="AID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ModuleAuthority_1_0">
+          <End Role="Module" Type="Self.Module" Multiplicity="0..1" />
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Module">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAuthority">
+              <PropertyRef Name="MID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoleAuthority_1_0">
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="0..1" />
+          <End Role="RoleAuthority" Type="Self.RoleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ModuleAuthority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RoleAuthority">
+              <PropertyRef Name="MAID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoleAuthority_0_0">
+          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="RoleAuthority" Type="Self.RoleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RoleAuthority">
+              <PropertyRef Name="RID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserRole_0_0">
+          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserRole">
+              <PropertyRef Name="RID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserRole_1_0">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserRole">
+              <PropertyRef Name="UID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DbMonitorEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Authority" EntityType="Self.Authority" />
+          <EntitySet Name="Module" EntityType="Self.Module" />
+          <EntitySet Name="ModuleAuthority" EntityType="Self.ModuleAuthority" />
+          <EntitySet Name="Role" EntityType="Self.Role" />
+          <EntitySet Name="RoleAuthority" EntityType="Self.RoleAuthority" />
+          <EntitySet Name="User" EntityType="Self.User" />
+          <EntitySet Name="UserRole" EntityType="Self.UserRole" />
+          <AssociationSet Name="FK_ModuleAuthority_0_0" Association="Self.FK_ModuleAuthority_0_0">
+            <End Role="Authority" EntitySet="Authority" />
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ModuleAuthority_1_0" Association="Self.FK_ModuleAuthority_1_0">
+            <End Role="Module" EntitySet="Module" />
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoleAuthority_1_0" Association="Self.FK_RoleAuthority_1_0">
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+            <End Role="RoleAuthority" EntitySet="RoleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoleAuthority_0_0" Association="Self.FK_RoleAuthority_0_0">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="RoleAuthority" EntitySet="RoleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserRole_0_0" Association="Self.FK_UserRole_0_0">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="UserRole" EntitySet="UserRole" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserRole_1_0" Association="Self.FK_UserRole_1_0">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserRole" EntitySet="UserRole" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DbMonitorModelStoreContainer" CdmEntityContainer="DbMonitorEntities">
+          <EntitySetMapping Name="Authority">
+            <EntityTypeMapping TypeName="DbMonitorModel.Authority">
+              <MappingFragment StoreEntitySet="Authority">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ACode" ColumnName="ACode" />
+                <ScalarProperty Name="AType" ColumnName="AType" />
+                <ScalarProperty Name="AIcon" ColumnName="AIcon" />
+                <ScalarProperty Name="AIconType" ColumnName="AIconType" />
+                <ScalarProperty Name="AClassName" ColumnName="AClassName" />
+                <ScalarProperty Name="AShowNumber" ColumnName="AShowNumber" />
+                <ScalarProperty Name="AIsCommon" ColumnName="AIsCommon" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Module">
+            <EntityTypeMapping TypeName="DbMonitorModel.Module">
+              <MappingFragment StoreEntitySet="Module">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="MName" ColumnName="MName" />
+                <ScalarProperty Name="MUrl" ColumnName="MUrl" />
+                <ScalarProperty Name="MType" ColumnName="MType" />
+                <ScalarProperty Name="MIcon" ColumnName="MIcon" />
+                <ScalarProperty Name="MIconType" ColumnName="MIconType" />
+                <ScalarProperty Name="MLevel" ColumnName="MLevel" />
+                <ScalarProperty Name="MParentID" ColumnName="MParentID" />
+                <ScalarProperty Name="MSortingNumber" ColumnName="MSortingNumber" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ModuleAuthority">
+            <EntityTypeMapping TypeName="DbMonitorModel.ModuleAuthority">
+              <MappingFragment StoreEntitySet="ModuleAuthority">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="MID" ColumnName="MID" />
+                <ScalarProperty Name="AID" ColumnName="AID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Role">
+            <EntityTypeMapping TypeName="DbMonitorModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RName" ColumnName="RName" />
+                <ScalarProperty Name="RCode" ColumnName="RCode" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoleAuthority">
+            <EntityTypeMapping TypeName="DbMonitorModel.RoleAuthority">
+              <MappingFragment StoreEntitySet="RoleAuthority">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RID" ColumnName="RID" />
+                <ScalarProperty Name="MAID" ColumnName="MAID" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="DbMonitorModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ULoginName" ColumnName="ULoginName" />
+                <ScalarProperty Name="UPassword" ColumnName="UPassword" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="UUserType" ColumnName="UUserType" />
+                <ScalarProperty Name="UIsLock" ColumnName="UIsLock" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRole">
+            <EntityTypeMapping TypeName="DbMonitorModel.UserRole">
+              <MappingFragment StoreEntitySet="UserRole">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="RID" ColumnName="RID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
