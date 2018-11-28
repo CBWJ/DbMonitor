@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="~/Scripts/layui/css/layui.css" />
+    <title>@ViewBag.Title</title>
+    <style>
+        body {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form class="layui-form layui-form-pane">
+        @RenderBody()
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+        layui.use('form', function () {
+            var form = layui.form;
+            var layer = layui.layer;
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                //data.field是一个对象
+                var jsonData = JSON.stringify(data.field);
+                var $ = layui.$;
+                var url = $("#action").val();
+                $.post(url,
+                    data.field, function (res) {
+                        var objRes = JSON.parse(res);
+                        if (objRes.status == 0) {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.refreshList();
+                            parent.layer.close(index); //再执行关闭
+                        } else {
+                            layer.alert(objRes.message, { icon: 5 });
+                        }
+                    }, "json");
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>

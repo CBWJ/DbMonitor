@@ -1,0 +1,222 @@
+.leftmenu ul li a{
+    text-decoration: none;
+}
+.leftmenu ul{
+    list-style: none;
+}
+.leftmenu>ul{
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    border-bottom: 1px solid #E5E5E5;
+}
+/*图标*/
+.leftmenu>ul li a>img{
+	width: 20px;
+    position: relative;
+    top: 4px;
+}
+/*一级菜单*/
+.leftmenu>ul>li{
+    display: block;
+    position: relative;
+    float: none;
+    padding: 0;
+    border-style: solid;
+    border-width: 1px 0 0;
+    border-color: #E5E5E5;
+    cursor: pointer;
+}
+/*一级菜单内容*/
+.leftmenu>ul>li>a{
+    display: block;
+    height: 39px;
+    line-height: 39px;
+    padding-left: 7px;
+    text-shadow: none!important;
+    font-size: 16px;
+    background-color: #F8F8F8;
+    color: #585858;
+}
+.leftmenu>ul>li>a>.menu_icon {
+    display: inline-block;
+    min-width: 30px;
+    margin-right: 2px;
+    
+    text-align: center;
+    font-size: 18px;
+    font-weight: 400;
+}
+.leftmenu>ul>li a>.right-tag{
+    display: block;
+    width: 14px!important;
+    height: 14px;
+    line-height: 14px;
+    text-shadow: none;
+    font-size: 18px;
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    padding: 0;
+    text-align: center;
+}
+
+/*二级list*/
+.leftmenu>ul>li .submenu{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    position: relative;
+}
+.leftmenu>ul>li .submenu>li{
+    margin-left: 0;
+    position: relative;
+    line-height: 1.5;
+    list-style: none;
+    font-size: 16px;
+    color: #393939;
+    box-sizing: border-box;
+}
+
+.leftmenu>ul>li>.submenu>li::before{
+    content: "";
+    display: block;
+    width: 7px;
+    position: absolute;
+    z-index: 1;
+    left: 20px;
+    top: 17px;
+    border: 1px dotted;
+    border-width: 1px 0 0;
+    border-color: #9dbdd6;
+}
+.leftmenu>ul>li>.submenu>li>a{
+    border-top-color: #E4E4E4;
+    background-color: #FFF;
+    color: #616161;
+}
+
+.leftmenu>ul>li .submenu>li>a{
+    display: block;
+    position: relative;
+    padding: 4px 0 4px 30px;
+    margin: 0;
+    border-top-width: 1px;
+    border-top-style: dotted;
+}
+.leftmenu>ul>li>.submenu>li:first-child>a{
+    border-top-color: #E4E4E4;
+    border-top-width: 1px;
+    border-top-style: solid;
+}
+.leftmenu>ul>li>.submenu a>.right-tag{
+    right: 10px;
+    top: 10px;
+    font-size: 16px;
+}
+
+/*三级*/
+.leftmenu>ul>li>.submenu>li>.submenu{
+    line-height: 16px;
+}
+.leftmenu>ul>li>.submenu>li>.submenu>li a{
+    color: #757575;
+    margin-left: 20px;
+    padding-left: 22px;
+    border-top-color: #E4E4E4;
+    background-color: #FFF;
+    padding: 2px 0 4px 30px;
+}
+
+/*二级菜单左侧虚线*/
+.leftmenu>ul>li>.submenu::before{
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    border: 1px dotted;
+    border-width: 0 0 0 1px;
+    border-color: #8eb3d0;
+}
+
+/*右侧选中效果*/
+.leftmenu>ul>li.expanded::after{
+    display: block;
+    content: "";
+    position: absolute;
+    right: -2px;
+    top: -1px;
+    bottom: 0;
+    z-index: 1;
+    border: 2px solid #2B7DBC;
+    border-width: 0 2px 0 0;
+}
+
+.leftmenu>ul .submenu li.selected>a::after{
+    content:"";
+    display: block;
+    position: absolute;
+    right: 0;
+    border: 6px solid transparent;
+    top: 2px;
+    border-width: 14px 8px;
+    border-right-color: #2B7DBC;
+}
+
+/*选中效果*/
+.leftmenu>ul>li.selected>a{
+    font-weight: bold;
+    color: #2B7DBC;
+    background-color: #FFF;
+}
+
+.leftmenu>ul .submenu li.selected>a{
+    background-color: #F1F5F9;
+    color: #2B7DBC;
+}
+
+.leftmenu>ul>li>.submenu>li>.submenu>li.selected>a{
+    background-color: #F1F5F9;
+    color: #4B88B7;
+}
+
+/*鼠标悬停*/
+.leftmenu>ul>li>a:hover{
+    color: #2B7DBC;
+    background-color: #FFF;
+    cursor: pointer;
+}
+
+.leftmenu>ul .submenu li>a:hover{
+    background-color: #F1F5F9;
+    color: #2B7DBC;
+    cursor: pointer;
+}
+
+.leftmenu>ul>li>.submenu>li>.submenu>li>a:hover{
+    background-color: #F1F5F9;
+    color: #4B88B7;
+    cursor: pointer;
+}
+
+.leftMenu>ul>li>a:hover::before{
+    display: block;
+}
+.leftMenu>ul>li>a::before{
+    display: none;
+    content:'';
+    width:3px;
+    max-width: 3px;
+    height: 39px;
+    background-color: #62A8D1;
+    position: absolute;
+    left: 0;
+    top: 0px;
+    -webkit-transition:display 1s ease-in;
+	-moz-transition:display 1s ease-in;
+	transition:display 1s ease-in;
+}

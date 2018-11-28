@@ -1,4 +1,7 @@
-﻿@model DbMonitor.Domain.User
+﻿@using DbMonitor.WebUI.Extensions
+@using DbMonitor.Domain
+@model DbMonitor.Domain.User
+
 @{
     Layout = null;
 }
@@ -7,13 +10,137 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="~/Scripts/layui/css/layui.css">    
+    <link rel="stylesheet" href="~/Content/local/layout.css">
+    <link rel="stylesheet" href="~/Content/font-awesome.min.css" />    
+    <link rel="stylesheet" href="~/Content/local/tab2.css" />
+    <link rel="stylesheet" href="~/Content/local/nav.css" />
+    <link rel="stylesheet" href="~/Content/local/leftMenu-ace.css"/>
+
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script src="~/Scripts/local/jquery.leftmenu.js"></script>
+    <script src="~/Scripts/local/tabmenu.js"></script>
+    <script src="~/Scripts/local/glsun.control.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+        $(function () {
+            //标签页
+            var tab = new glsun.TabControl();
+            tab.init("#myTab", {
+                onTabClose: function (e) {
+                    //alert("close");
+                }
+            }).add("固定首页", "", true);
+            tab.setMenuOffset({ x: -207, y: -52 });
+
+            //菜单
+            var temp = $("div.leftmenu");
+            temp.leftmenu({
+                clickCallBack: function () {
+                    //alert(this.innerText);
+                    var aTag = $(this).children("a")[0]
+                    var title = aTag.innerText;
+                    var url = aTag.href;
+                    if (url != "http://" + aTag.host + "/#") {
+                        tab.add(title, url);
+                    }
+                }
+            });
+
+            $(".trigger_button").click(function () {
+                $(".content_menu").toggleClass("menu_fold");
+                $(".content_container").toggleClass("container_fold");
+
+                if ($(".content_menu").hasClass("menu_fold")) {
+                    tab.setMenuOffset({ x: -47, y: -52 });
+                }
+                else {
+                    tab.setMenuOffset({ x: -207, y: -52 });
+                }
+            });
+            $(".menu_user").click(function () {
+                $(this).toggleClass("active");
+            });
+
+
+        });
+        layui.use("layer", function () {
+            var layer = layui.layer;
+            var active = {
+                modifypwd: function () {
+                    layer.msg("修改密码");
+                },
+                logout: function () {
+                    window.location.replace("@Url.Action("Logout","Account")");
+                }
+            };
+            $(".dropdown_menu li").on("click", function () {
+                var action = $(this).data("action");
+                active[action].call();
+            });
+        });
+    </script>
+    <style>
+        .leftMenu {
+            width: 200px;
+            border-bottom: 1px solid #E5E5E5;
+        }
+    </style>
 </head>
 <body>
-    <h2>首页</h2>
-    <h3>@Model.ULoginName</h3>
-    <div> 
+    <div class="main_body">
+        <div class="main_body_top">
+            <div class="navbar">
+                <div class="navbar_left">
+                    <a>
+                        <i class="fa fa-paw"></i>
+                        <span>简洁后台管理系统框架——开发版</span>
+                    </a>
+                </div>
+                <ul class="main_menu">
+                    <li class="menu_user">
+                        <a>
+                            <i class="fa fa-user"></i>
+                            <span>@Model.ULoginName</span>
+                            <i class="fa fa-caret-down drop-down-arrow"></i>
+                        </a>
+                        <ul class="dropdown_menu">
+                            <li data-action="modifypwd">
+                                <a href="#">
+                                    <i class="fa fa-edit"></i>
+                                    <span>修改密码</span>
+                                </a>
+                            </li>
+                            <li data-action="logout">
+                                <a href="#">
+                                    <i class="fa fa-sign-out"></i>
+                                    <span>退&#12288;&#12288;出</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main_body_content">
+            <div class="content_menu">
+                <div class="menu_trigger">
+                    <div class="normal_button">
+                        <i class="fa fa-plus"></i>
+                    </div>
+                    <div class="trigger_button">
+                        <i class="fa fa-angle-double-left"></i>
+                    </div>
+                </div>
+                <div class="menu_list leftmenu">
+                    @Html.ModuleMenu((IEnumerable<Module>)ViewBag.Menu)
+                </div>
+            </div>
+            <div class="content_container">
+                <div id="myTab"></div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿
+﻿@model DbMonitor.Domain.User
 @{
     Layout = null;
 }
@@ -7,12 +7,109 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="~/Scripts/layui/css/layui.css">
     <title>Login</title>
+    <style>
+        body{
+            background: #d2d6de;
+        }
+        .login-box{
+            width: 400px;
+            margin: 10% auto;
+            border: 1px solid #eee;
+            background: #fff;
+        }
+        .login-logo{
+            font-size: 35px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+        .login-box-body{
+            background: #fff;
+            padding: 20px;
+            border-top: 0;
+            color: #666;
+        }
+        .layui-input-block {
+            margin-left: 0px;
+            min-height: 36px;
+        }
+        .input-icon {
+            position: relative;
+        }
+        .input-icon-right>.layui-icon{
+            position: absolute;
+            z-index: 2;
+            right: 3px;
+            top: 1px;
+            line-height: 38px;
+            font-size: 20px;
+            color: #909090;
+        }
+        .input-error{
+            border-color: #FF5722!important;
+        }
+    </style>
 </head>
 <body>
-    <div> 
-        登录页
+    <div class="login-box">
+        <div class="login-logo">
+            数据库测试系统
+        </div>
+        <div class="login-box-body">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-input-block input-icon input-icon-right">
+                        <input type="text" id="ULoginName" name="ULoginName" required lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input"
+                               value="@Model.ULoginName">                        
+                        <i class="layui-icon layui-icon-username"></i>  
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block input-icon input-icon-right">
+                        <input type="password" id="UPassword" name="UPassword" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input"
+                               value="@Model.UPassword">
+                        <i class="layui-icon layui-icon-password"></i>  
+                    </div>
+                </div>
+                <div class="layui-form-item input-icon">
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="rememberme" title="记住我">
+                        <button type="submit" class="layui-btn layui-layout-right" lay-submit lay-filter="login">登录</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script>
+        layui.use('form', function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            form.on("submit(login)", function (data) {
+                console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+                console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+                console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+                $.post('@Url.Action("Login","Account")', data.field, function (data) {
+                    console.log(data);
+                    if (data.status != 0) {
+                        layer.alert(data.message, { icon: 5 });
+                        $("#ULoginName").addClass("input-error");
+                        $("#UPassword").addClass("input-error");
+                    }
+                    else {
+                        //layer.alert(data.message, { icon: 1 });
+                        window.location.replace("@Url.Action("Index","Home")");
+                    }
+                }, "json");
+                return false; //阻止表单跳转。
+            });
+        });
+    </script>
 </body>
 </html>

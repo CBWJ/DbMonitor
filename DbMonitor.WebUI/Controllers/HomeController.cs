@@ -7,17 +7,13 @@ using DbMonitor.Domain;
 
 namespace DbMonitor.WebUI.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         // GET: Home
         public ActionResult Index()
         {
-            User u = null;
-            using(var ctx = new DbMonitorEntities())
-            {
-                u = ctx.User.FirstOrDefault();
-            }
-            return View(u);
+            ViewBag.Menu = db.Module.ToList();
+            return View(LoginUser);
         }
     }
 }

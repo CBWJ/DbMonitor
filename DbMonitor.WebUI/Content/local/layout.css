@@ -1,0 +1,130 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+body{
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background-color: #fff;
+}
+
+html,body{
+    height: 100%;
+    font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+}
+.main_body{
+    height: 100%;
+}
+.main_body_top{
+    background-color: #fff;
+    width:100%;
+    height: 50px;
+    position: relative;
+    background-color: #438EB9;
+
+    background: -webkit-linear-gradient(#6FB3E0, #438EB9); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#6FB3E0, #438EB9); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#6FB3E0, #438EB9); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#1d887e, #009688); /* 标准的语法 */
+}
+.main_body_content{
+    --background-color: aquamarine;
+    width: 100%;
+    position: absolute;
+    top:50px;
+    bottom: 0px;
+}
+
+.content_menu{
+    background-color: #F3F3F3;
+    height: 100%;
+    width: 200px;
+    position: absolute;
+    display: block;
+
+    transition: width 0.2s;
+    -moz-transition: width 0.2s;	/* Firefox 4 */
+    -webkit-transition: width 0.2s;	/* Safari 和 Chrome */
+    -o-transition: width 0.2s;	/* Opera */
+}
+.menu_fold{
+    width: 40px;
+    border-right: 1px solid #ccc;
+    background-color: #F3F3F3;
+}
+.menu_fold .menu_list{
+    display: none;
+}
+.content_menu .menu_trigger{
+    height: 39px;
+    width: 100%;
+    border-top: 1px solid #ccc;    
+}
+.menu_fold .menu_trigger{
+    border-bottom: 0;
+}
+.content_menu .menu_trigger .trigger_button{
+    font-size: 1.5em;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    cursor: pointer;
+    line-height: 39px;
+    width: 34px;
+    height: 34px;
+    background-color: #6FB3E0;
+    color: #fff;
+    text-align: center;
+}
+.trigger_button i{
+    line-height: 34px;
+}
+
+.content_menu .menu_trigger .normal_button{
+    font-size: 1.5em;
+    cursor: pointer;
+    line-height: 39px;
+    width: 34px;
+    height: 34px;
+    background-color: #87B87F;
+    color: #fff;
+    text-align: center;
+    float: left;
+    margin-left: 3px;
+    margin-top:2px;
+}
+.normal_button i{
+    line-height: 34px;
+}
+
+.menu_fold .trigger_button{
+    transform:rotate(180deg);
+    -ms-transform:rotate(180deg); 	/* IE 9 */
+    -moz-transform:rotate(180deg); 	/* Firefox */
+    -webkit-transform:rotate(180deg); /* Safari 和 Chrome */
+    -o-transform:rotate(180deg); 	/* Opera */
+    
+}
+
+.content_menu .menu_list{
+    --margin-top:2px;
+}
+.content_container{
+    --background-color:goldenrod;
+    height: 100%;
+    margin-left: 200px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top:0px;
+    border-left: 1px solid #ccc;
+
+    transition: margin-left 0.2s;
+    -moz-transition: margin-left 0.2s;	/* Firefox 4 */
+    -webkit-transition: margin-left 0.2s;	/* Safari 和 Chrome */
+    -o-transition: margin-left 0.2s;	/* Opera */
+}
+
+.container_fold{
+    margin-left: 40px;
+}
