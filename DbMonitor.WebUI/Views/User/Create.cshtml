@@ -4,5 +4,16 @@
     Layout = "~/Views/Shared/_LayoutEdit.cshtml";
 }
 
-<h2>Create</h2>
-
+<div class="layui-form-item">
+    <label class="layui-form-label">输入框</label>
+    <div class="layui-input-inline">        
+        @Html.TextBoxFor(m=>m.ULoginName, new { lay_verify = "required",placeholder = "请输入标题", autocomplete = "off", @class="layui-input" })
+    </div>
+    <label class="layui-form-label">密码框</label>
+    <div class="layui-input-inline">        
+        @Html.PasswordFor(m=>m.UPassword, new { lay_verify = "required", placeholder = "请输入密码", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    
+</div>
