@@ -3,17 +3,45 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_LayoutEdit.cshtml";
 }
-
+<input type="hidden" value="@Url.Action("Create", "User")"/>
 <div class="layui-form-item">
-    <label class="layui-form-label">输入框</label>
+    <label class="layui-form-label">登录名</label>
     <div class="layui-input-inline">        
         @Html.TextBoxFor(m=>m.ULoginName, new { lay_verify = "required",placeholder = "请输入标题", autocomplete = "off", @class="layui-input" })
     </div>
     <label class="layui-form-label">密码框</label>
     <div class="layui-input-inline">        
-        @Html.PasswordFor(m=>m.UPassword, new { lay_verify = "required", placeholder = "请输入密码", autocomplete = "off", @class = "layui-input" })
+        @Html.PasswordFor(m=>m.UPassword, new { lay_verify = "required", placeholder = "请输入密码", autocomplete = "off", @class = "layui-input", value = Model.UPassword})
     </div>
 </div>
 <div class="layui-form-item">
-    
+    <label class="layui-form-label">用户名</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.UName, new { lay_verify = "required", placeholder = "请输入用户名", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">用户类型</label>
+    <div class="layui-input-inline">
+        <select name="UUserType" lay-verify="required">
+            <option value="">请选择</option>
+            <option value="0" @(Model.UUserType.HasValue ? (Model.UUserType.Value == 0 ? "selected" : "") : "") >系统</option>
+            <option value="1" @(Model.UUserType.HasValue ? (Model.UUserType.Value == 1 ? "selected" : "") : "") >普通</option>
+        </select>    
+    </div>
 </div>
+<div class="layui-form-item">
+    <label class="layui-form-label">锁定用户</label>
+    <div class="layui-input-inline">
+        <input type="checkbox" name="UIsLock" lay-skin="switch" lay-text="ON|OFF" value="@Model.UIsLock" lay-filter="lock"
+               @(Model.UIsLock.HasValue ? (Model.UIsLock.Value == 1 ? "checked" : "") : "")>
+    </div>
+</div>
+<script>
+    function setForm(form) {
+        if (form) {
+            //监听指定开关
+            form.on('switch(lock)', function (data) {
+                this.checked ? this.value = "1" : this.value = "0";
+            });
+        }
+    }
+</script>

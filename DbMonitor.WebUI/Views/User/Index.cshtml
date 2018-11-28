@@ -31,13 +31,34 @@
         </div>
     </blockquote>
     <table id="datatable" lay-filter="table"></table>
+
+    <script type="text/html" id="typeTpl">
+        {{#  if(d.UUserType == 0){ }}
+        系统
+        {{#  } else if(d.UUserType == 1){ }}
+        普通
+        {{#  } }}
+    </script>
+    <script type="text/html" id="lockTpl">
+        <!-- 这里的 checked 的状态只是演示 lay-filter用户监听事件-->
+        <input type="checkbox" name="lock" value="{{d.UIsLock}}" title="锁定" lay-filter="lockDemo" {{ d.UIsLock == 1 ? 'checked' : '' }} readonly>
+    </script>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
     <script src="~/Scripts/layui/layui.js"></script>
     <script src="~/Scripts/jquery-3.0.0.min.js"></script>
     <script>
+        var actives = null;
+        /**************************************/
+        /*每个页面的不同数据：actives，新建标题与地址
+            删除的地址；修改的标题与地址
+        */
         function bindOperation(table, layer) {
             console.log("bindOperation");
             if (table) {
-                var active = {
+                actives = {
                     search: function () {
                         table.reload('dt',//ID
                             {
@@ -60,26 +81,81 @@
                             success: function (layero, index) {
                                 var body = layer.getChildFrame('body', index);
                                 var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-
                             }
                         });
                     },
                     delBatch: function () {
-                        layer.confirm('真的删除行吗？', { icon: 3, title: '提示' }, function (index) {
-                            layer.msg("delete");
+                        layer.confirm('真的删除选中行吗？', { icon: 3, title: '提示' }, function (index) {
+                            var checkStatus = table.checkStatus('dt')
+                                , data = checkStatus.data;
+                            layer.close(index);
+                            var ids = [];
+                            for (var i = 0; i < data.length; ++i) {
+                                ids.push(data[i].ID);
+                            }
+                            if (ids.length > 0) {
+                                $.post("@Url.Action("Delete","User")", { idList: ids },
+                                    function (res) {
+                                        var objRes = JSON.parse(res);
+                                        if (objRes.status == 0) {
+                                            refreshList();
+                                        } else {
+                                            layer.alert(objRes.message, { icon: 5 });
+                                        }
+                                    }, "json");
+                            }
                         });
                     }
                 };
-
+                //顶部按钮事件
                 $(".quoteBox .layui-btn").on("click", function () {
                     var action = $(this).data("action");
-                    var func = active[action];
+                    var func = actives[action];
                     if (func != null && typeof func == "function") {
                         func();
                     }
                 });
+
+                //监听工具条
+                table.on('tool(table)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                    var data = obj.data; //获得当前行数据
+                    var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                    var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+                    if (layEvent === 'del') { //删除
+                        layer.confirm('真的删除行吗？', { icon: 3, title: '提示' }, function (index) {
+                            //向服务端发送删除指令
+                            var url, postData;
+                            layer.close(index);
+                            $.post("@Url.Action("Delete","User")", { idList: data.ID },
+                                    function (res) {
+                                        var objRes = JSON.parse(res);
+                                        if (objRes.status == 0) {
+                                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                        } else {
+                                            layer.alert(objRes.message, { icon: 5 });
+                                        }
+                                    }, "json");
+                        });
+                    }
+                    else if (layEvent == "edit") {
+                        layer.open({
+                            type: 2,
+                            title: '修改用户',
+                            content: '@Url.Action("Edit","User")/'+data.ID,
+                            scrollbar: false,
+                            area: ['700px', '500px'],
+                            resize: false,
+                            success: function (layero, index) {
+                                var body = layer.getChildFrame('body', index);
+                                var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                            }
+                        });
+                    }
+                });
             }
         }
+        //列配置项，放在
         layui.use(['table', 'layer'], function () {
             console.log("layui.use");
             var table = layui.table;
@@ -93,14 +169,14 @@
                , url: '@Url.Action("List", "User")/' //数据接口
                , page: true //开启分页
                 , cols: [[
-                    { type: 'checkbox' }
+                    { type: 'checkbox', fixed: 'left' }
                   , { field: 'ULoginName', title: '登录名', sort: true }
                   , { field: 'UPassword', title: '登录密码', sort: true }
                   , { field: 'UName', title: '用户名', sort: true }
-                  , { field: 'UUserType', title: '用户类别', sort: true }
-                  , { field: 'UIsLock', title: '是否锁定', sort: true }
+                  , { field: 'UUserType', title: '用户类别', templet:"#typeTpl", sort: true }
+                  , { field: 'UIsLock', title: '是否锁定', templet:"#lockTpl", sort: true }
                   , { field: 'CreationTime', title: '创建时间', sort: true }
-                    , { fixed: 'right', width: 80, align: 'center', toolbar: '#barDemo' }//绑定列工具条
+                    , { fixed: 'right', width: 120, align: 'center', toolbar: '#barDemo' }//绑定列工具条
                 ]] //设置表头
                 , parseData: function (res) { //res 即为原始返回的数据
                     var obj = JSON.parse(res);
@@ -117,6 +193,11 @@
         $(function () {
             console.log("$");
         });
+        function refreshList() {
+            var func = actives.search;
+            if (func && typeof func == "function")
+                func();
+        }
     </script>
 </body>
 </html>

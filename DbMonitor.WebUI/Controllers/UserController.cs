@@ -31,40 +31,79 @@ namespace DbMonitor.WebUI.Controllers
 
         // POST: User/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(Domain.User user, FormCollection collection)
         {
+            JsonResult ret = new JsonResult();
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
+                user.CreatorID = (int)LoginUser.ID;
+                user.CreationTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                if (user.UIsLock == null)
+                    user.UIsLock = 0;
+                db.User.Add(user);
+                db.SaveChanges();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
+                });
             }
+            return ret;
         }
 
         // GET: User/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var user = db.User.Find(id);
+            return View("Create", user);
         }
 
         // POST: User/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(Domain.User user, FormCollection collection)
         {
+            JsonResult ret = new JsonResult();
             try
             {
-                // TODO: Add update logic here
+                //layui中check的input值为0时不提交数据
+                if (user.UIsLock == null)
+                    user.UIsLock = 0;
 
-                return RedirectToAction("Index");
+                var editUser = db.User.Find(user.ID);
+
+                editUser.ULoginName = user.ULoginName;
+                editUser.UPassword = user.UPassword;
+                editUser.UName = user.UName;
+                editUser.UUserType = user.UUserType;
+                editUser.UIsLock = user.UIsLock;
+
+                editUser.EditorID = (int)LoginUser.ID;
+                editUser.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+
+                db.SaveChanges();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
+                });
             }
+            return ret;
         }
 
         // GET: User/Delete/5
@@ -75,18 +114,32 @@ namespace DbMonitor.WebUI.Controllers
 
         // POST: User/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(List<int> idList)
         {
+            JsonResult ret = new JsonResult();
             try
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                foreach(var id in idList)
+                {
+                    var u = db.User.Find(id);
+                    db.User.Remove(u);
+                }
+                db.SaveChanges();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
+                });
             }
+            return ret;
         }
         public ActionResult List(int page = 1, int limit = 20, string username = "")
         {
