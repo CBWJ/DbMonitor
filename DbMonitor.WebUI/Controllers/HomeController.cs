@@ -12,6 +12,10 @@ namespace DbMonitor.WebUI.Controllers
         // GET: Home
         public ActionResult Index()
         {
+            if(LoginUser == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             ViewBag.Menu = db.Module.ToList();
             return View(LoginUser);
         }

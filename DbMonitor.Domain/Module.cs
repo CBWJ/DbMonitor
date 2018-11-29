@@ -26,13 +26,13 @@ namespace DbMonitor.Domain
         public string MType { get; set; }
         public string MIcon { get; set; }
         public string MIconType { get; set; }
-        public Nullable<short> MLevel { get; set; }
-        public Nullable<int> MParentID { get; set; }
-        public Nullable<short> MSortingNumber { get; set; }
-        public Nullable<short> IsEnabled { get; set; }
-        public Nullable<int> CreatorID { get; set; }
+        public Nullable<long> MLevel { get; set; }
+        public Nullable<long> MParentID { get; set; }
+        public Nullable<long> MSortingNumber { get; set; }
+        public Nullable<long> IsEnabled { get; set; }
+        public Nullable<long> CreatorID { get; set; }
         public string CreationTime { get; set; }
-        public Nullable<int> EditorID { get; set; }
+        public Nullable<long> EditorID { get; set; }
         public string EditingTime { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

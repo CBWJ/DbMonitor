@@ -24,9 +24,9 @@ namespace DbMonitor.Domain
         public long ID { get; set; }
         public string RName { get; set; }
         public string RCode { get; set; }
-        public Nullable<int> CreatorID { get; set; }
+        public Nullable<long> CreatorID { get; set; }
         public string CreationTime { get; set; }
-        public Nullable<int> EditorID { get; set; }
+        public Nullable<long> EditorID { get; set; }
         public string EditingTime { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

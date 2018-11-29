@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=E:\SQLite\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=F:\Workspace\DbMonitor\Code\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Authority">
           <Key>
             <PropertyRef Name="ID" />
@@ -16,12 +16,12 @@
           <Property Name="AIcon" Type="varchar" MaxLength="50" />
           <Property Name="AIconType" Type="varchar" MaxLength="10" />
           <Property Name="AClassName" Type="varchar" MaxLength="255" />
-          <Property Name="AShowNumber" Type="smallint" />
-          <Property Name="AIsCommon" Type="smallint" />
-          <Property Name="IsEnabled" Type="smallint" />
-          <Property Name="CreatorID" Type="int" />
+          <Property Name="AShowNumber" Type="integer" />
+          <Property Name="AIsCommon" Type="integer" />
+          <Property Name="IsEnabled" Type="integer" />
+          <Property Name="CreatorID" Type="integer" />
           <Property Name="CreationTime" Type="varchar" MaxLength="30" />
-          <Property Name="EditorID" Type="int" />
+          <Property Name="EditorID" Type="integer" />
           <Property Name="EditingTime" Type="varchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="Module">
@@ -34,13 +34,13 @@
           <Property Name="MType" Type="varchar" MaxLength="10" />
           <Property Name="MIcon" Type="varchar" MaxLength="50" />
           <Property Name="MIconType" Type="varchar" MaxLength="10" />
-          <Property Name="MLevel" Type="smallint" />
-          <Property Name="MParentID" Type="int" />
-          <Property Name="MSortingNumber" Type="smallint" />
-          <Property Name="IsEnabled" Type="smallint" />
-          <Property Name="CreatorID" Type="int" />
+          <Property Name="MLevel" Type="integer" />
+          <Property Name="MParentID" Type="integer" />
+          <Property Name="MSortingNumber" Type="integer" />
+          <Property Name="IsEnabled" Type="integer" />
+          <Property Name="CreatorID" Type="integer" />
           <Property Name="CreationTime" Type="varchar" MaxLength="30" />
-          <Property Name="EditorID" Type="int" />
+          <Property Name="EditorID" Type="integer" />
           <Property Name="EditingTime" Type="varchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="ModuleAuthority">
@@ -58,9 +58,9 @@
           <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RName" Type="nvarchar" MaxLength="20" />
           <Property Name="RCode" Type="varchar" MaxLength="20" />
-          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreatorID" Type="integer" />
           <Property Name="CreationTime" Type="varchar" MaxLength="30" />
-          <Property Name="EditorID" Type="int" />
+          <Property Name="EditorID" Type="integer" />
           <Property Name="EditingTime" Type="varchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="RoleAuthority">
@@ -70,7 +70,7 @@
           <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RID" Type="integer" />
           <Property Name="MAID" Type="integer" />
-          <Property Name="IsEnabled" Type="smallint" />
+          <Property Name="IsEnabled" Type="integer" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -80,11 +80,11 @@
           <Property Name="ULoginName" Type="nvarchar" MaxLength="50" />
           <Property Name="UPassword" Type="varchar" MaxLength="50" />
           <Property Name="UName" Type="nvarchar" MaxLength="50" />
-          <Property Name="UUserType" Type="smallint" />
-          <Property Name="UIsLock" Type="smallint" />
-          <Property Name="CreatorID" Type="int" />
+          <Property Name="UUserType" Type="integer" />
+          <Property Name="UIsLock" Type="integer" />
+          <Property Name="CreatorID" Type="integer" />
           <Property Name="CreationTime" Type="varchar" MaxLength="30" />
-          <Property Name="EditorID" Type="int" />
+          <Property Name="EditorID" Type="integer" />
           <Property Name="EditingTime" Type="varchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="UserRole">
@@ -216,12 +216,12 @@
           <Property Name="AIcon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="AIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="AClassName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="AShowNumber" Type="Int16" />
-          <Property Name="AIsCommon" Type="Int16" />
-          <Property Name="IsEnabled" Type="Int16" />
-          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="AShowNumber" Type="Int64" />
+          <Property Name="AIsCommon" Type="Int64" />
+          <Property Name="IsEnabled" Type="Int64" />
+          <Property Name="CreatorID" Type="Int64" />
           <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditorID" Type="Int64" />
           <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ModuleAuthority" Relationship="Self.FK_ModuleAuthority_0_0" FromRole="Authority" ToRole="ModuleAuthority" />
         </EntityType>
@@ -235,13 +235,13 @@
           <Property Name="MType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="MIcon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="MIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="MLevel" Type="Int16" />
-          <Property Name="MParentID" Type="Int32" />
-          <Property Name="MSortingNumber" Type="Int16" />
-          <Property Name="IsEnabled" Type="Int16" />
-          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="MLevel" Type="Int64" />
+          <Property Name="MParentID" Type="Int64" />
+          <Property Name="MSortingNumber" Type="Int64" />
+          <Property Name="IsEnabled" Type="Int64" />
+          <Property Name="CreatorID" Type="Int64" />
           <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditorID" Type="Int64" />
           <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ModuleAuthority" Relationship="Self.FK_ModuleAuthority_1_0" FromRole="Module" ToRole="ModuleAuthority" />
         </EntityType>
@@ -263,9 +263,9 @@
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="RCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreatorID" Type="Int64" />
           <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditorID" Type="Int64" />
           <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="RoleAuthority" Relationship="Self.FK_RoleAuthority_0_0" FromRole="Role" ToRole="RoleAuthority" />
           <NavigationProperty Name="UserRole" Relationship="Self.FK_UserRole_0_0" FromRole="Role" ToRole="UserRole" />
@@ -277,7 +277,7 @@
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RID" Type="Int64" />
           <Property Name="MAID" Type="Int64" />
-          <Property Name="IsEnabled" Type="Int16" />
+          <Property Name="IsEnabled" Type="Int64" />
           <NavigationProperty Name="ModuleAuthority" Relationship="Self.FK_RoleAuthority_1_0" FromRole="RoleAuthority" ToRole="ModuleAuthority" />
           <NavigationProperty Name="Role" Relationship="Self.FK_RoleAuthority_0_0" FromRole="RoleAuthority" ToRole="Role" />
         </EntityType>
@@ -289,11 +289,11 @@
           <Property Name="ULoginName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="UName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="UUserType" Type="Int16" />
-          <Property Name="UIsLock" Type="Int16" />
-          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="UUserType" Type="Int64" />
+          <Property Name="UIsLock" Type="Int64" />
+          <Property Name="CreatorID" Type="Int64" />
           <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditorID" Type="Int64" />
           <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="UserRole" Relationship="Self.FK_UserRole_1_0" FromRole="User" ToRole="UserRole" />
         </EntityType>

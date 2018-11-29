@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="~/Scripts/layui/css/layui.css">
+    <title>Index</title>
+</head>
+<body>
+    @RenderBody()
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script>
+        //列配置项，放在
+        /*
+        var tableConfig = {
+            elemSelector: "",
+            tableID: "",
+            colConfig: null,
+            dataInterface:""
+        };
+        var dataOperation = {
+            moreAcive : {},
+            createConfig: {
+                title: "",
+                url:""
+            },
+            deleteConfig:{
+                url:""
+            },
+            editConfig:{
+                title: "",
+                url:""
+            }
+        };
+        */
+        layui.use(['table', 'layer'], function () {
+            console.log("layui.use");
+            var table = layui.table;
+            var layer = layui.layer;
+            //执行渲染
+            table.render({
+                elem: tableConfig.elemSelector//指定原始表格元素选择器（推荐id选择器）
+              , id: tableConfig.tableID
+              , height: 'full-100' //容器高度
+                , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+               , url: tableConfig.dataInterface //数据接口
+               , page: true //开启分页
+                , cols: tableConfig.colConfig
+                , parseData: function (res) { //res 即为原始返回的数据
+                    var obj = JSON.parse(res);
+                    return {
+                        "code": obj.status, //解析接口状态
+                        "msg": obj.message, //解析提示文本
+                        "count": obj.total, //解析数据长度
+                        "data": obj.data //解析数据列表
+                    };
+                }
+            });
+
+            //顶部按钮事件
+            actives = {
+                search: function (table, layer) {
+                    table.reload('dt',//ID
+                        {
+                            where: { //设定异步数据接口的额外参数，任意设
+                                username: $("#username").val()
+                            },
+                            page: {
+                                curr: 1
+                            }
+                        });
+                },
+                new: function (table, layer) {
+                    layer.open({
+                        type: 2,
+                        title: dataOperation.createConfig.title,
+                        content: dataOperation.createConfig.url,
+                        scrollbar: false,
+                        area: ['700px', '500px'],
+                        resize: false,
+                        success: function (layero, index) {
+                            var body = layer.getChildFrame('body', index);
+                            var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                        }
+                    });
+                },
+                delBatch: function (table, layer) {
+                    layer.confirm('真的删除选中行吗？', { icon: 3, title: '提示' }, function (index) {
+                        var checkStatus = table.checkStatus('dt')
+                            , data = checkStatus.data;
+                        layer.close(index);
+                        var ids = [];
+                        for (var i = 0; i < data.length; ++i) {
+                            ids.push(data[i].ID);
+                        }
+                        if (ids.length > 0) {
+                            $.post(dataOperation.deleteConfig.url, { idList: ids },
+                                function (res) {
+                                    var objRes = JSON.parse(res);
+                                    if (objRes.status == 0) {
+                                        refreshList();
+                                    } else {
+                                        layer.alert(objRes.message, { icon: 5 });
+                                    }
+                                }, "json");
+                        }
+                    });
+                }
+            };
+            //扩展更多的顶部操作
+            $.extend(actives, dataOperation.moreAcive);
+            //顶部按钮事件
+            $(".quoteBox .layui-btn").on("click", function () {
+                var action = $(this).data("action");
+                var func = actives[action];
+                if (func != null && typeof func == "function") {
+                    func(table, layer);
+                }
+            });
+
+
+            //工具条操作
+            var toolBarActive = {
+                del: function (layer, obj) {
+                    layer.confirm('真的删除行吗？', { icon: 3, title: '提示' }, function (index) {
+                        //向服务端发送删除指令
+                        var url, postData;
+                        layer.close(index);
+                        $.post(dataOperation.deleteConfig.url, { idList: obj.data.ID },
+                                function (res) {
+                                    var objRes = JSON.parse(res);
+                                    if (objRes.status == 0) {
+                                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                    } else {
+                                        layer.alert(objRes.message, { icon: 5 });
+                                    }
+                                }, "json");
+                    });
+                },
+                edit: function (layer, obj) {
+                    layer.open({
+                        type: 2,
+                        title: dataOperation.editConfig.title,
+                        content: dataOperation.editConfig.url + '/' + obj.data.ID,
+                        scrollbar: false,
+                        area: ['700px', '500px'],
+                        resize: false,
+                        success: function (layero, index) {
+                        }
+                    });
+                }
+            };
+            //监听工具条
+            table.on('tool(table)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+                var func = toolBarActive[layEvent];
+                if (func && typeof func == "function") {
+                    func(layer, obj);
+                }
+            });
+        });
+        //刷新列表
+        function refreshList() {
+            //var func = actives.search;
+            //if (func && typeof func == "function")
+            //    func();
+            $(".quoteBox .layui-btn[data-action=search]").click();
+        }
+    </script>
+</body>
+</html>

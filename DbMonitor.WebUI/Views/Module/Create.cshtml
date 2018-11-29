@@ -1,0 +1,57 @@
+﻿@model DbMonitor.Domain.Module
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+}
+
+<input type="hidden" value="@Url.Action("Create", "Module")" />
+<div class="layui-form-item">
+    <label class="layui-form-label">模块名</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MName, new { lay_verify = "required", placeholder = "请输入模块名", autocomplete = "off", @class = "layui-input" })
+    </div>
+
+    <label class="layui-form-label">模块URL</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MUrl, new { lay_verify = "required", placeholder = "请输入模块URL", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">模块类型</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MType, new { lay_verify = "required", placeholder = "请输入模块类型", autocomplete = "off", @class = "layui-input" })
+    </div>
+
+    <label class="layui-form-label">是否启用</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.IsEnabled, new { lay_verify = "required", placeholder = "请输入是否启用", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">图标类型</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MIconType, new { lay_verify = "required", placeholder = "请输入图标类型", autocomplete = "off", @class = "layui-input" })
+    </div>
+
+    <label class="layui-form-label">模块图标</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MIcon, new { lay_verify = "required", placeholder = "请输入模块图标", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">模块级别</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MLevel, new { lay_verify = "required", placeholder = "请输入模块级别", autocomplete = "off", @class = "layui-input" })
+    </div>
+
+    <label class="layui-form-label">父模块ID</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MParentID, new { lay_verify = "required", placeholder = "请输入父模块ID", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">同级序号</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MSortingNumber, new { lay_verify = "required", placeholder = "请输入同级序号", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>

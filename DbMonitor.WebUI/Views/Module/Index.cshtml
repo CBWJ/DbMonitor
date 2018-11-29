@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutList.cshtml";
+}
+
+<blockquote class="layui-elem-quote quoteBox">
+
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="username" placeholder="请输入搜索的内容">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <a class="layui-btn" data-action="search">搜索</a>
+    </div>
+    <div class="layui-inline">
+        <a class="layui-btn layui-btn-normal" data-action="new">新建模块</a>
+    </div>
+    <div class="layui-inline">
+        <a class="layui-btn layui-btn-danger layui-btn-normal" data-action="delBatch">批量删除</a>
+    </div>
+</blockquote>
+<table id="datatable" lay-filter="table"></table>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+    window.tableConfig = {
+        elemSelector: "#datatable",
+        tableID: "dt",
+        colConfig:  [[{ type: 'checkbox', fixed: 'left' }
+                  , { field: 'MName', title: '模块名', sort: true }
+                  , { field: 'MUrl', title: '模块URL', sort: true }
+                  , { field: 'MType', title: '模块类型', sort: true }
+                  , { field: 'IsEnabled', title: '是否启用', sort: true }
+                  , { field: 'MIconType', title: '图标类型', sort: true }
+                  , { field: 'MIcon', title: '模块图标', sort: true }
+                  , { field: 'MLevel', title: '模块级别', sort: true }
+                  , { field: 'MParentID', title: '父模块ID', sort: true }
+                  , { field: 'MSortingNumber', title: '同级序号', sort: true }
+                  , { fixed: 'right', width: 120, align: 'center', toolbar: '#barDemo' }//绑定列工具条
+                ]],
+        dataInterface: "@Url.Action("List", "Module")"
+    };
+    window.dataOperation = {
+        moreAcive: {},
+        createConfig: {
+            title: "新建角色",
+            url: "@Url.Action("Create", "Module")"
+        },
+        deleteConfig: {
+            url: "@Url.Action("Delete", "Module")"
+        },
+        editConfig: {
+            title: "编辑角色",
+            url: "@Url.Action("Edit", "Module")"
+        }
+    };
+</script>

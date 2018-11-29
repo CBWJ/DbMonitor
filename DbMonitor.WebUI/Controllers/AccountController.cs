@@ -59,7 +59,8 @@ namespace DbMonitor.WebUI.Controllers
                         }
                         else
                         {
-                            cookieOK = true;
+                            if(_authProvider.IsUserExisted(ticket.Name))
+                                cookieOK = true;
                         }
                     }
                 }

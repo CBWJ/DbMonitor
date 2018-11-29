@@ -17,7 +17,7 @@ namespace DbMonitor.Domain
         public long ID { get; set; }
         public Nullable<long> RID { get; set; }
         public Nullable<long> MAID { get; set; }
-        public Nullable<short> IsEnabled { get; set; }
+        public Nullable<long> IsEnabled { get; set; }
     
         public virtual ModuleAuthority ModuleAuthority { get; set; }
         public virtual Role Role { get; set; }

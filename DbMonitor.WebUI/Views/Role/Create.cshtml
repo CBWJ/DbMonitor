@@ -1,0 +1,25 @@
+﻿@model DbMonitor.Domain.Role
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+}
+
+
+<input type="hidden" value="@Url.Action("Create", "List")" />
+<div class="layui-form-item">
+    <label class="layui-form-label">角色名</label>
+    <div class="layui-input-block">
+        @Html.TextBoxFor(m => m.RName, new { lay_verify = "required", placeholder = "请输入角色名", autocomplete = "off", @class = "layui-input" })
+    </div>    
+</div>
+
+<input type="hidden" value="@Url.Action("Create", "List")" />
+<div class="layui-form-item">
+    <label class="layui-form-label">角色代码</label>
+    <div class="layui-input-block">
+        @Html.TextBoxFor(m => m.RCode, new { lay_verify = "required", placeholder = "请输入代码", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<script>
+    function setForm() {}
+</script>
