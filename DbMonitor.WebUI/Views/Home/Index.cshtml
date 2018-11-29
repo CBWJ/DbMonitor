@@ -61,9 +61,16 @@
             });
             $(".menu_user").click(function () {
                 $(this).toggleClass("active");
+                return false;
             });
 
-
+            $(window).on("click", function () {
+                console.log("click");
+                var menu = $(".menu_user");
+                if (menu.hasClass("active")) {
+                    menu.removeClass("active");
+                }
+            });
         });
         layui.use("layer", function () {
             var layer = layui.layer;

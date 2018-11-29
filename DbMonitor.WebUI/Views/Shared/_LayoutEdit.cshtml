@@ -10,6 +10,9 @@
         body {
             margin: 10px;
         }
+        .layui-input-block .layui-input{
+            width: 500px;
+        }
     </style>
 </head>
 <body>
@@ -49,9 +52,10 @@
                 return false;
             });
             //设置表单数据
-            if (setForm)
+            if (typeof setForm == "function")
                 setForm(form);
         });
+        
     </script>
 </body>
 </html>

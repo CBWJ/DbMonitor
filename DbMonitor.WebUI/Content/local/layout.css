@@ -69,10 +69,10 @@ html,body{
     right: 3px;
     top: 3px;
     cursor: pointer;
-    line-height: 39px;
+    line-height: 34px;
     width: 34px;
     height: 34px;
-    background-color: #6FB3E0;
+    background-color: #009688;
     color: #fff;
     text-align: center;
 }
@@ -83,7 +83,7 @@ html,body{
 .content_menu .menu_trigger .normal_button{
     font-size: 1.5em;
     cursor: pointer;
-    line-height: 39px;
+    line-height: 34px;
     width: 34px;
     height: 34px;
     background-color: #87B87F;

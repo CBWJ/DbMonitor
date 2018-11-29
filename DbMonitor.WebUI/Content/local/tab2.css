@@ -55,7 +55,7 @@
 
 .tab-header ul .selected{
     z-index: 1;
-    color:#2B7DBC;
+    color:#009688;
     background-color:#fff;
     border-left:1px solid #ccc;
     border-right:1px solid #ccc;
@@ -71,7 +71,7 @@
     text-decoration: none;
 }
 .tab-header>ul>li.selected a{
-    color: #2B7DBC;
+    color: #009688;
 }
 .selected a:hover{
     cursor:default;
@@ -180,6 +180,6 @@
     color: #999;
 }
 .tab-contextmenu li:hover{
-    background-color: #62A8D1;
+    background-color: #87B87F;
     color: #fff;
 }

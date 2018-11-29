@@ -15,10 +15,10 @@
         <a class="layui-btn" data-action="search">搜索</a>
     </div>
     <div class="layui-inline">
-        <a class="layui-btn layui-btn-normal" data-action="new">新建模块</a>
+        <a class="layui-btn layui-btn-normal" data-action="new">新建权限</a>
     </div>
     <div class="layui-inline">
-        <a class="layui-btn layui-btn-danger" data-action="delBatch">批量删除</a>
+        <a class="layui-btn layui-btn-danger layui-btn-normal" data-action="delBatch">批量删除</a>
     </div>
 </blockquote>
 <table id="datatable" lay-filter="table"></table>
@@ -31,31 +31,31 @@
         elemSelector: "#datatable",
         tableID: "dt",
         colConfig:  [[{ type: 'checkbox', fixed: 'left' }
-                  , { field: 'MName', title: '模块名', sort: true }
-                  , { field: 'MUrl', title: '模块URL', sort: true }
-                  , { field: 'MType', title: '模块类型', sort: true }
+                  , { field: 'AName', title: '权限名', sort: true }
+                  , { field: 'ACode', title: '权限代码', sort: true }
+                  , { field: 'AType', title: '权限类型', sort: true }
+                  , { field: 'AIcon', title: '权限图标', sort: true }
+                  , { field: 'AIconType', title: '图标类型', sort: true }
+                  , { field: 'AClassName', title: '样式类名', sort: true }
+                  , { field: 'AShowNumber', title: '显示序号', sort: true }
+                  , { field: 'AIsCommon', title: '是否通用', sort: true }
                   , { field: 'IsEnabled', title: '是否启用', sort: true }
-                  , { field: 'MIconType', title: '图标类型', sort: true }
-                  , { field: 'MIcon', title: '模块图标', sort: true }
-                  , { field: 'MLevel', title: '模块级别', sort: true }
-                  , { field: 'MParentID', title: '父模块ID', sort: true }
-                  , { field: 'MSortingNumber', title: '同级序号', sort: true }
                   , { fixed: 'right', width: 120, align: 'center', toolbar: '#barDemo' }//绑定列工具条
                 ]],
-        dataInterface: "@Url.Action("List", "Module")"
+        dataInterface: "@Url.Action("List", "Authority")"
     };
     window.dataOperation = {
         moreAcive: {},
         createConfig: {
-            title: "新建权限",
-            url: "@Url.Action("Create", "Module")"
+            title: "新建角色",
+            url: "@Url.Action("Create", "Authority")"
         },
         deleteConfig: {
-            url: "@Url.Action("Delete", "Module")"
+            url: "@Url.Action("Delete", "Authority")"
         },
         editConfig: {
-            title: "编辑权限",
-            url: "@Url.Action("Edit", "Module")"
+            title: "编辑角色",
+            url: "@Url.Action("Edit", "Authority")"
         }
     };
 </script>

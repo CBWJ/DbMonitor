@@ -14,7 +14,7 @@
 .leftmenu>ul li a>img{
 	width: 20px;
     position: relative;
-    top: 4px;
+    margin-right: 4px;
 }
 /*一级菜单*/
 .leftmenu>ul>li{
@@ -152,7 +152,7 @@
     top: -1px;
     bottom: 0;
     z-index: 1;
-    border: 2px solid #2B7DBC;
+    border: 2px solid #009688;
     border-width: 0 2px 0 0;
 }
 
@@ -164,19 +164,19 @@
     border: 6px solid transparent;
     top: 2px;
     border-width: 14px 8px;
-    border-right-color: #2B7DBC;
+    border-right-color: #009688;
 }
 
 /*选中效果*/
 .leftmenu>ul>li.selected>a{
     font-weight: bold;
-    color: #2B7DBC;
+    color: #009688;
     background-color: #FFF;
 }
 
 .leftmenu>ul .submenu li.selected>a{
     background-color: #F1F5F9;
-    color: #2B7DBC;
+    color: #009688;
 }
 
 .leftmenu>ul>li>.submenu>li>.submenu>li.selected>a{
@@ -186,14 +186,14 @@
 
 /*鼠标悬停*/
 .leftmenu>ul>li>a:hover{
-    color: #2B7DBC;
+    color: #009688;
     background-color: #FFF;
     cursor: pointer;
 }
 
 .leftmenu>ul .submenu li>a:hover{
     background-color: #F1F5F9;
-    color: #2B7DBC;
+    color: #009688;
     cursor: pointer;
 }
 
@@ -203,16 +203,16 @@
     cursor: pointer;
 }
 
-.leftMenu>ul>li>a:hover::before{
+.leftmenu>ul>li>a:hover::before{
     display: block;
 }
-.leftMenu>ul>li>a::before{
+.leftmenu>ul>li>a::before{
     display: none;
     content:'';
     width:3px;
     max-width: 3px;
     height: 39px;
-    background-color: #62A8D1;
+    background-color: #009688;
     position: absolute;
     left: 0;
     top: 0px;

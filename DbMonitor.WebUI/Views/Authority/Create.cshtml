@@ -1,0 +1,53 @@
+﻿@model DbMonitor.Domain.Authority
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+}
+
+<input type="hidden" value="@Url.Action("Create", "Module")" />
+<div class="layui-form-item">
+    <label class="layui-form-label">权限名</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.AName, new { lay_verify = "required", placeholder = "请输入权限名", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">权限代码</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.ACode, new { lay_verify = "required", placeholder = "请输入权限代码", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">权限类型</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.AType, new { lay_verify = "required", placeholder = "请输入权限类型", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">权限图标</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.AIcon, new { placeholder = "", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">图标类型</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.AIconType, new { placeholder = "", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">是否启用</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.IsEnabled, new { lay_verify = "required", placeholder = "请输入是否启用", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">显示序号</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.AShowNumber, new { lay_verify = "required", placeholder = "请输入显示序号", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">是否通用</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.AIsCommon, new { lay_verify = "required", placeholder = "请输入是否通用", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">    
+    <label class="layui-form-label">样式类名</label>
+    <div class="layui-input-block">
+        @Html.TextBoxFor(m => m.AClassName, new { lay_verify = "required", placeholder = "请输入样式类名", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
