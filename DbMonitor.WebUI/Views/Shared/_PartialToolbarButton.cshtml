@@ -1,0 +1,7 @@
+﻿
+@model List<DbMonitor.Domain.Authority>
+
+@foreach (var auth in Model.Where(a => a.AType == "toolbarButton").OrderBy(a => a.AShowNumber))
+{
+    <a class="@auth.AClassName" lay-event="@auth.ACode">@auth.AName</a>
+}

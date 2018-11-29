@@ -24,8 +24,6 @@ namespace DbMonitor.Domain
         public Nullable<long> MID { get; set; }
         public Nullable<long> AID { get; set; }
     
-        public virtual Authority Authority { get; set; }
-        public virtual Module Module { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RoleAuthority> RoleAuthority { get; set; }
     }

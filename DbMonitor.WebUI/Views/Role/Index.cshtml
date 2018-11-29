@@ -11,20 +11,27 @@
             <input type="text" class="layui-input searchVal" id="username" placeholder="请输入搜索的内容">
         </div>
     </div>
-    <div class="layui-inline">
+    @*<div class="layui-inline">
         <a class="layui-btn" data-action="search">搜索</a>
     </div>
     <div class="layui-inline">
         <a class="layui-btn layui-btn-normal" data-action="new">新建角色</a>
     </div>
     <div class="layui-inline">
-        <a class="layui-btn layui-btn-danger layui-btn-normal" data-action="delBatch">批量删除</a>
+        <a class="layui-btn layui-btn-warm" data-action="authorize">授权</a>
     </div>
+    <div class="layui-inline">
+        <a class="layui-btn layui-btn-danger layui-btn-normal" data-action="delBatch">批量删除</a>
+    </div>*@
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialMainButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
 </blockquote>
 <table id="datatable" lay-filter="table"></table>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialToolbarButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
 </script>
 <script>
     //console.log("页面数据");
@@ -40,7 +47,28 @@
         dataInterface: "@Url.Action("List", "Role")"
     };
     window.dataOperation = {
-        moreAcive: {},
+        moreAcive: {
+            authorize: function (table, layer) {
+                var checkStatus = table.checkStatus(tableConfig.tableID)
+                            , data = checkStatus.data;
+                if (data.length != 1) {
+                    layer.alert('请选中一行！', { icon: 2 });
+                    return;
+                }
+                layer.open({
+                    type: 2,
+                    title: '角色授权',
+                    content: '@Url.Action("Athorize", "Role")/' + data[0].ID,
+                    scrollbar: false,
+                    area: ['700px', '500px'],
+                    resize: false,
+                    success: function (layero, index) {
+                        var body = layer.getChildFrame('body', index);
+                        var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                    }
+                });
+            }
+        },
         createConfig: {
             title: "新建角色",
             url: "@Url.Action("Create","Role")"

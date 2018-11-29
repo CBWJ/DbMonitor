@@ -1,0 +1,35 @@
+﻿@model List<DbMonitor.Domain.v_RoleAuth>
+@{
+    ViewBag.Title = "Athorize";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+    var modules = (List<string>) ViewBag.AllAuthModule;
+    var ownId = (List<long>)ViewBag.OwnMAID;
+}
+
+<input type="hidden" id="action" value="@Url.Action("Athorize", "Role")" />
+<input type="hidden" name="rId" value="@ViewBag.RID" />
+@foreach (var module in modules)
+{
+    <div class="layui-form-item">
+        <label class="layui-form-label">@module</label>
+        <div class="layui-input-block">
+            @foreach (var m in Model)
+            {
+                if (m.MName == module)
+                {
+                    <input type="checkbox" name="@string.Format("ma{0}", m.MAID)" title="@m.AName" lay-skin="primary" lay-filter="auth"
+                           @(ownId.Contains(m.MAID) ? "value=1 Checked" : "value=0") />
+                }
+            }
+        </div>
+    </div>
+}
+
+<script>
+    function setForm(form) {
+        //监听指定开关
+        form.on('checkbox(auth)', function (data) {
+            this.checked ? this.value = "1" : this.value = "0";
+        });
+    }
+</script>

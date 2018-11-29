@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=F:\Workspace\DbMonitor\Code\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=E:\Project\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Authority">
           <Key>
             <PropertyRef Name="ID" />
@@ -95,6 +95,16 @@
           <Property Name="UID" Type="integer" />
           <Property Name="RID" Type="integer" />
         </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“main.v_RoleAuth”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_RoleAuth">
+          <Key>
+            <PropertyRef Name="MAID" />
+          </Key>
+          <Property Name="MAID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MName" Type="nvarchar" MaxLength="20" />
+          <Property Name="AName" Type="nvarchar" MaxLength="20" />
+        </EntityType>
         <Association Name="FK_ModuleAuthority_0_0">
           <End Role="Authority" Type="Self.Authority" Multiplicity="0..1" />
           <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="*" />
@@ -175,6 +185,13 @@
           <EntitySet Name="RoleAuthority" EntityType="Self.RoleAuthority" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" store:Type="Tables" />
           <EntitySet Name="UserRole" EntityType="Self.UserRole" store:Type="Tables" />
+          <EntitySet Name="v_RoleAuth" EntityType="Self.v_RoleAuth" store:Type="Views">
+            <DefiningQuery>SELECT 
+[v_RoleAuth].[MAID] AS [MAID], 
+[v_RoleAuth].[MName] AS [MName], 
+[v_RoleAuth].[AName] AS [AName]
+FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_ModuleAuthority_0_0" Association="Self.FK_ModuleAuthority_0_0">
             <End Role="Authority" EntitySet="Authority" />
             <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
@@ -200,8 +217,7 @@
             <End Role="UserRole" EntitySet="UserRole" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DbMonitorModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -252,8 +268,6 @@
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MID" Type="Int64" />
           <Property Name="AID" Type="Int64" />
-          <NavigationProperty Name="Authority" Relationship="Self.FK_ModuleAuthority_0_0" FromRole="ModuleAuthority" ToRole="Authority" />
-          <NavigationProperty Name="Module" Relationship="Self.FK_ModuleAuthority_1_0" FromRole="ModuleAuthority" ToRole="Module" />
           <NavigationProperty Name="RoleAuthority" Relationship="Self.FK_RoleAuthority_1_0" FromRole="ModuleAuthority" ToRole="RoleAuthority" />
         </EntityType>
         <EntityType Name="Role">
@@ -278,8 +292,6 @@
           <Property Name="RID" Type="Int64" />
           <Property Name="MAID" Type="Int64" />
           <Property Name="IsEnabled" Type="Int64" />
-          <NavigationProperty Name="ModuleAuthority" Relationship="Self.FK_RoleAuthority_1_0" FromRole="RoleAuthority" ToRole="ModuleAuthority" />
-          <NavigationProperty Name="Role" Relationship="Self.FK_RoleAuthority_0_0" FromRole="RoleAuthority" ToRole="Role" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -304,8 +316,6 @@
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UID" Type="Int64" />
           <Property Name="RID" Type="Int64" />
-          <NavigationProperty Name="Role" Relationship="Self.FK_UserRole_0_0" FromRole="UserRole" ToRole="Role" />
-          <NavigationProperty Name="User" Relationship="Self.FK_UserRole_1_0" FromRole="UserRole" ToRole="User" />
         </EntityType>
         <Association Name="FK_ModuleAuthority_0_0">
           <End Role="Authority" Type="Self.Authority" Multiplicity="0..1" />
@@ -411,7 +421,16 @@
             <End Role="User" EntitySet="User" />
             <End Role="UserRole" EntitySet="UserRole" />
           </AssociationSet>
+          <EntitySet Name="v_RoleAuth" EntityType="DbMonitorModel.v_RoleAuth" />
         </EntityContainer>
+        <EntityType Name="v_RoleAuth">
+          <Key>
+            <PropertyRef Name="MAID" />
+          </Key>
+          <Property Name="MAID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -515,6 +534,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="v_RoleAuth">
+            <EntityTypeMapping TypeName="DbMonitorModel.v_RoleAuth">
+              <MappingFragment StoreEntitySet="v_RoleAuth">
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="MName" ColumnName="MName" />
+                <ScalarProperty Name="MAID" ColumnName="MAID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -530,7 +558,7 @@
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="false" />
-        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="False" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
       </DesignerInfoPropertySet>

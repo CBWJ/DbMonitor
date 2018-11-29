@@ -13,6 +13,7 @@ namespace DbMonitor.WebUI.Controllers
         // GET: User
         public ActionResult Index()
         {
+            SetModuleAuthority();
             return View();
         }
 
@@ -25,6 +26,7 @@ namespace DbMonitor.WebUI.Controllers
         // GET: User/Create
         public ActionResult Create()
         {
+            CreateAcion();
             DbMonitor.Domain.User u = new Domain.User();
             return View(u);
         }
@@ -62,6 +64,7 @@ namespace DbMonitor.WebUI.Controllers
         // GET: User/Edit/5
         public ActionResult Edit(int id)
         {
+            EditAcion();
             var user = db.User.Find(id);
             return View("Create", user);
         }
@@ -164,6 +167,78 @@ namespace DbMonitor.WebUI.Controllers
                     message = "发生异常：" + ex.Message,
                     total = 0,
                     data = ""
+                });
+            }
+            return ret;
+        }
+
+        public ActionResult AllocateRole(int id)
+        {
+            var roles = db.Role.ToList();
+            ViewBag.UID = id;
+            ViewBag.OwnRoleID = (from ur in db.UserRole
+                                 join r in db.Role on ur.RID equals r.ID
+                                 where ur.UID == id
+                                 select r.ID).ToList();
+                                
+            return View(roles);
+        }
+        [HttpPost]
+        public ActionResult AllocateRole(int uId, FormCollection collection)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                //对于只提交选中项的问题，全部删除，再增加
+                /*foreach (var ma in db.ModuleAuthority)
+                {
+                    var exsit = (from ra in db.RoleAuthority
+                                 where ra.RID == rId && ra.MAID == ma.ID
+                                 select ra).ToList();
+                    if (exsit != null)
+                        db.RoleAuthority.RemoveRange(exsit);
+
+                    var param = collection[string.Format("ma{0}", ma.ID)];
+                    if (param == "1")
+                    {
+                        db.RoleAuthority.Add(new Domain.RoleAuthority
+                        {
+                            MAID = ma.ID,
+                            RID = rId
+                        });
+                    }
+                }*/
+                foreach(var r in db.Role)
+                {
+                    var exsit = (from ur in db.UserRole
+                                 where ur.UID == uId && ur.RID == r.ID
+                                 select ur).ToList();
+                    if (exsit != null)
+                        db.UserRole.RemoveRange(exsit);
+
+                    var param = collection[string.Format("role{0}", r.ID)];
+                    if (param == "1")
+                    {
+                        db.UserRole.Add(new Domain.UserRole
+                        {
+                            UID = uId,
+                            RID = r.ID
+                        });
+                    }
+                }
+                db.SaveChanges();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
                 });
             }
             return ret;

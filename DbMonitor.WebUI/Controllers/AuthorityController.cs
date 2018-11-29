@@ -24,6 +24,7 @@ namespace DbMonitor.WebUI.Controllers
         // GET: Authority/Create
         public ActionResult Create()
         {
+            CreateAcion();
             Domain.Authority a = new Domain.Authority();
             return View(a);
         }
@@ -38,6 +39,7 @@ namespace DbMonitor.WebUI.Controllers
         // GET: Authority/Edit/5
         public ActionResult Edit(int id)
         {
+            EditAcion();
             var a = db.Authority.Find(id);
             return View("Create", a);
         }

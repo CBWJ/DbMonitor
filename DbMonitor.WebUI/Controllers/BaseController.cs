@@ -172,5 +172,55 @@ namespace DbMonitor.WebUI.Controllers
             }
             return ret;
         }
+        /// <summary>
+        /// 新建条目
+        /// </summary>
+        protected void CreateAcion()
+        {
+            ViewBag.Action = "Create";
+        }
+        /// <summary>
+        /// 编辑条目
+        /// </summary>
+        protected void EditAcion()
+        {
+            ViewBag.Action = "Edit";
+        }
+        /// <summary>
+        /// 设置模块权限
+        /// </summary>
+        protected void SetModuleAuthority()
+        {
+            var controller = RouteData.Values["controller"];
+            var action = RouteData.Values["action"];
+            string url = string.Format("{0}/{1}", controller, action);
+            long mId = (from m in db.Module
+                        where m.MUrl == url
+                        select m.ID).FirstOrDefault();
+            List<Authority> auths = null;
+            if (LoginUser.UUserType < 2)
+            {
+                auths = (from ma in db.ModuleAuthority
+                         join a in db.Authority on ma.AID equals a.ID
+                         where ma.MID == mId
+                         select a).ToList();
+            }
+            else
+            {                
+                auths = (from ur in db.UserRole
+                              join r in db.Role on ur.RID equals r.ID
+                              join ra in db.RoleAuthority on r.ID equals ra.RID
+                              join ma in db.ModuleAuthority on ra.MAID equals ma.ID
+                              join a in db.Authority on ma.AID equals a.ID
+                              where ma.MID == mId
+                              select a).ToList();
+
+                
+            }
+            if (auths == null)
+                auths = new List<Authority>();
+            ViewBag.Authority = auths;
+        }
+        
     }
 }

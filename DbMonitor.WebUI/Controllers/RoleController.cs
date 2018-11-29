@@ -12,6 +12,7 @@ namespace DbMonitor.WebUI.Controllers
         // GET: Role
         public ActionResult Index()
         {
+            SetModuleAuthority();
             return View();
         }
 
@@ -24,6 +25,7 @@ namespace DbMonitor.WebUI.Controllers
         // GET: Role/Create
         public ActionResult Create()
         {
+            CreateAcion();
             Domain.Role r = new Domain.Role();
             return View(r);
         }
@@ -62,6 +64,7 @@ namespace DbMonitor.WebUI.Controllers
         // GET: Role/Edit/5
         public ActionResult Edit(int id)
         {
+            EditAcion();
             var r = db.Role.Find(id);
             return View("Create", r);
         }
@@ -159,6 +162,59 @@ namespace DbMonitor.WebUI.Controllers
                     message = "发生异常：" + ex.Message,
                     total = 0,
                     data = ""
+                });
+            }
+            return ret;
+        }
+
+        public ActionResult Athorize(int id)
+        {
+            //可以授权的所有模块
+            ViewBag.AllAuthModule = (from m in db.v_RoleAuth
+                                     select m.MName).Distinct().ToList();
+            ViewBag.RID = id;
+            ViewBag.OwnMAID = (from m in db.RoleAuthority
+                               where m.RID == id
+                               select m.MAID.Value).ToList();
+            return View(db.v_RoleAuth.ToList());
+        }
+        [HttpPost]
+        public ActionResult Athorize(int rId, FormCollection collection)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                //对于只提交选中项的问题，全部删除，再增加
+                foreach(var ma in db.ModuleAuthority)
+                {
+                    var exsit = (from ra in db.RoleAuthority
+                                 where ra.RID == rId && ra.MAID == ma.ID
+                                 select ra).ToList();
+                    if (exsit != null)
+                        db.RoleAuthority.RemoveRange(exsit);
+
+                    var param = collection[string.Format("ma{0}", ma.ID)];
+                    if(param == "1")
+                    {
+                        db.RoleAuthority.Add(new Domain.RoleAuthority {
+                            MAID = ma.ID,
+                            RID = rId
+                        });
+                    }
+                }
+                db.SaveChanges();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
                 });
             }
             return ret;

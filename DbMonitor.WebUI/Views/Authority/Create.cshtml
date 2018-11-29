@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_LayoutEdit.cshtml";
 }
 
-<input type="hidden" value="@Url.Action("Create", "Module")" />
+<input type="hidden" id="action" value="@Url.Action(ViewBag.Action, "Authority")" />
 <div class="layui-form-item">
     <label class="layui-form-label">权限名</label>
     <div class="layui-input-inline">
