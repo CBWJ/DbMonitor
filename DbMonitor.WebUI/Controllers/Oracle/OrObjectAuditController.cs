@@ -100,22 +100,18 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             return View(scId);
         }
         [HttpPost]
-        public ActionResult Create(long scId, string stmt, string user, string way, string result)
+        public ActionResult Create(long scId, string stmt, string user, string objtype,string objname, string way, string result)
         {
             JsonResult ret = new JsonResult();
             try
             {
                 //查询语句结尾不要逗号，否则报错:ORA-00911: 无效字符
                 StringBuilder sbSql = new StringBuilder();
-                sbSql.AppendFormat("audit {0} ", stmt);
-                if (user != "ALL")
-                {
-                    sbSql.AppendFormat("by {0} ", user);
-                }
-                sbSql.AppendFormat("by {0} ", way);
+                sbSql.AppendFormat("audit {0} on {1}.{2} by {3}",
+                    stmt, user, objname, way);
                 if (result != "ALL")
                 {
-                    sbSql.AppendFormat("whenever {0} ", result);
+                    sbSql.AppendFormat(" whenever {0}", result);
                 }
                 using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
                 {

@@ -29,7 +29,7 @@
 <div class="layui-form-item">
     <label class="layui-form-label">对象名</label>
     <div class="layui-input-inline">
-        <select name="objname" lay-verify="required" lay-search>
+        <select id="objname" name="objname" lay-verify="required" lay-search>
             <option value=""></option>
         </select>
     </div>
@@ -67,7 +67,6 @@
             var user = $("#user").find("option:selected").val();
             var objtype = $("#objtype").find("option:selected").val();
             if (user != "" && objtype != "") {
-                console.log(user + ":" + objtype);
                 freshObject(user,objtype);
             }
         });
@@ -76,18 +75,28 @@
             var user = $("#user").find("option:selected").val();
             var objtype = $("#objtype").find("option:selected").val();
             if (user != "" && objtype != "") {
-                console.log(user + ":" + objtype);
                 freshObject(user,objtype);
             }
         });
         function freshObject(u, t) {
             $.post("@Url.Action("GetObjectName", "OrObjectAudit")", 
-                {scId:@Model, user: u, objtype: t }), 
+                {scId:@Model, user: u, objtype: t }, 
                     function (res) {
                     var objRes = JSON.parse(res);
                     if(objRes.status == 0){
-                        console.log(data.data);
+                        var $name = $("#objname");
+                        $name.html('');
+                        //必须加空项，不然不验证
+                        var op = $("<option>").val("").text("");
+                        $name.append(op);
+                        $.each(objRes.data ,function(index, item){
+                            op = $("<option>").val(item).text(item);
+                            $name.append(op);
+                        });
+                        form.render('select');
+                        $name.get(0).selectedIndex=0;
                     }
-            },"json"};
+                    },"json")
+                }
     }
 </script>
