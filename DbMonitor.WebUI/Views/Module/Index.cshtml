@@ -18,6 +18,9 @@
         <a class="layui-btn layui-btn-normal" data-action="new">新建模块</a>
     </div>
     <div class="layui-inline">
+        <a class="layui-btn layui-btn-warm" data-action="authority">权限分配</a>
+    </div>
+    <div class="layui-inline">
         <a class="layui-btn layui-btn-danger" data-action="delBatch">批量删除</a>
     </div>
 </blockquote>
@@ -45,7 +48,28 @@
         dataInterface: "@Url.Action("List", "Module")"
     };
     window.dataOperation = {
-        moreAcive: {},
+        moreAcive: {
+            authority: function (table, layer) {
+                var checkStatus = table.checkStatus(tableConfig.tableID)
+                            , data = checkStatus.data;
+                if (data.length != 1) {
+                    layer.alert('请选中一行！', { icon: 2 });
+                    return;
+                }
+                layer.open({
+                    type: 2,
+                    title: '权限分配',
+                    content: '@Url.Action("AuthorityAllocation", "Module")/' + data[0].ID,
+                    scrollbar: false,
+                    area: ['700px', '500px'],
+                    resize: false,
+                    success: function (layero, index) {
+                        var body = layer.getChildFrame('body', index);
+                        var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                    }
+                });
+            }
+        },
         createConfig: {
             title: "新建权限",
             url: "@Url.Action("Create", "Module")"

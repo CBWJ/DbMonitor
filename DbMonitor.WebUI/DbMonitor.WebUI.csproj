@@ -383,7 +383,7 @@
     <Content Include="Scripts\layui\font\iconfont.woff" />
     <Content Include="Scripts\jquery-3.0.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.0.0.min.map" />
-    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\_Index.cshtml" />
     <Content Include="Views\Shared\_LayoutEdit.cshtml" />
     <Content Include="Views\User\Create.cshtml" />
     <Content Include="Views\Shared\_LayoutList.cshtml" />
@@ -393,6 +393,12 @@
     <Content Include="Views\Module\Create.cshtml" />
     <Content Include="Views\Authority\Index.cshtml" />
     <Content Include="Views\Authority\Create.cshtml" />
+    <Content Include="Views\Module\AuthorityAllocation.cshtml" />
+    <Content Include="Views\Role\Athorize.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\AllocateRole.cshtml" />
+    <Content Include="Views\Shared\_PartialMainButton.cshtml" />
+    <Content Include="Views\Shared\_PartialToolbarButton.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,0 +1,53 @@
+﻿@model List<DbMonitor.Domain.Authority>
+@{
+    ViewBag.Title = "AuthorityAllocation";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+    var ownCode = (List<string>)ViewBag.OwnCode;
+}
+
+<input type="hidden" id="action" value="@Url.Action("AuthorityAllocation", "Module")" />
+<input type="hidden" name="mId" value="@ViewBag.MID" />
+<div class="layui-form-item">
+    <label class="layui-form-label">主按钮</label>
+    <div class="layui-input-block">
+        @foreach (var a in Model)
+        {
+            if (a.AType == "mainButton")
+            {
+                <input type="checkbox" name="@a.ACode" title="@a.AName" @(ownCode.Contains(a.ACode) ? "value=1 Checked" : "value=0") lay-filter="auth">
+            }
+        }        
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">工具条按钮</label>
+    <div class="layui-input-block">
+        @foreach (var a in Model)
+        {
+            if (a.AType == "toolbarButton")
+            {
+                <input type="checkbox" name="@a.ACode" title="@a.AName"  @(ownCode.Contains(a.ACode) ? "value=1 Checked" : "value=0") lay-filter="auth">
+            }
+        }
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">访问性</label>
+    <div class="layui-input-block">
+        @foreach (var a in Model)
+        {
+            if (a.AType == "pageView")
+            {
+                <input type="checkbox" name="@a.ACode" title="@a.AName"  @(ownCode.Contains(a.ACode) ? "value=1 Checked" : "value=0") lay-filter="auth">
+            }
+        }
+    </div>
+</div>
+<script>
+    function setForm(form) {
+        //监听指定开关
+        form.on('checkbox(auth)', function (data) {
+            this.checked ? this.value = "1" : this.value = "0";
+        });
+    }        
+</script>

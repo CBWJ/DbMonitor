@@ -1,0 +1,8 @@
+﻿@model List<DbMonitor.Domain.Authority>
+
+@foreach (var auth in Model.Where(a => a.AType == "mainButton").OrderBy(a => a.AShowNumber))
+{
+    <div class="layui-inline">
+        <a class="@auth.AClassName" data-action="@auth.ACode">@auth.AName</a>
+    </div>
+}

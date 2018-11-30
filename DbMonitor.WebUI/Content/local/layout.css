@@ -28,7 +28,6 @@ html,body{
     background: linear-gradient(#1d887e, #009688); /* 标准的语法 */
 }
 .main_body_content{
-    --background-color: aquamarine;
     width: 100%;
     position: absolute;
     top:50px;
@@ -107,10 +106,10 @@ html,body{
 }
 
 .content_menu .menu_list{
-    --margin-top:2px;
+    /*菜单折叠防止提前显示*/
+    overflow-x: hidden;
 }
 .content_container{
-    --background-color:goldenrod;
     height: 100%;
     margin-left: 200px;
     position: absolute;

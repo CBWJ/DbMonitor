@@ -24,6 +24,7 @@ namespace DbMonitor.WebUI.Controllers
         // GET: Module/Create
         public ActionResult Create()
         {
+            CreateAcion();
             Domain.Module m = new Domain.Module();
             return View(m);
         }
@@ -61,6 +62,7 @@ namespace DbMonitor.WebUI.Controllers
         // GET: Module/Edit/5
         public ActionResult Edit(int id)
         {
+            EditAcion();
             var m = db.Module.Find(id);
             return View("Create", m);
         }
@@ -166,6 +168,82 @@ namespace DbMonitor.WebUI.Controllers
                     message = "发生异常：" + ex.Message,
                     total = 0,
                     data = ""
+                });
+            }
+            return ret;
+        }
+
+        public ActionResult AuthorityAllocation(int id)
+        {
+            var auth = db.Authority.ToList();
+            ViewBag.MID = id;
+            var ownCode = (from ma in db.ModuleAuthority
+                          join m in db.Module on ma.MID equals m.ID
+                          join a in db.Authority on ma.AID equals a.ID
+                          where ma.MID == id
+                          select a.ACode).ToList();
+            ViewBag.OwnCode = ownCode;//JsonConvert.SerializeObject(ownCode);
+            return View(auth);
+        }
+        [HttpPost]
+        public ActionResult AuthorityAllocation(int mId, FormCollection collection)
+        {            
+            JsonResult ret = new JsonResult();
+            try
+            {
+                var allAutho = db.Authority.ToList();
+                //对于只提交选中项的问题，全部删除，再增加
+               
+                var mas = db.ModuleAuthority.Where(ma => ma.MID == mId);
+                db.ModuleAuthority.RemoveRange(mas);
+                //立即保存
+                foreach (var a in allAutho)
+                {
+                    var formPara = collection[a.ACode];
+                    if (formPara == "1")
+                    {
+                        db.ModuleAuthority.Add(new Domain.ModuleAuthority {
+                            MID = mId,
+                            AID = a.ID
+                        });
+                        /*
+                        var ma = (from m in db.ModuleAuthority
+                                  where m.AID == a.ID && m.MID == mId
+                                  select m).FirstOrDefault();
+                        if (formPara == "1")
+                        {
+                            //选中不存在则添加
+                            if (ma == null)
+                                db.ModuleAuthority.Add(new Domain.ModuleAuthority
+                                {
+                                    MID = mId,
+                                    AID = a.ID
+                                });
+                        }
+                        else if (formPara == "0")
+                        {
+                            //取消存在则删除
+                            if (ma != null)
+                            {
+                                db.ModuleAuthority.Remove(ma);
+                            }
+                        }*/                      
+                        
+                    }
+                }
+                db.SaveChanges();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
                 });
             }
             return ret;

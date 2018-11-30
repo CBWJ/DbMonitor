@@ -1,0 +1,30 @@
+﻿@model List<DbMonitor.Domain.Role>
+@{
+    ViewBag.Title = "AllocateRole";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+    var owerRoleID = (List<long>)ViewBag.OwnRoleID;
+}
+
+<input type="hidden" id="action" value="@Url.Action("AllocateRole", "User")" />
+<input type="hidden" name="uId" value="@ViewBag.UID" />
+
+<div class="layui-form-item">
+    <label class="layui-form-label">角色选择</label>
+    <div class="layui-input-block">
+        @foreach (var m in Model)
+        {
+            <input type="checkbox" name="@string.Format("role{0}", m.ID)" title="@m.RName" lay-filter="role" 
+                   @(owerRoleID.Contains(m.ID) ? "value=1 Checked" : "value=0")/>
+        }
+    </div>
+</div>
+
+<script>
+    function setForm(form) {
+        //监听指定开关
+        form.on('checkbox(role)', function (data) {
+            this.checked ? this.value = "1" : this.value = "0";
+        });
+    }
+</script>
+
