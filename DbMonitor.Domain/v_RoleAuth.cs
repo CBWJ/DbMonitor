@@ -12,10 +12,10 @@ namespace DbMonitor.Domain
     using System;
     using System.Collections.Generic;
     
-    public partial class UserRole
+    public partial class v_RoleAuth
     {
-        public long ID { get; set; }
-        public Nullable<long> UID { get; set; }
-        public Nullable<long> RID { get; set; }
+        public long MAID { get; set; }
+        public string MName { get; set; }
+        public string AName { get; set; }
     }
 }

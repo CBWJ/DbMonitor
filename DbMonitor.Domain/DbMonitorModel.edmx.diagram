@@ -5,19 +5,20 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="7e240acf6d894de29372a30e95a26f82" Name="Diagram1">
-        <EntityTypeShape EntityType="DbMonitorModel.Authority" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbMonitorModel.Module" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbMonitorModel.ModuleAuthority" Width="1.5" PointX="3" PointY="1.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbMonitorModel.Role" Width="1.5" PointX="3" PointY="5.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbMonitorModel.RoleAuthority" Width="1.5" PointX="5.25" PointY="1.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbMonitorModel.User" Width="1.5" PointX="3" PointY="9.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbMonitorModel.UserRole" Width="1.5" PointX="5.25" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbMonitorModel.Authority" Width="1.5" PointX="10.5" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbMonitorModel.Module" Width="1.5" PointX="10.5" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbMonitorModel.ModuleAuthority" Width="1.5" PointX="10.5" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbMonitorModel.Role" Width="1.5" PointX="2" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbMonitorModel.RoleAuthority" Width="1.5" PointX="6.25" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbMonitorModel.User" Width="1.5" PointX="2.125" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbMonitorModel.UserRole" Width="1.5" PointX="2.125" PointY="6.125" IsExpanded="true" />
         <AssociationConnector Association="DbMonitorModel.FK_ModuleAuthority_0_0" ManuallyRouted="false" />
         <AssociationConnector Association="DbMonitorModel.FK_ModuleAuthority_1_0" ManuallyRouted="false" />
         <AssociationConnector Association="DbMonitorModel.FK_RoleAuthority_1_0" ManuallyRouted="false" />
         <AssociationConnector Association="DbMonitorModel.FK_RoleAuthority_0_0" ManuallyRouted="false" />
         <AssociationConnector Association="DbMonitorModel.FK_UserRole_0_0" ManuallyRouted="false" />
         <AssociationConnector Association="DbMonitorModel.FK_UserRole_1_0" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DbMonitorModel.v_RoleAuth" Width="1.5" PointX="5.375" PointY="2.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

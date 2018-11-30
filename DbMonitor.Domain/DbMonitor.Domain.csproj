@@ -102,6 +102,9 @@
     <Compile Include="UserRole.cs">
       <DependentUpon>DbMonitorModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="v_RoleAuth.cs">
+      <DependentUpon>DbMonitorModel.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
