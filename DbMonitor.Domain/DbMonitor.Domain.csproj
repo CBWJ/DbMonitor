@@ -96,6 +96,9 @@
     <Compile Include="RoleAuthority.cs">
       <DependentUpon>DbMonitorModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SessionConnection.cs">
+      <DependentUpon>DbMonitorModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="User.cs">
       <DependentUpon>DbMonitorModel.tt</DependentUpon>
     </Compile>

@@ -364,6 +364,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\SessionConnController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Extensions\HtmlHelperExtension.cs" />
     <Compile Include="Global.asax.cs">
@@ -399,6 +400,8 @@
     <Content Include="Views\User\AllocateRole.cshtml" />
     <Content Include="Views\Shared\_PartialMainButton.cshtml" />
     <Content Include="Views\Shared\_PartialToolbarButton.cshtml" />
+    <Content Include="Views\SessionConn\Index.cshtml" />
+    <Content Include="Views\SessionConn\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

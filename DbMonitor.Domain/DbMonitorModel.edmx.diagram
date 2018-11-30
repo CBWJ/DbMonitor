@@ -18,7 +18,8 @@
         <AssociationConnector Association="DbMonitorModel.FK_RoleAuthority_0_0" ManuallyRouted="false" />
         <AssociationConnector Association="DbMonitorModel.FK_UserRole_0_0" ManuallyRouted="false" />
         <AssociationConnector Association="DbMonitorModel.FK_UserRole_1_0" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="DbMonitorModel.v_RoleAuth" Width="1.5" PointX="5.375" PointY="2.25" />
+        <EntityTypeShape EntityType="DbMonitorModel.v_RoleAuth" Width="1.5" PointX="4.375" PointY="1.5" />
+        <EntityTypeShape EntityType="DbMonitorModel.SessionConnection" Width="1.5" PointX="6" PointY="1.375" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

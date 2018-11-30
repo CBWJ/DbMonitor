@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=E:\Project\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=F:\Workspace\DbMonitor\Code\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Authority">
           <Key>
             <PropertyRef Name="ID" />
@@ -71,6 +71,25 @@
           <Property Name="RID" Type="integer" />
           <Property Name="MAID" Type="integer" />
           <Property Name="IsEnabled" Type="integer" />
+        </EntityType>
+        <EntityType Name="SessionConnection">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SCName" Type="varchar" MaxLength="100" />
+          <Property Name="SCHostName" Type="varchar" MaxLength="50" />
+          <Property Name="SCPort" Type="integer" />
+          <Property Name="SCDBType" Type="varchar" MaxLength="30" />
+          <Property Name="SCServiceName" Type="varchar" MaxLength="30" />
+          <Property Name="SCRole" Type="varchar" MaxLength="50" />
+          <Property Name="SCSID" Type="varchar" MaxLength="30" />
+          <Property Name="SCUser" Type="varchar" MaxLength="30" />
+          <Property Name="SCPassword" Type="varchar" MaxLength="30" />
+          <Property Name="CreatorID" Type="integer" />
+          <Property Name="CreationTime" Type="varchar" MaxLength="30" />
+          <Property Name="EditorID" Type="integer" />
+          <Property Name="EditingTime" Type="varchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -183,6 +202,7 @@
           <EntitySet Name="ModuleAuthority" EntityType="Self.ModuleAuthority" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" store:Type="Tables" />
           <EntitySet Name="RoleAuthority" EntityType="Self.RoleAuthority" store:Type="Tables" />
+          <EntitySet Name="SessionConnection" EntityType="Self.SessionConnection" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" store:Type="Tables" />
           <EntitySet Name="UserRole" EntityType="Self.UserRole" store:Type="Tables" />
           <EntitySet Name="v_RoleAuth" EntityType="Self.v_RoleAuth" store:Type="Views">
@@ -422,6 +442,7 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
             <End Role="UserRole" EntitySet="UserRole" />
           </AssociationSet>
           <EntitySet Name="v_RoleAuth" EntityType="DbMonitorModel.v_RoleAuth" />
+          <EntitySet Name="SessionConnection" EntityType="DbMonitorModel.SessionConnection" />
         </EntityContainer>
         <EntityType Name="v_RoleAuth">
           <Key>
@@ -430,6 +451,25 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <Property Name="MAID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="AName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SessionConnection">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SCName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SCHostName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SCPort" Type="Int64" />
+          <Property Name="SCDBType" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="SCServiceName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="SCRole" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SCSID" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="SCUser" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="SCPassword" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CreatorID" Type="Int64" />
+          <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="EditorID" Type="Int64" />
+          <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -540,6 +580,26 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
                 <ScalarProperty Name="AName" ColumnName="AName" />
                 <ScalarProperty Name="MName" ColumnName="MName" />
                 <ScalarProperty Name="MAID" ColumnName="MAID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SessionConnection">
+            <EntityTypeMapping TypeName="DbMonitorModel.SessionConnection">
+              <MappingFragment StoreEntitySet="SessionConnection">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="SCPassword" ColumnName="SCPassword" />
+                <ScalarProperty Name="SCUser" ColumnName="SCUser" />
+                <ScalarProperty Name="SCSID" ColumnName="SCSID" />
+                <ScalarProperty Name="SCRole" ColumnName="SCRole" />
+                <ScalarProperty Name="SCServiceName" ColumnName="SCServiceName" />
+                <ScalarProperty Name="SCDBType" ColumnName="SCDBType" />
+                <ScalarProperty Name="SCPort" ColumnName="SCPort" />
+                <ScalarProperty Name="SCHostName" ColumnName="SCHostName" />
+                <ScalarProperty Name="SCName" ColumnName="SCName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

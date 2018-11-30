@@ -1,0 +1,92 @@
+﻿@model DbMonitor.Domain.SessionConnection
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+}
+
+<input type="hidden" id="action" value="@Url.Action(ViewBag.Action, "SessionConn")" />
+<div class="layui-form-item">
+    <label class="layui-form-label">数据库类型</label>
+    <div class="layui-input-block">
+        <input type="radio" name="SCDBType" value="ORACLE" title="Oracle" lay-filter="dbType" @(Model.SCDBType == "ORACLE" ? "Checked" : "")>
+        <input type="radio" name="SCDBType" value="DM" title="达梦" lay-filter="dbType" @(Model.SCDBType == "DM" ? "Checked" : "")>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">连接名</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.SCName, new { lay_verify = "required", placeholder = "请输入连接名", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">主机名</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.SCHostName, new { lay_verify = "required", placeholder = "请输入主机名", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">端口</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.SCPort, new { lay_verify = "required", placeholder = "请输入端口", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">服务名</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.SCServiceName, new { lay_verify = "required", placeholder = "请输入服务名", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">角色</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.SCRole, new { lay_verify = "required", placeholder = "请输入角色", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">SID</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.SCSID, new { lay_verify = "required", placeholder = "请输入SID", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">用户名</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.SCUser, new { lay_verify = "required", placeholder = "请输入用户名", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">密码</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.SCPassword, new { lay_verify = "required", placeholder = "请输入密码", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<script>
+    function setForm(form) {
+        form.on('radio(dbType)', function (data) {
+            console.log(data.elem); //得到radio原始DOM对象
+            console.log(data.value); //被点击的radio的value值
+            dbTypeSel(data.value);
+        });
+        //类型选择
+        function dbTypeSel(type) {
+            var arrOracle = ["SCServiceName", "SCRole", "SCSID"];
+            for (var i = 0; i < arrOracle.length; ++i) {
+                var $input = $(".layui-input-inline input[name=" + arrOracle[i] + "]");
+                var $port = $(".layui-input-inline input[name=SCPort]");
+                if (type == "ORACLE") {
+                    $input.removeAttr("disabled");
+                    $input.attr("lay-verify", "required");
+                    var placeholder = $input.attr("placeholder");
+                    if (placeholder == "不可用")
+                        $input.attr("placeholder", $input[0].backup);
+                    $port.val(1521);
+                }
+                else {
+                    if ($input[0].backup == undefined) {
+                        var ph = $input.attr("placeholder");
+                        $input[0].backup = ph;
+                    }
+                    $input.attr("disabled", "");
+                    $input.removeAttr("lay-verify");
+                    $input.val("");
+                    $input.attr("placeholder", "不可用");
+                    $port.val(5236);
+                }
+            }
+        }
+        dbTypeSel('@Model.SCDBType');
+    }
+</script>
