@@ -191,11 +191,13 @@ namespace DbMonitor.WebUI.Controllers
         /// </summary>
         protected void SetModuleAuthority()
         {
-            var controller = RouteData.Values["controller"];
-            var action = RouteData.Values["action"];
-            string url = string.Format("{0}/{1}", controller, action);
+            //var controller = RouteData.Values["controller"];
+            //var action = RouteData.Values["action"];
+            var rawUrl = Request.RawUrl;
+            //string url = string.Format("{0}/{1}", controller, action);
+            string url = rawUrl.Substring(1).ToUpper();
             long mId = (from m in db.Module
-                        where m.MUrl == url
+                        where m.MUrl.ToUpper() == url
                         select m.ID).FirstOrDefault();
             List<Authority> auths = null;
             if (LoginUser.UUserType < 2)

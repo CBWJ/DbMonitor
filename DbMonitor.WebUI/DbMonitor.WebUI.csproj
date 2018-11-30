@@ -363,6 +363,8 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="Controllers\Oracle\AuditRecordController.cs" />
+    <Compile Include="Controllers\Oracle\OrAuditRecordController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SessionConnController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -372,6 +374,7 @@
     </Compile>
     <Compile Include="Infrastructure\Abstract\IAuthProvider.cs" />
     <Compile Include="Infrastructure\Concrete\FormsAuthProvider.cs" />
+    <Compile Include="Infrastructure\Concrete\ViewEngineEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -402,6 +405,8 @@
     <Content Include="Views\Shared\_PartialToolbarButton.cshtml" />
     <Content Include="Views\SessionConn\Index.cshtml" />
     <Content Include="Views\SessionConn\Create.cshtml" />
+    <Content Include="Views\Oracle\AuditRecord\Index.cshtml" />
+    <Content Include="Views\OrAuditRecord\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -418,6 +423,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DbMonitor.DBAccess\DbMonitor.DBAccess.csproj">
+      <Project>{5374310f-bb8e-42af-af0e-f29abc72043d}</Project>
+      <Name>DbMonitor.DBAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DbMonitor.Domain\DbMonitor.Domain.csproj">
       <Project>{dcd1801b-37ca-4b49-933b-ea76deb8167e}</Project>
       <Name>DbMonitor.Domain</Name>

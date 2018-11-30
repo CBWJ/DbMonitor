@@ -13,6 +13,13 @@ namespace DbMonitor.WebUI
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            //RegisterView();
+        }
+
+        private void RegisterView()
+        {
+            ViewEngines.Engines.Clear();//移除默认视图配置
+            ViewEngines.Engines.Add(new Infrastructure.Concrete.ViewEngineEx());
         }
     }
 }
