@@ -1,5 +1,4 @@
 ﻿using DbMonitor.DBAccess.Concrete;
-using DbMonitor.WebUI.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,9 +10,9 @@ using System.Web.Mvc;
 
 namespace DbMonitor.WebUI.Controllers.Oracle
 {
-    public class OrAuditRecordController : BaseController
+    public class OrAuditStasticsController : BaseController
     {
-        // GET: OrAuditRecord
+        // GET: OrAuditStastics
         public ActionResult Index(long id)
         {
             ViewBag.SCID = id;
@@ -27,27 +26,25 @@ namespace DbMonitor.WebUI.Controllers.Oracle
 
             try
             {
-                StringBuilder sbCount = new StringBuilder();
                 StringBuilder sbSql = new StringBuilder();
-                string tv = "DBA_COMMON_AUDIT_TRAIL";
-                sbCount.AppendFormat("SELECT COUNT(1) FROM {0}", tv);
-                sbSql.AppendFormat("SELECT * FROM (SELECT ROWNUM AS ROWNO, t.* FROM {0} t WHERE ", tv);
-                //筛选条件
-                if (!string.IsNullOrWhiteSpace(username))
-                {
-                    sbSql.AppendFormat("DB_USER LIKE '%{0}%' AND ", username.ToUpper());
-                    sbCount.AddCondition(string.Format("DB_USER LIKE '%{0}%'", username.ToUpper()));
-                }
-                sbSql.AppendFormat("ROWNUM <= {0}) table_alias WHERE table_alias.ROWNO > {1}",
-                    page * limit, (page - 1) * limit);
+                sbSql.AppendFormat(@"select 'Statement' ITEM, count(1) ALL_COUNT,count(1) ENABLE_COUNT,0 DISABLE_COUNT from DBA_STMT_AUDIT_OPTS
+                                    UNION ALL
+                                    select 'Object' Item, count(1) ALL_COUNT,count(1) ENABLE_COUNT,0 DISABLE_COUNT from DBA_OBJ_AUDIT_OPTS
+                                    UNION ALL
+                                    select 'Privilege' Item, count(1) ALL_COUNT,count(1) ENABLE_COUNT,0 DISABLE_COUNT from DBA_PRIV_AUDIT_OPTS
+                                    UNION ALL
+                                    Select * from 
+                                    (select 'FGA' Item, count(1) ALL_COUNT from DBA_AUDIT_POLICIES
+                                    ),
+                                    (select COUNT(1) ENABLE_COUNT from DBA_AUDIT_POLICIES WHERE ENABLED = 'YES'),
+                                    (select COUNT(1) DISABLE_COUNT from DBA_AUDIT_POLICIES WHERE ENABLED = 'NO')");                
 
-                int count = 0;
+                int count = 4;
                 DataTable dt = null;
                 //string connStr = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORCL)));Persist Security Info=True;User ID=sys;Password=sys;DBA Privilege=SYSDBA;";
                 string connStr = GetSessionConnStr(scId);
                 using (OracleDAL dal = new OracleDAL(connStr))
                 {
-                    count = Convert.ToInt32(dal.ExecuteScalar(sbCount.ToString()));
                     dt = dal.ExecuteQuery(sbSql.ToString());
                 }
                 ret.Data = JsonConvert.SerializeObject(new

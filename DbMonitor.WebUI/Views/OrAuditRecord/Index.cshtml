@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_LayoutList.cshtml";
 }
 
+<input type="hidden" id="scId", name="scId" value="@ViewBag.SCID"/>
 <blockquote class="layui-elem-quote quoteBox">
 
     <div class="layui-inline">
@@ -35,10 +36,23 @@
                   , { field: 'SQL_TEXT', title: '具体SQL', sort: true }
                   , { field: 'EXTENDED_TIMESTAMP', title: '发生时间', sort: true }
                 ]],
-        dataInterface: "@Url.Action("List", "AuditRecord")"
+        dataInterface: "@Url.Action("List", "OrAuditRecord")",
+        where: { scId: '@ViewBag.SCID' }
     };
     window.dataOperation = {
         moreAcive: {
+            search: function (table, layer) {
+                table.reload(tableConfig.tableID,//ID
+                    {
+                        where: { //设定异步数据接口的额外参数，任意设
+                            username: $("#username").val(),
+                            scId: $("#scId").val()
+                        },
+                        page: {
+                            curr: 1
+                        }
+                    });
+            }
         },
         createConfig: {
         },

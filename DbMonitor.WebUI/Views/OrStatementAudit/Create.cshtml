@@ -1,0 +1,49 @@
+﻿@model long
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+    var stmt = (List<string>)ViewBag.STMT;
+    var users = (List<string>)ViewBag.User;
+}
+
+<input type="hidden" id="scId" , name="scId" value="@Model" />
+<div class="layui-form-item">
+    <label class="layui-form-label">语句</label>
+    <div class="layui-input-inline">
+        <select name="stmt" lay-verify="required" width="300px" lay-search>
+            <option value=""></option>
+            @foreach (var s in stmt)
+            {
+                <option value="@s">@s</option>
+            }            
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">用户</label>
+    <div class="layui-input-inline">
+        <select name="user" lay-verify="required" lay-search>
+            <option value=""></option>
+            <option value="ALL">ALL</option>
+            @foreach (var u in users)
+            {
+                <option value="@u">@u</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">方式</label>
+    <div class="layui-input-block">
+        <input type="radio" name="way" value="session" title="by session" checked>
+        <input type="radio" name="way" value="access" title="by access">
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">结果</label>
+    <div class="layui-input-block">
+        <input type="radio" name="result" value="ALL" title="ALL" checked>
+        <input type="radio" name="result" value="successful" title="successful">
+        <input type="radio" name="result" value="not successful" title="not successful">
+    </div>
+</div>

@@ -1,0 +1,50 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutList.cshtml";
+}
+
+<input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
+<blockquote class="layui-elem-quote quoteBox">
+
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="username" placeholder="请输入用户名检索">
+        </div>
+    </div>
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialMainButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</blockquote>
+<table id="datatable" lay-filter="table"></table>
+<script type="text/html" id="barDemo">
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialToolbarButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</script>
+<script>
+    //console.log("页面数据");
+    window.tableConfig = {
+        elemSelector: "#datatable",
+        tableID: "dt",
+        colConfig: [[{ type: 'checkbox', fixed: 'left' }
+                , { field: 'ITEM', title: '语句类型', sort: true }
+                  , { field: 'ALL_COUNT', title: '总计', sort: true }
+                  , { field: 'ENABLE_COUNT', title: '已生效', sort: true }
+                  , { field: 'DISABLE_COUNT', title: '未生效', sort: true }
+                ]],
+        dataInterface: "@Url.Action("List", "OrAuditStastics")",
+        where: { scId: '@ViewBag.SCID' }
+    };
+    window.dataOperation = {
+        moreAcive: {
+        },
+        createConfig: {
+        },
+        deleteConfig: {
+        },
+        editConfig: {
+        }
+    };
+</script>
+

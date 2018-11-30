@@ -1,0 +1,103 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutList.cshtml";
+}
+
+<input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
+<blockquote class="layui-elem-quote quoteBox">
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="user" placeholder="请输入用户名">
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="obj" placeholder="请输入对象名">
+        </div>
+    </div>
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialMainButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</blockquote>
+<table id="datatable" lay-filter="table"></table>
+<script type="text/html" id="barDemo">
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialToolbarButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</script>
+<script>
+    //console.log("页面数据");
+    window.tableConfig = {
+        elemSelector: "#datatable",
+        tableID: "dt",
+        colConfig: [[{ type: 'checkbox', fixed: 'left' }
+                  , { field: 'OWNER', title: '用户', sort: true }
+                  , { field: 'OBJECT_NAME', title: '对象名', sort: true }
+                  , { field: 'OBJECT_TYPE', title: '对象类型', sort: true }
+                  , { field: 'ALT', title: 'ALTER ', sort: true }
+                  , { field: 'AUD', title: 'AUDIT ', sort: true }
+                  , { field: 'COM', title: 'COMMENT ', sort: true }
+                  , { field: 'DEL', title: 'DELETE ', sort: true }
+                  , { field: 'GRA', title: 'GRANT ', sort: true }
+                  , { field: 'IND', title: 'INDEX ', sort: true }
+                  , { field: 'INS', title: 'INSERT ', sort: true }
+                  , { field: 'LOC', title: 'LOCK ', sort: true }
+                  , { field: 'REN', title: 'RENAME ', sort: true }
+                  , { field: 'SEL', title: 'SELECT ', sort: true }
+                  , { field: 'UPD', title: 'UPDATE ', sort: true }
+                  //, { field: 'REF', title: 'obsolete ', sort: true }
+                  , { field: 'EXE', title: 'EXECUTE ', sort: true }
+                  , { field: 'CRE', title: 'CREATE ', sort: true }
+                  , { field: 'REA', title: 'READ ', sort: true }
+                  , { field: 'WRI', title: 'WRITE ', sort: true }
+                  , { field: 'FBK', title: 'FLASHBACK ', sort: true }
+                  , { fixed: 'right', width: 80, align: 'center', toolbar: '#barDemo' }//绑定列工具条
+                ]],
+        dataInterface: "@Url.Action("List", "OrObjectAudit")",
+        where: { scId: '@ViewBag.SCID' }
+    };
+    window.dataOperation = {
+        moreAcive: {
+            search: function (table, layer) {
+                table.reload(tableConfig.tableID,//ID
+                    {
+                        where: { //设定异步数据接口的额外参数，任意设
+                            user: $("#user").val(),
+                            obj: $("#obj").val()
+                        },
+                        page: {
+                            curr: 1
+                        }
+                    });
+            }
+        },
+        moreTBActive: {
+            del: function (layer, obj) {
+                layer.confirm('真的删除该审计吗？', { icon: 3, title: '提示' }, function (index) {
+                    //向服务端发送删除指令
+                    var url, postData = {};
+                    url = "@Url.Action("Delete", "OrObjectAudit")";
+                    $.extend(postData, obj.data, { scId: '@ViewBag.SCID' });
+                    layer.close(index);
+                    $.post(url, postData,
+                            function (res) {
+                                var objRes = JSON.parse(res);
+                                if (objRes.status == 0) {
+                                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                } else {
+                                    layer.alert(objRes.message, { icon: 5 });
+                                }
+                            }, "json");
+                });
+            }
+        },
+        createConfig: {
+            title: "新建权限审计",
+            url: "@Url.Action("Create", "OrObjectAudit")?scId=@ViewBag.SCID"
+        },
+        deleteConfig: {
+        },
+        editConfig: {
+        }
+    };
+</script>
+

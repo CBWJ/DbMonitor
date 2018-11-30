@@ -56,7 +56,7 @@ namespace DbMonitor.WebUI.Controllers
             long seed = 100000;
             if(scORCL.Count > 0)
             {
-                //大菜单
+                //一级菜单
                 var mList = new Module
                 {
                     ID = seed++,
@@ -103,6 +103,7 @@ namespace DbMonitor.WebUI.Controllers
                     foreach (var m in orclMenu)
                     {
                         m.MParentID = mLink.ID;
+                        m.MUrl += "/" + orcl.ID;
                         modules.Add(m);
                     }
                     if(orclMenu.Count > 0)

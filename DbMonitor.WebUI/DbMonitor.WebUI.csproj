@@ -363,12 +363,16 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
-    <Compile Include="Controllers\Oracle\AuditRecordController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditRecordController.cs" />
+    <Compile Include="Controllers\Oracle\OrAuditStasticsController.cs" />
+    <Compile Include="Controllers\Oracle\OrObjectAuditController.cs" />
+    <Compile Include="Controllers\Oracle\OrPrivilegeAuditController.cs" />
+    <Compile Include="Controllers\Oracle\OrStatementAuditController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SessionConnController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Extensions\HtmlHelperExtension.cs" />
+    <Compile Include="Extensions\SqlBuildHelper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -407,6 +411,13 @@
     <Content Include="Views\SessionConn\Create.cshtml" />
     <Content Include="Views\Oracle\AuditRecord\Index.cshtml" />
     <Content Include="Views\OrAuditRecord\Index.cshtml" />
+    <Content Include="Views\OrAuditStastics\Index.cshtml" />
+    <Content Include="Views\OrStatementAudit\Index.cshtml" />
+    <Content Include="Views\OrStatementAudit\Create.cshtml" />
+    <Content Include="Views\OrPrivilegeAudit\Index.cshtml" />
+    <Content Include="Views\OrPrivilegeAudit\Create.cshtml" />
+    <Content Include="Views\OrObjectAudit\Index.cshtml" />
+    <Content Include="Views\OrObjectAudit\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -417,6 +428,7 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\StatementAudit\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

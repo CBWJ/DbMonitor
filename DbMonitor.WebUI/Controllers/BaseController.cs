@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using DbMonitor.Domain;
 using System.Web.Security;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace DbMonitor.WebUI.Controllers
 {
@@ -191,13 +192,14 @@ namespace DbMonitor.WebUI.Controllers
         /// </summary>
         protected void SetModuleAuthority()
         {
-            //var controller = RouteData.Values["controller"];
-            //var action = RouteData.Values["action"];
-            var rawUrl = Request.RawUrl;
-            //string url = string.Format("{0}/{1}", controller, action);
-            string url = rawUrl.Substring(1).ToUpper();
+            //var rawUrl = Request.RawUrl;
+            //string url = rawUrl.Substring(1).ToUpper();
+            var controller = RouteData.Values["controller"];
+            var action = RouteData.Values["action"];
+            string url = string.Format("{0}/{1}", controller, action);
+
             long mId = (from m in db.Module
-                        where m.MUrl.ToUpper() == url
+                        where m.MUrl.ToUpper() == url.ToUpper()
                         select m.ID).FirstOrDefault();
             List<Authority> auths = null;
             if (LoginUser.UUserType < 2)
@@ -224,5 +226,30 @@ namespace DbMonitor.WebUI.Controllers
             ViewBag.Authority = auths;
         }
         
+        /// <summary>
+        /// 获取每个会话的字符串
+        /// </summary>
+        /// <param name="scId"></param>
+        /// <returns></returns>
+        protected string GetSessionConnStr(long scId)
+        {
+            StringBuilder sbConn = new StringBuilder();
+            var sc = db.SessionConnection.Find(scId);
+            if(sc != null)
+            {                
+                if(sc.SCDBType == "ORACLE")
+                {
+                    sbConn.AppendFormat("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1}))(CONNECT_DATA=(SERVICE_NAME={2})));",
+                        sc.SCHostName, sc.SCPort, sc.SCServiceName.ToUpper());
+                    sbConn.AppendFormat("Persist Security Info=True;User ID={0};Password={1};",
+                        sc.SCUser, sc.SCPassword);
+                    if(sc.SCRole.ToUpper() == "SYSDBA")
+                    {
+                        sbConn.Append("DBA Privilege=SYSDBA;");
+                    }
+                }
+            }
+            return sbConn.ToString();
+        }
     }
 }
