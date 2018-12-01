@@ -196,6 +196,7 @@ namespace DbMonitor.WebUI.Controllers
             //string url = rawUrl.Substring(1).ToUpper();
             var controller = RouteData.Values["controller"];
             var action = RouteData.Values["action"];
+            ViewBag.Controller = controller;
             string url = string.Format("{0}/{1}", controller, action);
 
             long mId = (from m in db.Module
@@ -247,6 +248,11 @@ namespace DbMonitor.WebUI.Controllers
                     {
                         sbConn.Append("DBA Privilege=SYSDBA;");
                     }
+                }
+                else if(sc.SCDBType == "DM")
+                {
+                    sbConn.AppendFormat("Server={0}:{1};User Id={2};PWD={3}",
+                        sc.SCHostName, sc.SCPort, sc.SCUser, sc.SCPassword);
                 }
             }
             return sbConn.ToString();
