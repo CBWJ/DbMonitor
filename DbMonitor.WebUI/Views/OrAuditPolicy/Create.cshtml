@@ -1,0 +1,83 @@
+﻿@model long
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+    var users = (List<string>)ViewBag.User;
+}
+
+<input type="hidden" id="scId" , name="scId" value="@Model" />
+<div class="layui-form-item">
+    <label class="layui-form-label">策略名</label>
+    <div class="layui-input-inline">
+        <input type="text" name="policyname" required lay-verify="required" placeholder="请输入策略名" autocomplete="off" class="layui-input">
+    </div>
+    <label class="layui-form-label">用户</label>
+    <div class="layui-input-inline">
+        <select id="user" name="user" lay-verify="required" lay-search lay-filter="user">
+            <option value=""></option>
+            @foreach (var u in users)
+            {
+                <option value="@u">@u</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">对象</label>
+    <div class="layui-input-inline">
+        <select id="obj" name="obj" lay-verify="required" lay-search>
+            <option value=""></option>
+        </select>
+    </div>
+    <label class="layui-form-label">列</label>
+    <div class="layui-input-inline">
+        <select id="col" name="col" lay-verify="required" lay-search>
+            <option value=""></option>
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">条件</label>
+    <div class="layui-input-block">
+        <input type="text" name="condition" required lay-verify="required" placeholder="请输入条件" autocomplete="off" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">审计语句</label>
+    <div class="layui-input-block">
+        <input type="checkbox" name="sel" title="SELECT">
+        <input type="checkbox" name="ins" title="INSERT">
+        <input type="checkbox" name="upd" title="UPDATE">
+        <input type="checkbox" name="del" title="DELETE">
+    </div>
+</div>
+<script>
+    function setForm(form) {
+        form.on('select(user)', function (data) {
+            //console.log(data);
+            //data.elem,DOM元素
+            var user = $("#user").find("option:selected").val();
+            selectRefresh(form, $("#obj"),
+                "@Url.Action("GetObjectName", "OrAuditPolicy")",
+                {scId:@Model, user: user})
+        });
+    }
+    function selectRefresh(form, $sel, url, postData){
+        $.post(url, postData,
+            function (res) {
+                var objRes = JSON.parse(res);
+                if(objRes.status == 0){
+                    $sel.html('');
+                    //必须加空项，不然不验证
+                    var op = $("<option>").val("").text("");
+                    $sel.append(op);
+                    $.each(objRes.data ,function(index, item){
+                        op = $("<option>").val(item).text(item);
+                        $sel.append(op);
+                    });
+                    form.render('select');
+                    $sel.get(0).selectedIndex=0;
+                }
+            },"json")
+    }
+</script>

@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_LayoutEdit.cshtml";
     var stmt = (List<string>)ViewBag.STMT;
     var users = (List<string>)ViewBag.User;
+    var objects = (List<string>)ViewBag.Object;
 }
 
 <input type="hidden" id="scId" , name="scId" value="@Model" />
@@ -22,7 +23,10 @@
     <div class="layui-input-inline">
         <select name="objtype" id="objtype" lay-verify="required" lay-search lay-filter="objtype">
             <option value=""></option>
-            <option value="TABLE">表格</option>
+            @foreach (var u in objects)
+            {
+                <option value="@u">@u</option>
+            }
         </select>
     </div>
 </div>

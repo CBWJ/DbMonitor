@@ -11,7 +11,7 @@ using DbMonitor.WebUI.Extensions;
 
 namespace DbMonitor.WebUI.Controllers.Oracle
 {
-    public class OrObjectAuditController : BaseController
+    public class OrAuditPolicyController : BaseController
     {
         // GET: OrStatementAudit
         public ActionResult Index(long id)
@@ -21,7 +21,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             return View();
         }
 
-        public ActionResult List(long scId, int page = 1, int limit = 20, string user = "", string obj = "")
+        public ActionResult List(long scId, int page = 1, int limit = 20, string user = "", string obj = "", string policy="")
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -30,19 +30,24 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             {
                 StringBuilder sbCount = new StringBuilder();
                 StringBuilder sbSql = new StringBuilder();
-                string tv = "DBA_OBJ_AUDIT_OPTS";
+                string tv = "DBA_AUDIT_POLICIES";
                 sbCount.AppendFormat("SELECT COUNT(1) FROM {0} ", tv);
                 sbSql.AppendFormat("SELECT * FROM (SELECT ROWNUM AS ROWNO, t.* FROM {0} t WHERE ", tv);
                 //筛选条件
                 if (!string.IsNullOrWhiteSpace(user))
                 {
-                    sbSql.AppendFormat("OWNER LIKE '%{0}%' AND ", user.ToUpper());
-                    sbCount.AddCondition(string.Format("OWNER LIKE '%{0}%'", user.ToUpper()));
+                    sbSql.AppendFormat("OBJECT_SCHEMA LIKE '%{0}%' AND ", user.ToUpper());
+                    sbCount.AddCondition(string.Format("OBJECT_SCHEMA LIKE '%{0}%'", user.ToUpper()));
                 }
                 if (!string.IsNullOrWhiteSpace(obj))
                 {
                     sbSql.AppendFormat("OBJECT_NAME LIKE '%{0}%' AND ", obj.ToUpper());
                     sbCount.AddCondition(string.Format("OBJECT_NAME LIKE '%{0}%'", obj.ToUpper()));
+                }
+                if (!string.IsNullOrWhiteSpace(policy))
+                {
+                    sbSql.AppendFormat("POLICY_NAME LIKE '%{0}%' AND ", policy.ToUpper());
+                    sbCount.AddCondition(string.Format("POLICY_NAME LIKE '%{0}%'", policy.ToUpper()));
                 }
                 sbSql.AppendFormat("ROWNUM <= {0}) table_alias WHERE table_alias.ROWNO > {1}",
                     page * limit, (page - 1) * limit);
@@ -78,10 +83,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         }
 
         public ActionResult Create(long scId)
-        {
-            //语句
-            string[] arrStatement = { "ALTER", "AUDIT", "COMMENT", "DELETE", "EXECUTE", "FLASHBACK", "GRANT", "INDEX", "INSERT", "LOCK", "READ", "RENAME", "SELECT", "UPDATE" };
-            ViewBag.STMT = arrStatement.OrderBy(s => s).ToList();
+        {            
             //用户
             using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
             {
@@ -96,22 +98,11 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                     users.Add(u);
                 }
                 ViewBag.User = users.OrderBy(u => u).ToList();
-
-                sbSql.Clear();
-                sbSql.Append("select object_type from dba_objects group by object_type");
-                dt = dal.ExecuteQuery(sbSql.ToString());
-                List<string> objects = new List<string>();
-                foreach (DataRow row in dt.Rows)
-                {
-                    var u = row.ItemArray[0].ToString();
-                    objects.Add(u);
-                }
-                ViewBag.Object = objects.OrderBy(u => u).ToList();
             }
             return View(scId);
         }
         [HttpPost]
-        public ActionResult Create(long scId, string stmt, string user, string objtype,string objname, string way, string result)
+        public ActionResult Create(long scId, string stmt, string user, string objtype, string objname, string way, string result)
         {
             JsonResult ret = new JsonResult();
             try
@@ -146,7 +137,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         }
 
         [HttpPost]
-        public ActionResult Delete(long scId, string option, string user,  string objname)
+        public ActionResult Delete(long scId, string option, string user, string objname)
         {
             JsonResult ret = new JsonResult();
             try
@@ -176,7 +167,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         }
 
         [HttpPost]
-        public ActionResult GetObjectName(long scId, string user, string objtype)
+        public ActionResult GetObjectName(long scId, string user, string objtype = "TABLE")
         {
             JsonResult ret = new JsonResult();
             try
@@ -189,7 +180,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
                 {
                     DataTable dt = dal.ExecuteQuery(sbSql.ToString());
-                    
+
                     foreach (DataRow row in dt.Rows)
                     {
                         var u = row.ItemArray[0].ToString();

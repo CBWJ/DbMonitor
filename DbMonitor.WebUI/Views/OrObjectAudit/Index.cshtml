@@ -24,6 +24,15 @@
         Html.RenderPartial("~/Views/Shared/_PartialToolbarButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
     }
 </script>
+<div id="delSel" class="layui-form layui-form-pane" style="display:none;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">删除项</label>
+        <div id="optionlist" class="layui-input-block">
+            <input type="radio" name="sex" value="男" title="男">
+            <input type="radio" name="sex" value="女" title="女" checked>
+        </div>
+    </div>
+</div>
 <script>
     //console.log("页面数据");
     window.tableConfig = {
@@ -72,7 +81,7 @@
         },
         moreTBActive: {
             del: function (layer, obj) {
-                layer.confirm('真的删除该审计吗？', { icon: 3, title: '提示' }, function (index) {
+                @*layer.confirm('真的删除该审计吗？', { icon: 3, title: '提示' }, function (index) {
                     //向服务端发送删除指令
                     var url, postData = {};
                     url = "@Url.Action("Delete", "OrObjectAudit")";
@@ -87,6 +96,54 @@
                                     layer.alert(objRes.message, { icon: 5 });
                                 }
                             }, "json");
+                });*@
+                var map = {
+                    ALT: 'ALTER', AUD: 'AUDIT', COM: 'COMMENT', DEL: 'DELETE', GRA: 'GRANT',
+                    IND: 'INDEX', INS: 'INSERT', LOC: 'LOCK', REN: 'RENAME', SEL: 'SELECT',
+                    UPD: 'UPDATE', EXE: 'EXECUTE', CRE: 'CREATE', REA: 'READ', WRI: 'WRITE', FBK: 'FLASHBACK'
+                };
+                var data = obj.data;
+                var $ol = $("#optionlist");
+                $ol.html("");
+                for (var p in data) {
+                    var v = data[p];
+                    if (typeof v == "string" && v.indexOf('/') > 0 && v != "-/-") {
+                        //console.log(v);
+                        var op = $('<input type="radio">').val(map[p]).attr("title", map[p]).attr("name", "stmtop");
+                        $ol.append(op);
+                    }
+                }
+                var selVal = "";
+                layui.use("form", function () {
+                    layui.form.render('radio');
+                    layui.form.on('radio', function (data) {
+                        selVal = data.value;
+                    })
+                });
+                layer.open({
+                    type: 1,
+                    content: $('#delSel'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    title: '取消审计项',
+                    area: ['500px', '300px'],
+                    btn: ['确定删除', '取消'],
+                    yes: function (index, layero) {
+                        if (selVal == "") {
+                            layer.alert("未选中", { icon: 5 });
+                            layer.close(index);
+                        } else {
+                            $.post('@Url.Action("Delete", "OrObjectAudit")',
+                                { scId: @ViewBag.SCID, user: data.OWNER, objname: data.OBJECT_NAME, option: selVal},
+                                function(res){
+                                    var objRes = JSON.parse(res);
+                                    if (objRes.status == 0) {
+                                        layer.close(index);
+                                        refreshList();
+                                    } else {
+                                        layer.alert(objRes.message, { icon: 5 });
+                                    }
+                                },"json");
+                        }
+                    }
                 });
             }
         },

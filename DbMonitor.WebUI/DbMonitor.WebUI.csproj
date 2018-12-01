@@ -363,6 +363,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="Controllers\Oracle\OrAuditPolicyController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditRecordController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditStasticsController.cs" />
     <Compile Include="Controllers\Oracle\OrObjectAuditController.cs" />
@@ -418,6 +419,8 @@
     <Content Include="Views\OrPrivilegeAudit\Create.cshtml" />
     <Content Include="Views\OrObjectAudit\Index.cshtml" />
     <Content Include="Views\OrObjectAudit\Create.cshtml" />
+    <Content Include="Views\OrAuditPolicy\Index.cshtml" />
+    <Content Include="Views\OrAuditPolicy\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
