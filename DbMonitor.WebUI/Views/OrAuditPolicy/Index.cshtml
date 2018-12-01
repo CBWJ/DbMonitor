@@ -27,15 +27,9 @@
         Html.RenderPartial("~/Views/Shared/_PartialToolbarButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
     }
 </script>
-<div id="delSel" class="layui-form layui-form-pane" style="display:none;">
-    <div class="layui-form-item">
-        <label class="layui-form-label">删除项</label>
-        <div id="optionlist" class="layui-input-block">
-            <input type="radio" name="sex" value="男" title="男">
-            <input type="radio" name="sex" value="女" title="女" checked>
-        </div>
-    </div>
-</div>
+<script type="text/html" id="checkboxTpl">
+    <input type="checkbox" name="enable" value="{{d.OBJECT_SCHEMA}},{{d.OBJECT_NAME}},{{d.POLICY_NAME}}" title="YES" lay-filter="enable" {{ d.ENABLED == 'YES' ? 'checked' : '' }}>
+</script>
 <script>
     //console.log("页面数据");
     window.tableConfig = {
@@ -47,7 +41,7 @@
                   , { field: 'POLICY_NAME', title: '策略名', sort: true }
                   , { field: 'POLICY_TEXT', title: '监控条件', sort: true }
                   , { field: 'POLICY_COLUMN', title: '检查列', sort: true }
-                  , { field: 'ENABLED', title: '启用', sort: true }
+                  , { field: 'ENABLED', title: '启用', templet: '#checkboxTpl', sort: true }
                   , { field: 'SEL', title: 'SELECT', sort: true }
                   , { field: 'INS', title: 'INSERT', sort: true }
                   , { field: 'UPD', title: 'UPDATE', sort: true }
@@ -57,7 +51,31 @@
                   , { fixed: 'right', width: 80, align: 'center', toolbar: '#barDemo' }//绑定列工具条
                 ]],
         dataInterface: "@Url.Action("List", "OrAuditPolicy")",
-        where: { scId: '@ViewBag.SCID' }
+        where: { scId: '@ViewBag.SCID' },
+        afterRender: function (table, layer, form) {
+            //监听锁定操作
+            form.on('checkbox(enable)', function (obj) {
+                //layer.tips( + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+                var arrD = this.value.split(',');
+                var url = "@Url.Action("EnablePolicy", "OrAuditPolicy")";
+                var postData = {
+                    user: arrD[0],
+                    objname: arrD[1],
+                    policy: arrD[2],
+                    scId: '@ViewBag.SCID',
+                    enable: obj.elem.checked
+                };
+                $.post(url, postData,
+                            function (res) {
+                                var objRes = JSON.parse(res);
+                                if (objRes.status == 0) {
+                                    layer.tips('设置成功', obj.othis, { tips: [2,"green"] });
+                                } else {
+                                    layer.alert(objRes.message, { icon: 5 });
+                                }
+                            }, "json");
+            });
+        }
     };
     window.dataOperation = {
         moreAcive: {
@@ -79,9 +97,15 @@
             del: function (layer, obj) {
                 layer.confirm('真的删除该审计吗？', { icon: 3, title: '提示' }, function (index) {
                     //向服务端发送删除指令
-                    var url, postData = {};
-                    url = "@Url.Action("Delete", "OrObjectAudit")";
-                    $.extend(postData, obj.data, { scId: '@ViewBag.SCID' });
+                    var data = obj.data;
+                    var url, postData = {
+                        user: data.OBJECT_SCHEMA,
+                        objname: data.OBJECT_NAME,
+                        policy: data.POLICY_NAME,
+                        scId: '@ViewBag.SCID'
+                    };
+                    url = "@Url.Action("Delete", "OrAuditPolicy")";
+                    //$.extend(postData, obj.data, { scId: '@ViewBag.SCID' });
                     layer.close(index);
                     $.post(url, postData,
                             function (res) {

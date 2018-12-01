@@ -8,6 +8,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using DbMonitor.WebUI.Extensions;
+using Oracle.ManagedDataAccess.Client;
 
 namespace DbMonitor.WebUI.Controllers.Oracle
 {
@@ -101,23 +102,56 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             }
             return View(scId);
         }
+        
         [HttpPost]
-        public ActionResult Create(long scId, string stmt, string user, string objtype, string objname, string way, string result)
+        public ActionResult Create(long scId, string policyname, string user, string obj, string col, string condition, string sel, string ins, string upd, string del)
         {
             JsonResult ret = new JsonResult();
             try
             {
-                //查询语句结尾不要逗号，否则报错:ORA-00911: 无效字符
-                StringBuilder sbSql = new StringBuilder();
-                sbSql.AppendFormat("audit {0} on {1}.{2} by {3}",
-                    stmt, user, objname, way);
-                if (result != "ALL")
+                List<OracleParameter> policyParams = new List<OracleParameter>();
+
+                //顺序不能乱
+                policyParams.Add(new OracleParameter("object_schema", user));
+                policyParams.Add(new OracleParameter("object_name", obj));
+                policyParams.Add(new OracleParameter("policy_name", policyname));
+                policyParams.Add(new OracleParameter("audit_condition", condition));
+                policyParams.Add(new OracleParameter("audit_column", col));
+
+                policyParams.Add(new OracleParameter("handler_schema", OracleDbType.Varchar2, "", ParameterDirection.Input));
+                policyParams.Add(new OracleParameter("handler_module", OracleDbType.Varchar2, "", ParameterDirection.Input));
+                /*policyParams.Add(new OracleParameter("enable", OracleDbType.Boolean, true, ParameterDirection.Input));
+                List<string> statement = new List<string>();
+
+                if (sel == "on")
                 {
-                    sbSql.AppendFormat(" whenever {0}", result);
+                    statement.Add("SELECT");
                 }
-                using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
+                if (ins == "on")
                 {
-                    dal.ExecuteNonQuery(sbSql.ToString());
+                    statement.Add("INSERT");
+                }
+                if (upd == "on")
+                {
+                    statement.Add("UPDATE");
+                }
+                if (del == "on")
+                {
+                    statement.Add("DELETE");
+                }
+                if (statement.Count > 0)
+                {
+                    policyParams.Add(new OracleParameter("statement_types", string.Join(",", statement.ToArray())));
+                }
+                else
+                {
+                    policyParams.Add(new OracleParameter("statement_types", OracleDbType.Varchar2, "NULL", ParameterDirection.Input));
+                }
+                */
+                var arrParam = policyParams.ToArray();
+                using (var dal = new OracleDAL(GetSessionConnStr(scId)))
+                {
+                    dal.ExecuteProcedureNonQuery("dbms_fga.add_policy", arrParam);
                 }
                 ret.Data = JsonConvert.SerializeObject(new
                 {
@@ -135,19 +169,21 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             }
             return ret;
         }
-
-        [HttpPost]
-        public ActionResult Delete(long scId, string option, string user, string objname)
+        public ActionResult EnablePolicy(long scId, string user, string objname, string policy, bool enable)
         {
             JsonResult ret = new JsonResult();
             try
             {
+                var proc = "dbms_fga.disable_policy";
+                if(enable)
+                    proc = "dbms_fga.enable_policy";
                 //查询语句结尾不要逗号，否则报错:ORA-00911: 无效字符
-                StringBuilder sbSql = new StringBuilder();
-                sbSql.AppendFormat("noaudit {0} on {1}.{2}", option, user, objname);
                 using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
                 {
-                    dal.ExecuteNonQuery(sbSql.ToString());
+                    dal.ExecuteProcedureNonQuery(proc,
+                    new OracleParameter("object_schema", user),
+                    new OracleParameter("object_name", objname),
+                    new OracleParameter("policy_name", policy));
                 }
                 ret.Data = JsonConvert.SerializeObject(new
                 {
@@ -165,7 +201,43 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             }
             return ret;
         }
-
+        [HttpPost]
+        public ActionResult Delete(long scId, string user, string objname,string policy)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                //查询语句结尾不要逗号，否则报错:ORA-00911: 无效字符
+                using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
+                {
+                    dal.ExecuteProcedureNonQuery("dbms_fga.drop_policy",
+                    new OracleParameter("object_schema", user),
+                    new OracleParameter("object_name", objname),
+                    new OracleParameter("policy_name", policy));
+                }
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
+                });
+            }
+            return ret;
+        }
+        /// <summary>
+        /// 获取对象名
+        /// </summary>
+        /// <param name="scId"></param>
+        /// <param name="user"></param>
+        /// <param name="objtype"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult GetObjectName(long scId, string user, string objtype = "TABLE")
         {
@@ -177,6 +249,50 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 StringBuilder sbSql = new StringBuilder();
                 sbSql.AppendFormat("select object_name from dba_objects where owner='{0}' and object_type = '{1}'",
                     user, objtype);
+                using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
+                {
+                    DataTable dt = dal.ExecuteQuery(sbSql.ToString());
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        var u = row.ItemArray[0].ToString();
+                        objs.Add(u);
+                    }
+                }
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    data = objs
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
+                });
+            }
+            return ret;
+        }
+        /// <summary>
+        /// 获取某个对象的所有列名
+        /// </summary>
+        /// <param name="scId"></param>
+        /// <param name="user"></param>
+        /// <param name="objname"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetColumnName(long scId, string user, string objname)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                List<string> objs = new List<string>();
+                //查询语句结尾不要逗号，否则报错:ORA-00911: 无效字符
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.AppendFormat("select column_name from dba_tab_columns where owner='{0}' and TABLE_NAME = '{1}'",
+                    user, objname);
                 using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
                 {
                     DataTable dt = dal.ExecuteQuery(sbSql.ToString());

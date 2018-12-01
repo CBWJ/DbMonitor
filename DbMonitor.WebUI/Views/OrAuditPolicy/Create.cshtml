@@ -25,7 +25,7 @@
 <div class="layui-form-item">
     <label class="layui-form-label">对象</label>
     <div class="layui-input-inline">
-        <select id="obj" name="obj" lay-verify="required" lay-search>
+        <select id="obj" name="obj" lay-verify="required" lay-search lay-filter="obj">
             <option value=""></option>
         </select>
     </div>
@@ -45,7 +45,7 @@
 <div class="layui-form-item">
     <label class="layui-form-label">审计语句</label>
     <div class="layui-input-block">
-        <input type="checkbox" name="sel" title="SELECT">
+        <input type="checkbox" name="sel" title="SELECT" checked>
         <input type="checkbox" name="ins" title="INSERT">
         <input type="checkbox" name="upd" title="UPDATE">
         <input type="checkbox" name="del" title="DELETE">
@@ -54,12 +54,20 @@
 <script>
     function setForm(form) {
         form.on('select(user)', function (data) {
-            //console.log(data);
             //data.elem,DOM元素
             var user = $("#user").find("option:selected").val();
             selectRefresh(form, $("#obj"),
                 "@Url.Action("GetObjectName", "OrAuditPolicy")",
                 {scId:@Model, user: user})
+        });
+
+        form.on('select(obj)', function (data) {
+            //data.elem,DOM元素
+            var user = $("#user").find("option:selected").val();
+            var obj = $("#obj").find("option:selected").val();
+            selectRefresh(form, $("#col"),
+                "@Url.Action("GetColumnName", "OrAuditPolicy")",
+                {scId:@Model, user: user, objname:obj})
         });
     }
     function selectRefresh(form, $sel, url, postData){

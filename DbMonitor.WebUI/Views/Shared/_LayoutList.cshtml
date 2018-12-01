@@ -35,10 +35,11 @@
             }
         };
         */
-        layui.use(['table', 'layer'], function () {
+        layui.use(['table', 'layer', 'form'], function () {
             console.log("layui.use");
             var table = layui.table;
             var layer = layui.layer;
+            var form = layui.form;
             //执行渲染
             table.render({
                 elem: tableConfig.elemSelector//指定原始表格元素选择器（推荐id选择器）
@@ -59,7 +60,10 @@
                     };
                 }
             });
-
+            //结束渲染，执行其他操作
+            if (typeof tableConfig.afterRender == "function") {
+                tableConfig.afterRender(table, layer, form);
+            }
             //顶部按钮事件
             actives = {
                 search: function (table, layer) {
