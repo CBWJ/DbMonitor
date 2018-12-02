@@ -120,13 +120,17 @@
 .leftmenu>ul>li>.submenu>li>.submenu{
     line-height: 16px;
 }
+.leftmenu>ul>li>.submenu>li>.submenu>li{
+    font-size: 14px;
+    line-height: 2;
+}
 .leftmenu>ul>li>.submenu>li>.submenu>li a{
     color: #757575;
     margin-left: 20px;
     padding-left: 22px;
     border-top-color: #E4E4E4;
     background-color: #FFF;
-    padding: 2px 0 4px 30px;
+    padding: 2px 0 4px 10px;
 }
 
 /*二级菜单左侧虚线*/

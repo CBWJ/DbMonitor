@@ -1,0 +1,46 @@
+﻿@model long?
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+    var users = (List<string>)ViewBag.User;
+    var allStatement = (List<string>)ViewBag.STMT;
+}
+
+<input type="hidden" id="scId" , name="scId" value="@Model" />
+<div class="layui-form-item">
+    <label class="layui-form-label">语句类型</label>
+    <div class="layui-input-block">
+        <select name="type" lay-verify="required" lay-search>
+            <option value=""></option>
+            @foreach (var s in allStatement)
+            {
+                <option value="@s">@s</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">选择用户</label>
+    <div class="layui-input-block">
+        <select name="username" lay-verify="required" lay-search>
+            <option value=""></option>
+            <option value="NULL">不限制</option>
+            @foreach (var s in users)
+            {
+                <option value="@s">@s</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">审计时机</label>
+    <div class="layui-input-block">
+        <input type="radio" name="whenever" value="ALL" title="ALL" checked>
+        <input type="radio" name="whenever" value="successful" title="successful">
+        <input type="radio" name="whenever" value="not successful" title="not successful">
+    </div>
+</div>
+<script>
+    function setForm(form) {
+    }
+</script>

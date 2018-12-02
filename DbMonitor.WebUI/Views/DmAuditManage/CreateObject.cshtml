@@ -3,52 +3,57 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_LayoutEdit.cshtml";
     var users = (List<string>)ViewBag.User;
+    var allStatement = (List<string>)ViewBag.STMT;
 }
 
 <input type="hidden" id="scId" , name="scId" value="@Model" />
 <div class="layui-form-item">
-    <label class="layui-form-label">策略名</label>
-    <div class="layui-input-inline">
-        <input type="text" name="policyname" required lay-verify="required" placeholder="请输入策略名" autocomplete="off" class="layui-input">
-    </div>
-    <label class="layui-form-label">用户</label>
-    <div class="layui-input-inline">
-        <select id="user" name="user" lay-verify="required" lay-search lay-filter="user">
+    <label class="layui-form-label">语句类型</label>
+    <div class="layui-input-block">
+        <select name="type" lay-verify="required" lay-search>
             <option value=""></option>
-            @foreach (var u in users)
+            @foreach (var s in allStatement)
             {
-                <option value="@u">@u</option>
+                <option value="@s">@s</option>
             }
         </select>
     </div>
 </div>
 <div class="layui-form-item">
-    <label class="layui-form-label">对象</label>
-    <div class="layui-input-inline">
-        <select id="obj" name="obj" lay-verify="required" lay-search lay-filter="obj">
+    <label class="layui-form-label">选择用户</label>
+    <div class="layui-input-block">
+        <select id="user" name="username" lay-verify="required" lay-search lay-filter="user">
             <option value=""></option>
+            <option value="NULL">不限制</option>
+            @foreach (var s in users)
+            {
+                <option value="@s">@s</option>
+            }
         </select>
     </div>
-    <label class="layui-form-label">列</label>
-    <div class="layui-input-inline">
-        <select id="col" name="col" lay-verify="required" lay-search>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">对象名</label>
+    <div class="layui-input-block">        
+        <select id="tvname" name="tvname" lay-verify="required" lay-search lay-filter="obj">
             <option value=""></option>
         </select>
     </div>
 </div>
 <div class="layui-form-item">
-    <label class="layui-form-label">条件</label>
+    <label class="layui-form-label">列名</label>
     <div class="layui-input-block">
-        <input type="text" name="condition" required lay-verify="required" placeholder="请输入条件" autocomplete="off" class="layui-input">
+        <select id="colname" name="colname" lay-search>
+            <option value=""></option>
+        </select>
     </div>
 </div>
 <div class="layui-form-item">
-    <label class="layui-form-label">审计语句</label>
+    <label class="layui-form-label">审计时机</label>
     <div class="layui-input-block">
-        <input type="checkbox" name="sel" title="SELECT" checked>
-        <input type="checkbox" name="ins" title="INSERT">
-        <input type="checkbox" name="upd" title="UPDATE">
-        <input type="checkbox" name="del" title="DELETE">
+        <input type="radio" name="whenever" value="ALL" title="ALL" checked>
+        <input type="radio" name="whenever" value="successful" title="successful">
+        <input type="radio" name="whenever" value="not successful" title="not successful">
     </div>
 </div>
 <script>
@@ -56,17 +61,16 @@
         form.on('select(user)', function (data) {
             //data.elem,DOM元素
             var user = $("#user").find("option:selected").val();
-            selectRefresh(form, $("#obj"),
-                "@Url.Action("GetObjectName", "OrAuditPolicy")",
+            selectRefresh(form, $("#tvname"),
+                "@Url.Action("GetObjectName", "DmAuditManage")",
                 {scId:@Model, user: user})
         });
-
         form.on('select(obj)', function (data) {
             //data.elem,DOM元素
             var user = $("#user").find("option:selected").val();
-            var obj = $("#obj").find("option:selected").val();
-            selectRefresh(form, $("#col"),
-                "@Url.Action("GetColumnName", "OrAuditPolicy")",
+            var obj = $("#tvname").find("option:selected").val();
+            selectRefresh(form, $("#colname"),
+                "@Url.Action("GetColumnName", "DmAuditManage")",
                 {scId:@Model, user: user, objname:obj})
         });
     }

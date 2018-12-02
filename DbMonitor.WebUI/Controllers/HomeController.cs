@@ -17,6 +17,19 @@ namespace DbMonitor.WebUI.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
+            List<Module> modules = GenerateMenuModules();
+            ViewBag.Menu = modules;
+            return View(LoginUser);
+        }
+
+        public ActionResult Menu()
+        {
+            List<Module> modules = GenerateMenuModules();
+            return View(modules);
+        }
+
+        private List<Module> GenerateMenuModules()
+        {
             //系统用户直接加载启用模块
             List<Module> modules = new List<Module>();
             switch (LoginUser.UUserType)
@@ -52,8 +65,7 @@ namespace DbMonitor.WebUI.Controllers
             //Oracle
             OracleMenu(ref modules);
             DmMenu(ref modules);
-            ViewBag.Menu = modules;
-            return View(LoginUser);
+            return modules;
         }
 
         private void OracleMenu(ref List<Module> modules)

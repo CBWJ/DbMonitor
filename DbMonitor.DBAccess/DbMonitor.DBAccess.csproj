@@ -52,6 +52,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Concrete\DmDAL.cs" />
     <Compile Include="Concrete\OracleDAL.cs" />
+    <Compile Include="Extensions\DmDALHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

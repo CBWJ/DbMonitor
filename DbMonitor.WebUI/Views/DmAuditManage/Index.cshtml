@@ -40,6 +40,7 @@
                     , { field: 'COLNAME', title: '列名', sort: true }
                     , { field: 'STYPE', title: '审计类型', sort: true }
                     , { field: 'SWHENEVER', title: '审计情况', sort: true }
+                    , { fixed: 'right', width: 80, align: 'center', toolbar: '#barDemo' }//绑定列工具条
                 ]],
         dataInterface: "@Url.Action("List", ViewBag.Controller)",
         where: { scId: '@ViewBag.SCID' }
@@ -59,6 +60,62 @@
                             curr: 1
                         }
                     });
+            },
+            newSTMT: function (table, layer) {
+                layer.open({
+                    type: 2,
+                    title: "创建语句审计",
+                    content: "@Url.Action("CreateStatement", ViewBag.Controller)/@ViewBag.SCID",
+                    scrollbar: false,
+                    area: ['700px', '500px'],
+                    resize: false,
+                    success: function (layero, index) {
+                    }
+                });
+            },
+            newObject: function (table, layer) {
+                layer.open({
+                    type: 2,
+                    title: "创建对象审计",
+                    content: "@Url.Action("CreateObject", ViewBag.Controller)/@ViewBag.SCID",
+                    scrollbar: false,
+                    area: ['700px', '500px'],
+                    resize: false,
+                    success: function (layero, index) {
+                    }
+                });
+            }
+        },
+        moreTBActive: {
+            del: function (layer, obj) {
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+                layer.confirm('真的删除该审计吗？', { icon: 3, title: '提示' }, function (index) {
+                    var url, postData;
+                    if (data.SLEVEL == "语句级") {
+                        url = "@Url.Action("DeleteStatement", ViewBag.Controller)";
+                        postData = {scId:@ViewBag.SCID, type: data.STYPE, username: data.USERNAME, whenever: data.SWHENEVER };
+                    }
+                    else {
+                        url = "@Url.Action("DeleteObject", ViewBag.Controller)";
+                        postData = {
+                            scId:@ViewBag.SCID,
+                            type: data.STYPE, username: data.USERNAME, whenever: data.SWHENEVER,
+                            tvname: data.OBJECTNAME, colname: data.COLNAME
+                        };
+                    }
+                    $.post(url, postData,
+                        function (res) {
+                            layer.close(index);
+                            var objRes = JSON.parse(res);
+                            if (objRes.status == 0) {
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            } else {
+                                layer.alert(objRes.message, { icon: 5 });
+                            }
+                        },"json");
+                });
             }
         },
         createConfig: {

@@ -20,7 +20,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             SetModuleAuthority();
             return View();
         }
-        public ActionResult List(long scId, int page = 1, int limit = 20, string username = "")
+        public ActionResult List(long scId, string user, string obj, string type, int page = 1, int limit = 20)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -33,10 +33,20 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 sbCount.AppendFormat("SELECT COUNT(1) FROM {0}", tv);
                 sbSql.AppendFormat("SELECT * FROM (SELECT ROWNUM AS ROWNO, t.* FROM {0} t WHERE ", tv);
                 //筛选条件
-                if (!string.IsNullOrWhiteSpace(username))
+                if (!string.IsNullOrWhiteSpace(user))
                 {
-                    sbSql.AppendFormat("DB_USER LIKE '%{0}%' AND ", username.ToUpper());
-                    sbCount.AddCondition(string.Format("DB_USER LIKE '%{0}%'", username.ToUpper()));
+                    sbSql.AppendFormat("DB_USER LIKE '%{0}%' AND ", user.ToUpper());
+                    sbCount.AddCondition(string.Format("DB_USER LIKE '%{0}%'", user.ToUpper()));
+                }
+                if (!string.IsNullOrWhiteSpace(obj))
+                {
+                    sbSql.AppendFormat("OBJECT_NAME LIKE '%{0}%' AND ", obj.ToUpper());
+                    sbCount.AddCondition(string.Format("OBJECT_NAME LIKE '%{0}%'", obj.ToUpper()));
+                }
+                if (!string.IsNullOrWhiteSpace(type))
+                {
+                    sbSql.AppendFormat("STATEMENT_TYPE LIKE '%{0}%' AND ", type.ToUpper());
+                    sbCount.AddCondition(string.Format("STATEMENT_TYPE LIKE '%{0}%'", type.ToUpper()));
                 }
                 sbSql.AppendFormat("ROWNUM <= {0}) table_alias WHERE table_alias.ROWNO > {1}",
                     page * limit, (page - 1) * limit);

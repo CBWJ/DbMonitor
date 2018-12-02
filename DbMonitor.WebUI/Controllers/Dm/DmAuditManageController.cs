@@ -1,4 +1,5 @@
 ﻿using DbMonitor.DBAccess.Concrete;
+using DbMonitor.DBAccess.Extensions;
 using DbMonitor.WebUI.Extensions;
 using Newtonsoft.Json;
 using System;
@@ -97,18 +98,18 @@ namespace DbMonitor.WebUI.Controllers.Dm
                 sbSql.Append(subTable);
                 if(!string.IsNullOrWhiteSpace(user))
                 {
-                    sbCount.AddCondition(string.Format("USERNAME LIKE '%{0}%", user.ToUpper()));
-                    sbSql.AddCondition(string.Format("USERNAME LIKE '%{0}%", user.ToUpper()));
+                    sbCount.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
+                    sbSql.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
                 }
                 if (!string.IsNullOrWhiteSpace(obj))
                 {
-                    sbCount.AddCondition(string.Format("OBJECTNAME LIKE '%{0}%", user.ToUpper()));
-                    sbSql.AddCondition(string.Format("OBJECTNAME LIKE '%{0}%", user.ToUpper()));
+                    sbCount.AddCondition(string.Format("OBJECTNAME LIKE '%{0}%'", obj.ToUpper()));
+                    sbSql.AddCondition(string.Format("OBJECTNAME LIKE '%{0}%'", obj.ToUpper()));
                 }
                 if (!string.IsNullOrWhiteSpace(type))
                 {
-                    sbCount.AddCondition(string.Format("STYPE LIKE '%{0}%", user.ToUpper()));
-                    sbSql.AddCondition(string.Format("STYPE LIKE '%{0}%", user.ToUpper()));
+                    sbCount.AddCondition(string.Format("STYPE LIKE '%{0}%'", type.ToUpper()));
+                    sbSql.AddCondition(string.Format("STYPE LIKE '%{0}%'", type.ToUpper()));
                 }
 
                 sbSql.AppendFormat(" LIMIT {0} OFFSET {1}",
@@ -155,6 +156,249 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     message = "发生异常：" + ex.Message,
                     total = 0,
                     data = ""
+                });
+            }
+            return ret;
+        }
+        /// <summary>
+        /// get的参数名必须是id,路由规则定了
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult CreateStatement(long id)
+        {
+            string[] arrStatement = {"ALL","USER","ROLE","TABLESPACE","SCHEMA","TABLE","VIEW","INDEX",
+                    "PROCEDURE","TRIGGER","SEQUENCE","CONTEXT","SYNONYM","GRANT",
+                    "REVOKE","AUDIT","NOAUDIT","INSERT TABLE","UPDATE TABLE",
+                    "DELETE TABLE","SELECT TABLE","EXECUTE","PROCEDURE","PACKAGE",
+                    "PACKAGE BODY","MAC POLICY","MAC LEVEL","MAC COMPARTMENT",
+                    "MAC GROUP","MAC LABEL","MAC USER","MAC TABLE","MAC SESSION",
+                    "CHECKPOINT","SAVEPOINT","EXPLAIN","NOT EXIST","DATABASE",
+                    "CONNECT","COMMIT","ROLLBACK","SET TRANSACTION"};
+            ViewBag.STMT = arrStatement.ToList();
+
+            using (var dal = new DmDAL(GetSessionConnStr(id)))
+            {
+                ViewBag.User = dal.GetAllUsers();
+            }
+            return View(id);
+        }
+        
+        [HttpPost]
+        public ActionResult CreateStatement(long scId, string type, string username, string whenever)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                using (var dal = new DmDAL(GetSessionConnStr(scId)))
+                {
+
+                    StringBuilder sbSql = new StringBuilder();
+                    //sbSql.Append("SP_AUDIT_STMT");
+                    //dal.ExecuteProcedureNonQuery(sbSql.ToString(),
+                    //    new DmParameter("TYPE", type),
+                    //    new DmParameter("USERNAME", username),
+                    //    new DmParameter("WHENEVER", whenever));
+                    sbSql.AppendFormat("SP_AUDIT_STMT('{0}', '{1}', '{2}')",
+                        type, username, whenever);
+                    dal.ExecuteNonQuery(sbSql.ToString());
+                }
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = "发生异常：" + ex.Message
+                });
+            }
+            return ret;
+        }
+
+        public ActionResult CreateObject(long id)
+        {
+            string[] arrStatement = { "ALL", "INSERT", "UPDATE", "DELETE", "SELECT", "EXECUTE", "MERGE INTO", "EXECUTE TRIGGER", "LOCK TABLE" };
+            ViewBag.STMT = arrStatement.ToList();
+
+            using (var dal = new DmDAL(GetSessionConnStr(id)))
+            {
+                ViewBag.User = dal.GetAllUsers();
+
+            }
+            return View(id);
+        }
+        [HttpPost]
+        public ActionResult CreateObject(long scId, string type,
+                                            string username,
+                                            string tvname,
+                                            string colname,
+                                            string whenever)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                using (var dal = new DmDAL(GetSessionConnStr(scId)))
+                {
+
+                    StringBuilder sbSql = new StringBuilder();
+                    sbSql.AppendFormat("SP_AUDIT_OBJECT('{0}', '{1}', '{2}', '{3}'",
+                        type, username, username, tvname);
+                    if (!string.IsNullOrWhiteSpace(colname))
+                    {
+                        sbSql.AppendFormat(",'{0}'", colname);
+                    }
+                    sbSql.AppendFormat(",'{0}')", whenever);
+                    dal.ExecuteNonQuery(sbSql.ToString());
+                }
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = "发生异常：" + ex.Message
+                });
+            }
+            return ret;
+        }
+        [HttpPost]
+        public ActionResult GetObjectName(long scId, string user, string objtype = "TABLE")
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                List<string> objs = new List<string>();
+                using (var dal = new DmDAL(GetSessionConnStr(scId)))
+                {
+                    objs.AddRange(dal.GetAllTables(user));
+                    objs.AddRange(dal.GetAllViews(user));
+                }
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    data = objs
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
+                });
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// 获取某个对象的所有列名
+        /// </summary>
+        /// <param name="scId"></param>
+        /// <param name="user"></param>
+        /// <param name="objname"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetColumnName(long scId, string user, string objname)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                List<string> objs = new List<string>();
+                using (var dal = new DmDAL(GetSessionConnStr(scId)))
+                {
+                    objs = dal.GetAllColumns(user, objname);   
+                }
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    data = objs
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
+                });
+            }
+            return ret;
+        }
+        [HttpPost]
+        public ActionResult DeleteStatement(long scId, string type, string username, string whenever)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                using (var dal = new DmDAL(GetSessionConnStr(scId)))
+                {
+
+                    StringBuilder sbSql = new StringBuilder();
+                    sbSql.AppendFormat("SP_NOAUDIT_STMT('{0}', '{1}', '{2}')",
+                        type, string.IsNullOrWhiteSpace(username) ? "NULL" : username, whenever);
+                    dal.ExecuteNonQuery(sbSql.ToString());
+                }
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = "发生异常：" + ex.Message
+                });
+            }
+            return ret;
+        }
+        [HttpPost]
+        public ActionResult DeleteObject(long scId, string type,
+                                            string username,
+                                            string tvname,
+                                            string colname,
+                                            string whenever)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                using (var dal = new DmDAL(GetSessionConnStr(scId)))
+                {
+
+                    StringBuilder sbSql = new StringBuilder();
+                    sbSql.AppendFormat("SP_NOAUDIT_OBJECT('{0}', '{1}', '{2}', '{3}'",
+                        type, username, username, tvname);
+                    if (!string.IsNullOrWhiteSpace(colname))
+                    {
+                        sbSql.AppendFormat(",'{0}'", colname);
+                    }
+                    sbSql.AppendFormat(",'{0}')", whenever);
+                    dal.ExecuteNonQuery(sbSql.ToString());
+                }
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = "发生异常：" + ex.Message
                 });
             }
             return ret;

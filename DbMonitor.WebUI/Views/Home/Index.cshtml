@@ -141,7 +141,8 @@
                     </div>
                 </div>
                 <div class="menu_list leftmenu">
-                    @Html.ModuleMenu((IEnumerable<Module>)ViewBag.Menu)
+                    @*@Html.ModuleMenu((IEnumerable<Module>)ViewBag.Menu)*@
+                    @Html.Action("Menu", "Home")
                 </div>
             </div>
             <div class="content_container">

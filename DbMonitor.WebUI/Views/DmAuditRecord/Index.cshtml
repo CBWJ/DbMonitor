@@ -4,22 +4,18 @@
     Layout = "~/Views/Shared/_LayoutList.cshtml";
 }
 
-<input type="hidden" id="scId", name="scId" value="@ViewBag.SCID"/>
+<input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
 <blockquote class="layui-elem-quote quoteBox">
 
     <div class="layui-inline">
         <div class="layui-input-inline">
             <input type="text" class="layui-input searchVal" id="user" placeholder="请输入用户名检索">
         </div>
-    </div>
-    <div class="layui-inline">
         <div class="layui-input-inline">
             <input type="text" class="layui-input searchVal" id="obj" placeholder="请输入对象名检索">
         </div>
-    </div>
-    <div class="layui-inline">
         <div class="layui-input-inline">
-            <input type="text" class="layui-input searchVal" id="type" placeholder="请输入语句类型检索">
+            <input type="text" class="layui-input searchVal" id="operation" placeholder="请输入操作类型检索">
         </div>
     </div>
     @{
@@ -38,15 +34,17 @@
         elemSelector: "#datatable",
         tableID: "dt",
         colConfig:  [[{ type: 'checkbox', fixed: 'left' }
-                  , { field: 'DB_USER', title: '用户名', sort: true }
-                  , { field: 'OBJECT_SCHEMA', title: '对象架构', sort: true }
-                  , { field: 'OBJECT_NAME', title: '目标对象', sort: true }
-                  , { field: 'POLICY_NAME', title: '策略名', sort: true }
-                  , { field: 'STATEMENT_TYPE', title: '语句类型', sort: true }
-                  , { field: 'SQL_TEXT', title: '具体SQL', sort: true }
-                  , { field: 'EXTENDED_TIMESTAMP', title: '发生时间', sort: true }
+                    , { field: 'USERNAME', title: '用户名', sort: true }
+                    , { field: 'ROLENAME', title: '角色名', sort: true }
+                    , { field: 'IP', title: 'IP地址', sort: true }
+                    , { field: 'SCHNAME', title: '模式名', sort: true }
+                    , { field: 'OBJNAME', title: '对象名', sort: true }
+                    , { field: 'OPERATION', title: '操作类型', sort: true }
+                    , { field: 'SUCC_FLAG', title: '是否成功', sort: true }
+                    , { field: 'SQL_TEXT', title: 'SQL文本', sort: true }
+                    , { field: 'OPTIME', title: '操作时间', sort: true }
                 ]],
-        dataInterface: "@Url.Action("List", "OrAuditRecord")",
+        dataInterface: "@Url.Action("List", ViewBag.Controller)",
         where: { scId: '@ViewBag.SCID' }
     };
     window.dataOperation = {
@@ -55,9 +53,9 @@
                 table.reload(tableConfig.tableID,//ID
                     {
                         where: { //设定异步数据接口的额外参数，任意设
-                            user: $("#username").val(),
+                            user: $("#user").val(),
                             obj: $("#obj").val(),
-                            type: $("#type").val(),
+                            operation: $("#operation").val(),
                             scId: $("#scId").val()
                         },
                         page: {
@@ -74,4 +72,3 @@
         }
     };
 </script>
-
