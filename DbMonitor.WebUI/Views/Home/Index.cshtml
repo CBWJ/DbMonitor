@@ -65,7 +65,7 @@
             });
 
             $(window).on("click", function () {
-                console.log("click");
+                //console.log("click");
                 var menu = $(".menu_user");
                 if (menu.hasClass("active")) {
                     menu.removeClass("active");
@@ -86,7 +86,30 @@
                 var action = $(this).data("action");
                 active[action].call();
             });
+
+            $(".normal_button").on("click", function () {
+                layer.open({
+                    type: 2,
+                    title: "新建会话",
+                    content:' @Url.Action("Create", "SessionConn")',
+                    scrollbar: false,
+                    area: ['700px', '500px'],
+                    resize: false,
+                    success: function (layero, index) {
+                        var body = layer.getChildFrame('body', index);
+                        var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                    }
+                });
+            });
         });
+        //刷新列表
+        function refreshList() {
+            $.get("@Url.Action("Menu","Home")", {}, function (res) {
+                console.log(res);
+                $menu = $("#mian_menu");
+                $menu.html(res);
+            })
+        }
     </script>
     <style>
         .leftMenu {
@@ -140,7 +163,7 @@
                         <i class="fa fa-angle-double-left"></i>
                     </div>
                 </div>
-                <div class="menu_list leftmenu">
+                <div id="mian_menu" class="menu_list leftmenu">
                     @*@Html.ModuleMenu((IEnumerable<Module>)ViewBag.Menu)*@
                     @Html.Action("Menu", "Home")
                 </div>

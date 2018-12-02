@@ -145,19 +145,23 @@ namespace DbMonitor.WebUI.Controllers
             //return ret;
         }
 
-        public ActionResult List(int page = 1, int limit = 20, string username = "")
+        public ActionResult List(int page = 1, int limit = 20, string type = "")
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-
+            var modules = db.Module.ToList();
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                modules = modules.Where(m => m.MType.Contains(type)).ToList();
+            }
             try
             {
                 ret.Data = JsonConvert.SerializeObject(new
                 {
                     status = 0,
                     message = "",
-                    total = db.Module.Count(),
-                    data = db.Module
+                    total = modules.Count(),
+                    data = modules
                 });
             }
             catch (Exception ex)

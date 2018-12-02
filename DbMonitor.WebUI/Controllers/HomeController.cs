@@ -17,8 +17,6 @@ namespace DbMonitor.WebUI.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-            List<Module> modules = GenerateMenuModules();
-            ViewBag.Menu = modules;
             return View(LoginUser);
         }
 
@@ -122,9 +120,17 @@ namespace DbMonitor.WebUI.Controllers
                     }
                     foreach (var m in orclMenu)
                     {
-                        m.MParentID = mLink.ID;
-                        m.MUrl += "/" + orcl.ID;
-                        modules.Add(m);
+                        var mSubMenu = new Module
+                        {
+                            ID = m.ID,
+                            MName = m.MName,
+                            MUrl = m.MUrl + "/" + orcl.ID,
+                            MIconType = m.MIconType,
+                            MIcon = m.MIcon,
+                            MParentID = mLink.ID,
+                            MSortingNumber = m.MSortingNumber
+                        };
+                        modules.Add(mSubMenu);
                     }
                     if (orclMenu.Count > 0)
                         modules.Add(mLink);
@@ -185,9 +191,17 @@ namespace DbMonitor.WebUI.Controllers
                     }
                     foreach (var m in orclMenu)
                     {
-                        m.MParentID = mLink.ID;
-                        m.MUrl += "/" + orcl.ID;
-                        modules.Add(m);
+                        var mSubMenu = new Module
+                        {
+                            ID = m.ID,
+                            MName = m.MName,
+                            MUrl = m.MUrl + "/" + orcl.ID,
+                            MIconType = m.MIconType,
+                            MIcon = m.MIcon,
+                            MParentID = mLink.ID,
+                            MSortingNumber = m.MSortingNumber
+                        };
+                        modules.Add(mSubMenu);
                     }
                     if (orclMenu.Count > 0)
                         modules.Add(mLink);
