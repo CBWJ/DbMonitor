@@ -21,8 +21,12 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
             using(var ctx = new DbMonitorEntities())
             {
                 var me = ctx.MirrorExport.Find(id);
-                var dic = ctx.Dictionary.Where(d => d.DTypeCode == "OracleExport").ToList();
+                var dic = ctx.Dictionary.Where(d => d.DTypeCode == "OracleExport" && d.DEnable == 1).ToList();
                 var sc = ctx.SessionConnection.Find(me.SCID);
+
+                me.MEStatus = "开始导出";
+                me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                ctx.SaveChanges();
 
                 string dblink = string.Format("dblink{0}", id), 
                     user = me.MEUser, 
@@ -85,7 +89,7 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
                 cmds.Add(sbExp.ToString());
                 CmdHelper.Execute(cmds.ToArray());
 
-                var backup_dir = dic.Where(d => d.DCode == "backup_dir").FirstOrDefault().DName; ;
+                var backup_dir = dic.Where(d => d.DCode == "backup_dir").FirstOrDefault().DName;
                 var logfile = Path.Combine(backup_dir, log);
 
                 if (File.Exists(logfile))

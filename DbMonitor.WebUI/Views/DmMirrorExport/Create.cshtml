@@ -1,0 +1,41 @@
+﻿@model DbMonitor.Domain.MirrorExport
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+}
+
+@Html.HiddenFor(m => m.SCID)
+@Html.HiddenFor(m => m.MEDirectory)
+<div class="layui-form-item">
+    <label class="layui-form-label">用户名</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MEUser, new { lay_verify = "required", placeholder = "请输入用户名", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">密码</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MEPassword, new { lay_verify = "required", placeholder = "请输入密码", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">导出模式</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MESchemas, new { lay_verify = "required", placeholder = "请输入导出模式", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">导出时间点</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.MEExportTime, new { lay_verify = "required", placeholder = "请输入导出时间点", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<script>
+    function setForm(form) {
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#MEExportTime' //指定元素
+                ,type: 'datetime'
+            });
+        });
+    }
+</script>

@@ -367,6 +367,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\Dm\DmAuditManageController.cs" />
     <Compile Include="Controllers\Dm\DmAuditRecordController.cs" />
+    <Compile Include="Controllers\Dm\DmMirrorExportController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditManageController.cs" />
@@ -387,6 +388,7 @@
     </Compile>
     <Compile Include="Infrastructure\Abstract\IAuthProvider.cs" />
     <Compile Include="Infrastructure\Abstract\IMirrorExport.cs" />
+    <Compile Include="Infrastructure\Concrete\DmMirrorExport.cs" />
     <Compile Include="Infrastructure\Concrete\FormsAuthProvider.cs" />
     <Compile Include="Infrastructure\Concrete\OracleMirrorExport.cs" />
     <Compile Include="Infrastructure\Concrete\ViewEngineEx.cs" />
@@ -441,6 +443,8 @@
     <Content Include="Views\Home\Menu.cshtml" />
     <Content Include="Views\OrMirrorExport\Index.cshtml" />
     <Content Include="Views\OrMirrorExport\Create.cshtml" />
+    <Content Include="Views\DmMirrorExport\Index.cshtml" />
+    <Content Include="Views\DmMirrorExport\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

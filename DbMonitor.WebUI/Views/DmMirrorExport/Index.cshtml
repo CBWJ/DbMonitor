@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutList.cshtml";
+}
+
+<input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
+<blockquote class="layui-elem-quote quoteBox">
+
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="user" placeholder="请输入用户名检索">
+        </div>
+    </div>
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialMainButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</blockquote>
+<table id="datatable" lay-filter="table"></table>
+<script type="text/html" id="barDemo">
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialToolbarButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</script>
+<script>
+    //console.log("页面数据");
+    window.tableConfig = {
+        elemSelector: "#datatable",
+        tableID: "dt",
+        colConfig:  [[{ type: 'checkbox', fixed: 'left' }
+                  , { field: 'MEUser', title: '用户名', sort: true }
+                  , { field: 'MEPassword', title: '密码', sort: true }
+                  , { field: 'MEDirectory', title: '导出目录', sort: true }
+                  , { field: 'MESchemas', title: '导出模式', sort: true }
+                  , { field: 'MEFileName', title: '文件名', sort: true }
+                  , { field: 'MELogFile', title: '日志名', sort: true }
+                  , { field: 'MEExportTime', title: '导出时间点', sort: true }
+                  , { field: 'MEStatus', title: '导出状态', sort: true }
+                  , { field: 'CreationTime', title: '创建时间', sort: true }
+                ]],
+        dataInterface: "@Url.Action("List", @ViewBag.Controller)",
+        where: { scId: '@ViewBag.SCID' }
+    };
+    window.dataOperation = {
+        moreAcive: {
+            search: function (table, layer) {
+                table.reload(tableConfig.tableID,//ID
+                    {
+                        where: { //设定异步数据接口的额外参数，任意设
+                        },
+                        page: {
+                            curr: 1
+                        }
+                    });
+            }
+        },
+        createConfig: {
+            title: "新建镜像导出",
+            url: "@Url.Action("Create", @ViewBag.Controller)?scId=@ViewBag.SCID"
+        },
+        deleteConfig: {
+        },
+        editConfig: {
+        }
+    };
+</script>
+
