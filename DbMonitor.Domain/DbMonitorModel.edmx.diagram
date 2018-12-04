@@ -20,6 +20,8 @@
         <AssociationConnector Association="DbMonitorModel.FK_UserRole_1_0" ManuallyRouted="false" />
         <EntityTypeShape EntityType="DbMonitorModel.v_RoleAuth" Width="1.5" PointX="4.375" PointY="1.5" />
         <EntityTypeShape EntityType="DbMonitorModel.SessionConnection" Width="1.5" PointX="6" PointY="1.375" />
+        <EntityTypeShape EntityType="DbMonitorModel.Dictionary" Width="1.5" PointX="4.625" PointY="13" />
+        <EntityTypeShape EntityType="DbMonitorModel.MirrorExport" Width="1.5" PointX="2.125" PointY="13" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

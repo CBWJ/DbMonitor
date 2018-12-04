@@ -83,6 +83,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DbMonitorModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Dictionary.cs">
+      <DependentUpon>DbMonitorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MirrorExport.cs">
+      <DependentUpon>DbMonitorModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Module.cs">
       <DependentUpon>DbMonitorModel.tt</DependentUpon>
     </Compile>

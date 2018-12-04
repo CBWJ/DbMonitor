@@ -152,15 +152,23 @@ namespace DbMonitor.WebUI.Controllers
             var modules = db.Module.ToList();
             if (!string.IsNullOrWhiteSpace(type))
             {
+                modules = modules.Where(m => m.MName.Contains(type) || m.MType.Contains(type)).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(type))
+            {
                 modules = modules.Where(m => m.MType.Contains(type)).ToList();
             }
+            int cnt = modules.Count();
+            modules = modules.Skip((page - 1) * limit)
+                        .Take(limit)
+                        .ToList();
             try
             {
                 ret.Data = JsonConvert.SerializeObject(new
                 {
                     status = 0,
                     message = "",
-                    total = modules.Count(),
+                    total = cnt,
                     data = modules
                 });
             }

@@ -24,6 +24,37 @@
           <Property Name="EditorID" Type="integer" />
           <Property Name="EditingTime" Type="varchar" MaxLength="30" />
         </EntityType>
+        <EntityType Name="Dictionary">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DTypeCode" Type="varchar" MaxLength="30" />
+          <Property Name="DTypeName" Type="varchar" MaxLength="30" />
+          <Property Name="DCode" Type="varchar" MaxLength="1024" />
+          <Property Name="DName" Type="varchar" MaxLength="1024" />
+          <Property Name="DHasChild" Type="integer" />
+          <Property Name="DParentID" Type="integer" />
+          <Property Name="DEnable" Type="integer" />
+        </EntityType>
+        <EntityType Name="MirrorExport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SCID" Type="integer" />
+          <Property Name="MEUser" Type="varchar" MaxLength="30" />
+          <Property Name="MEPassword" Type="varchar" MaxLength="30" />
+          <Property Name="MEDirectory" Type="varchar" MaxLength="1024" />
+          <Property Name="MESchemas" Type="varchar" MaxLength="30" />
+          <Property Name="MEFileName" Type="varchar" MaxLength="255" />
+          <Property Name="MELogFile" Type="varchar" MaxLength="256" />
+          <Property Name="MEExportTime" Type="varchar" MaxLength="30" />
+          <Property Name="MEStatus" Type="varchar" MaxLength="20" />
+          <Property Name="CreatorID" Type="integer" />
+          <Property Name="CreationTime" Type="varchar" MaxLength="30" />
+          <Property Name="EditingTime" Type="varchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="Module">
           <Key>
             <PropertyRef Name="ID" />
@@ -198,6 +229,8 @@
         </Association>
         <EntityContainer Name="DbMonitorModelStoreContainer">
           <EntitySet Name="Authority" EntityType="Self.Authority" store:Type="Tables" />
+          <EntitySet Name="Dictionary" EntityType="Self.Dictionary" store:Type="Tables" />
+          <EntitySet Name="MirrorExport" EntityType="Self.MirrorExport" store:Type="Tables" />
           <EntitySet Name="Module" EntityType="Self.Module" store:Type="Tables" />
           <EntitySet Name="ModuleAuthority" EntityType="Self.ModuleAuthority" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" store:Type="Tables" />
@@ -443,6 +476,8 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           </AssociationSet>
           <EntitySet Name="v_RoleAuth" EntityType="DbMonitorModel.v_RoleAuth" />
           <EntitySet Name="SessionConnection" EntityType="DbMonitorModel.SessionConnection" />
+          <EntitySet Name="Dictionary" EntityType="DbMonitorModel.Dictionary" />
+          <EntitySet Name="MirrorExport" EntityType="DbMonitorModel.MirrorExport" />
         </EntityContainer>
         <EntityType Name="v_RoleAuth">
           <Key>
@@ -469,6 +504,37 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <Property Name="CreatorID" Type="Int64" />
           <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="EditorID" Type="Int64" />
+          <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Dictionary">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DTypeCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="DTypeName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="DCode" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" />
+          <Property Name="DName" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" />
+          <Property Name="DHasChild" Type="Int64" />
+          <Property Name="DParentID" Type="Int64" />
+          <Property Name="DEnable" Type="Int64" />
+        </EntityType>
+        <EntityType Name="MirrorExport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SCID" Type="Int64" />
+          <Property Name="MEUser" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="MEPassword" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="MEDirectory" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" />
+          <Property Name="MESchemas" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="MEFileName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MELogFile" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="MEExportTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="MEStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CreatorID" Type="Int64" />
+          <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
@@ -599,6 +665,39 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
                 <ScalarProperty Name="SCPort" ColumnName="SCPort" />
                 <ScalarProperty Name="SCHostName" ColumnName="SCHostName" />
                 <ScalarProperty Name="SCName" ColumnName="SCName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dictionary">
+            <EntityTypeMapping TypeName="DbMonitorModel.Dictionary">
+              <MappingFragment StoreEntitySet="Dictionary">
+                <ScalarProperty Name="DEnable" ColumnName="DEnable" />
+                <ScalarProperty Name="DParentID" ColumnName="DParentID" />
+                <ScalarProperty Name="DHasChild" ColumnName="DHasChild" />
+                <ScalarProperty Name="DName" ColumnName="DName" />
+                <ScalarProperty Name="DCode" ColumnName="DCode" />
+                <ScalarProperty Name="DTypeName" ColumnName="DTypeName" />
+                <ScalarProperty Name="DTypeCode" ColumnName="DTypeCode" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MirrorExport">
+            <EntityTypeMapping TypeName="DbMonitorModel.MirrorExport">
+              <MappingFragment StoreEntitySet="MirrorExport">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="MEStatus" ColumnName="MEStatus" />
+                <ScalarProperty Name="MEExportTime" ColumnName="MEExportTime" />
+                <ScalarProperty Name="MELogFile" ColumnName="MELogFile" />
+                <ScalarProperty Name="MEFileName" ColumnName="MEFileName" />
+                <ScalarProperty Name="MESchemas" ColumnName="MESchemas" />
+                <ScalarProperty Name="MEDirectory" ColumnName="MEDirectory" />
+                <ScalarProperty Name="MEPassword" ColumnName="MEPassword" />
+                <ScalarProperty Name="MEUser" ColumnName="MEUser" />
+                <ScalarProperty Name="SCID" ColumnName="SCID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

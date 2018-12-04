@@ -34,5 +34,7 @@ namespace DbMonitor.Domain
         public virtual DbSet<UserRole> UserRole { get; set; }
         public virtual DbSet<v_RoleAuth> v_RoleAuth { get; set; }
         public virtual DbSet<SessionConnection> SessionConnection { get; set; }
+        public virtual DbSet<Dictionary> Dictionary { get; set; }
+        public virtual DbSet<MirrorExport> MirrorExport { get; set; }
     }
 }
