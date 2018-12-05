@@ -370,6 +370,8 @@
     <Compile Include="Controllers\Dm\DmMirrorExportController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="Controllers\Oracle\OrChanglogManageController.cs" />
+    <Compile Include="Controllers\Oracle\OrChanglogQueryController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditManageController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditPolicyController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditRecordController.cs" />
@@ -445,6 +447,8 @@
     <Content Include="Views\OrMirrorExport\Create.cshtml" />
     <Content Include="Views\DmMirrorExport\Index.cshtml" />
     <Content Include="Views\DmMirrorExport\Create.cshtml" />
+    <Content Include="Views\OrChanglogQuery\Index.cshtml" />
+    <Content Include="Views\OrChanglogManage\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -455,6 +459,7 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\DmChanglogQuery\" />
     <Folder Include="Views\StatementAudit\" />
   </ItemGroup>
   <ItemGroup>

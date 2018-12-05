@@ -36,5 +36,7 @@ namespace DbMonitor.Domain
         public virtual DbSet<SessionConnection> SessionConnection { get; set; }
         public virtual DbSet<Dictionary> Dictionary { get; set; }
         public virtual DbSet<MirrorExport> MirrorExport { get; set; }
+        public virtual DbSet<ChangeLog> ChangeLog { get; set; }
+        public virtual DbSet<MonitorManagement> MonitorManagement { get; set; }
     }
 }

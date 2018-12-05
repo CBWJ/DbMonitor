@@ -68,6 +68,9 @@
     <Compile Include="Authority.cs">
       <DependentUpon>DbMonitorModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ChangeLog.cs">
+      <DependentUpon>DbMonitorModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DbMonitorModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -93,6 +96,9 @@
       <DependentUpon>DbMonitorModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ModuleAuthority.cs">
+      <DependentUpon>DbMonitorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MonitorManagement.cs">
       <DependentUpon>DbMonitorModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

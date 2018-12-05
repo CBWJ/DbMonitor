@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=F:\Workspace\DbMonitor\Code\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=E:\Project\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Authority">
           <Key>
             <PropertyRef Name="ID" />
@@ -23,6 +23,22 @@
           <Property Name="CreationTime" Type="varchar" MaxLength="30" />
           <Property Name="EditorID" Type="integer" />
           <Property Name="EditingTime" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="ChangeLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SCID" Type="integer" />
+          <Property Name="CLChangeEvent" Type="varchar" MaxLength="100" />
+          <Property Name="CLContent" Type="varchar" MaxLength="1000" />
+          <Property Name="CLObjectName" Type="varchar" MaxLength="256" />
+          <Property Name="CLSchema" Type="varchar" MaxLength="50" />
+          <Property Name="CLObjectType" Type="varchar" MaxLength="50" />
+          <Property Name="CLSQL_Text" Type="varchar" MaxLength="2000" />
+          <Property Name="CLOperator" Type="varchar" MaxLength="50" />
+          <Property Name="CLChangeTime" Type="varchar" MaxLength="30" />
+          <Property Name="CLGrabTime" Type="varchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="Dictionary">
           <Key>
@@ -81,6 +97,17 @@
           <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MID" Type="integer" />
           <Property Name="AID" Type="integer" />
+        </EntityType>
+        <EntityType Name="MonitorManagement">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SCID" Type="integer" />
+          <Property Name="MMRefreshCycle" Type="integer" />
+          <Property Name="MMCycleUnit" Type="varchar" MaxLength="10" />
+          <Property Name="MMOpen" Type="integer" />
+          <Property Name="MMLastTime" Type="varchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -229,10 +256,12 @@
         </Association>
         <EntityContainer Name="DbMonitorModelStoreContainer">
           <EntitySet Name="Authority" EntityType="Self.Authority" store:Type="Tables" />
+          <EntitySet Name="ChangeLog" EntityType="Self.ChangeLog" store:Type="Tables" />
           <EntitySet Name="Dictionary" EntityType="Self.Dictionary" store:Type="Tables" />
           <EntitySet Name="MirrorExport" EntityType="Self.MirrorExport" store:Type="Tables" />
           <EntitySet Name="Module" EntityType="Self.Module" store:Type="Tables" />
           <EntitySet Name="ModuleAuthority" EntityType="Self.ModuleAuthority" store:Type="Tables" />
+          <EntitySet Name="MonitorManagement" EntityType="Self.MonitorManagement" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" store:Type="Tables" />
           <EntitySet Name="RoleAuthority" EntityType="Self.RoleAuthority" store:Type="Tables" />
           <EntitySet Name="SessionConnection" EntityType="Self.SessionConnection" store:Type="Tables" />
@@ -478,6 +507,8 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <EntitySet Name="SessionConnection" EntityType="DbMonitorModel.SessionConnection" />
           <EntitySet Name="Dictionary" EntityType="DbMonitorModel.Dictionary" />
           <EntitySet Name="MirrorExport" EntityType="DbMonitorModel.MirrorExport" />
+          <EntitySet Name="ChangeLog" EntityType="DbMonitorModel.ChangeLog" />
+          <EntitySet Name="MonitorManagement" EntityType="DbMonitorModel.MonitorManagement" />
         </EntityContainer>
         <EntityType Name="v_RoleAuth">
           <Key>
@@ -536,6 +567,33 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <Property Name="CreatorID" Type="Int64" />
           <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="ChangeLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SCID" Type="Int64" />
+          <Property Name="CLChangeEvent" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CLContent" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="CLObjectName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="CLSchema" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CLObjectType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CLSQL_Text" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="CLOperator" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CLChangeTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CLGrabTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="MonitorManagement">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SCID" Type="Int64" />
+          <Property Name="MMRefreshCycle" Type="Int64" />
+          <Property Name="MMCycleUnit" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MMOpen" Type="Int64" />
+          <Property Name="MMLastTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -697,6 +755,35 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
                 <ScalarProperty Name="MEDirectory" ColumnName="MEDirectory" />
                 <ScalarProperty Name="MEPassword" ColumnName="MEPassword" />
                 <ScalarProperty Name="MEUser" ColumnName="MEUser" />
+                <ScalarProperty Name="SCID" ColumnName="SCID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChangeLog">
+            <EntityTypeMapping TypeName="DbMonitorModel.ChangeLog">
+              <MappingFragment StoreEntitySet="ChangeLog">
+                <ScalarProperty Name="CLGrabTime" ColumnName="CLGrabTime" />
+                <ScalarProperty Name="CLChangeTime" ColumnName="CLChangeTime" />
+                <ScalarProperty Name="CLOperator" ColumnName="CLOperator" />
+                <ScalarProperty Name="CLSQL_Text" ColumnName="CLSQL_Text" />
+                <ScalarProperty Name="CLObjectType" ColumnName="CLObjectType" />
+                <ScalarProperty Name="CLSchema" ColumnName="CLSchema" />
+                <ScalarProperty Name="CLObjectName" ColumnName="CLObjectName" />
+                <ScalarProperty Name="CLContent" ColumnName="CLContent" />
+                <ScalarProperty Name="CLChangeEvent" ColumnName="CLChangeEvent" />
+                <ScalarProperty Name="SCID" ColumnName="SCID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MonitorManagement">
+            <EntityTypeMapping TypeName="DbMonitorModel.MonitorManagement">
+              <MappingFragment StoreEntitySet="MonitorManagement">
+                <ScalarProperty Name="MMLastTime" ColumnName="MMLastTime" />
+                <ScalarProperty Name="MMOpen" ColumnName="MMOpen" />
+                <ScalarProperty Name="MMCycleUnit" ColumnName="MMCycleUnit" />
+                <ScalarProperty Name="MMRefreshCycle" ColumnName="MMRefreshCycle" />
                 <ScalarProperty Name="SCID" ColumnName="SCID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

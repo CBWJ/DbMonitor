@@ -1,0 +1,69 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutList.cshtml";
+}
+
+<input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
+<blockquote class="layui-elem-quote quoteBox">
+
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="user" placeholder="请输入用户名检索">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="obj" placeholder="请输入对象名检索">
+        </div>
+    </div>
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialMainButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</blockquote>
+<table id="datatable" lay-filter="table"></table>
+<script type="text/html" id="barDemo">
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialToolbarButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</script>
+<script>
+    //console.log("页面数据");
+    window.tableConfig = {
+        elemSelector: "#datatable",
+        tableID: "dt",
+        colConfig: [[{ type: 'checkbox', fixed: 'left' }
+                  , { field: 'CLChangeEvent', title: '变更事件', sort: true }
+                  , { field: 'CLContent', title: '变更内容', sort: true }
+                  , { field: 'CLObjectName', title: '变更对象', sort: true }
+                  , { field: 'CLSchema', title: '对象模式', sort: true }
+                  , { field: 'CLObjectType', title: '对象类型', sort: true }
+                  , { field: 'CLOperator', title: '操作人', sort: true }
+                  , { field: 'CLChangeTime', title: '变更时间', sort: true }
+                ]],
+        dataInterface: "@Url.Action("List", @ViewBag.Controller)",
+        where: { scId: '@ViewBag.SCID' }
+    };
+    window.dataOperation = {
+        moreAcive: {
+            search: function (table, layer) {
+                table.reload(tableConfig.tableID,//ID
+                    {
+                        where: { //设定异步数据接口的额外参数，任意设
+                            user: $("#user").val(),
+                            obj: $("#obj").val()
+                        },
+                        page: {
+                            curr: 1
+                        }
+                    });
+            }
+        },
+        createConfig: {
+        },
+        deleteConfig: {
+        },
+        editConfig: {
+        }
+    };
+</script>
