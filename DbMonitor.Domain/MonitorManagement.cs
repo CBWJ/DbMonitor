@@ -20,5 +20,6 @@ namespace DbMonitor.Domain
         public string MMCycleUnit { get; set; }
         public Nullable<long> MMOpen { get; set; }
         public string MMLastTime { get; set; }
+        public Nullable<long> MMTimeRange { get; set; }
     }
 }

@@ -32,12 +32,17 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 {
                     log = log.Where(l => l.CLObjectName.Contains(obj.ToUpper())).ToList();
                 }
-
+                //log = log//.OrderByDescending(l => new { time = DateTime.Parse(l.CLChangeTime) })
+                //    .Skip((page - 1) * limit)
+                //    .Take(limit)
+                //    .ToList();
+                int cnt = log.Count;
+                log = log.OrderBy(l=>l.CLChangeTime).Skip((page - 1) * limit).Take(limit).ToList();
                 ret.Data = JsonConvert.SerializeObject(new
                 {
                     status = 0,
                     message = "",
-                    total = log.Count,
+                    total = cnt,
                     data = log
                 });
             }
@@ -57,8 +62,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         [HttpPost]
         public ActionResult Delete(List<int> idList)
         {
-
-            return DeleteModel<Domain.SessionConnection>(idList);
+            return DeleteModel<Domain.ChangeLog>(idList);
         }
     }
 }

@@ -32,12 +32,13 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 {
                     log = log.Where(l => l.CLObjectName.Contains(obj.ToUpper())).ToList();
                 }
-
+                int cnt = log.Count;
+                log = log.OrderBy(l => l.CLChangeTime).Skip((page - 1) * limit).Take(limit).ToList();
                 ret.Data = JsonConvert.SerializeObject(new
                 {
                     status = 0,
                     message = "",
-                    total = log.Count,
+                    total = cnt,
                     data = log
                 });
             }

@@ -71,9 +71,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="DBMonitor.pdm" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DbMonitor.DBAccess\DbMonitor.DBAccess.csproj">
+      <Project>{5374310f-bb8e-42af-af0e-f29abc72043d}</Project>
+      <Name>DbMonitor.DBAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DbMonitor.Domain\DbMonitor.Domain.csproj">
       <Project>{dcd1801b-37ca-4b49-933b-ea76deb8167e}</Project>
       <Name>DbMonitor.Domain</Name>

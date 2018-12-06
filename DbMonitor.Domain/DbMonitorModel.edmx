@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=E:\Project\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=F:\Workspace\DbMonitor\Code\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Authority">
           <Key>
             <PropertyRef Name="ID" />
@@ -108,6 +108,7 @@
           <Property Name="MMCycleUnit" Type="varchar" MaxLength="10" />
           <Property Name="MMOpen" Type="integer" />
           <Property Name="MMLastTime" Type="varchar" MaxLength="30" />
+          <Property Name="MMTimeRange" Type="integer" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -594,6 +595,7 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <Property Name="MMCycleUnit" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="MMOpen" Type="Int64" />
           <Property Name="MMLastTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="MMTimeRange" Type="Int64" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -780,6 +782,7 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <EntitySetMapping Name="MonitorManagement">
             <EntityTypeMapping TypeName="DbMonitorModel.MonitorManagement">
               <MappingFragment StoreEntitySet="MonitorManagement">
+                <ScalarProperty Name="MMTimeRange" ColumnName="MMTimeRange" />
                 <ScalarProperty Name="MMLastTime" ColumnName="MMLastTime" />
                 <ScalarProperty Name="MMOpen" ColumnName="MMOpen" />
                 <ScalarProperty Name="MMCycleUnit" ColumnName="MMCycleUnit" />

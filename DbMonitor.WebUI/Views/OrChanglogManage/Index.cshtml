@@ -40,6 +40,7 @@
                   , { field: 'CLObjectType', title: '对象类型', sort: true }
                   , { field: 'CLOperator', title: '操作人', sort: true }
                   , { field: 'CLChangeTime', title: '变更时间', sort: true }
+                  , { fixed: 'right', width: 80, align: 'center', toolbar: '#barDemo' }//绑定列工具条
                 ]],
         dataInterface: "@Url.Action("List", @ViewBag.Controller)",
         where: { scId: '@ViewBag.SCID' }
@@ -62,6 +63,7 @@
         createConfig: {
         },
         deleteConfig: {
+            url: "@Url.Action("Delete", @ViewBag.Controller)"
         },
         editConfig: {
         }

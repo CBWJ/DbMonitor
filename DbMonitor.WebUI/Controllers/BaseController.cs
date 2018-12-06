@@ -46,7 +46,7 @@ namespace DbMonitor.WebUI.Controllers
                 var prop = t.GetProperty("CreatorID");
                 prop.SetValue(model, LoginUser.ID);
                 prop = t.GetProperty("CreationTime");
-                prop.SetValue(model, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                prop.SetValue(model, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
 
                 var tDB = db.GetType();
@@ -88,7 +88,7 @@ namespace DbMonitor.WebUI.Controllers
                 var prop = t.GetProperty("EditorID");
                 prop.SetValue(model, LoginUser.ID);
                 prop = t.GetProperty("EditingTime");
-                prop.SetValue(model, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                prop.SetValue(model, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
                 //获取ID
                 prop = t.GetProperty("ID");
