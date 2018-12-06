@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
+
 namespace DbMonitor.WebUI
 {
     public class MvcApplication : System.Web.HttpApplication
@@ -14,6 +15,7 @@ namespace DbMonitor.WebUI
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             //RegisterView();
+            Utility.DataGraber.Start();
         }
 
         private void RegisterView()

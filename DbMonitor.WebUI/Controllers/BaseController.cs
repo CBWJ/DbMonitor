@@ -86,9 +86,11 @@ namespace DbMonitor.WebUI.Controllers
                 var t = model.GetType();
                 //设置模型值
                 var prop = t.GetProperty("EditorID");
-                prop.SetValue(model, LoginUser.ID);
+                if(prop != null)
+                    prop.SetValue(model, LoginUser.ID);
                 prop = t.GetProperty("EditingTime");
-                prop.SetValue(model, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                if(prop != null)
+                    prop.SetValue(model, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
                 //获取ID
                 prop = t.GetProperty("ID");

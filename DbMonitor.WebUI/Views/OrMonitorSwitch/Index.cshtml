@@ -1,0 +1,97 @@
+﻿@model DbMonitor.Domain.MonitorManagement
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="~/Scripts/layui/css/layui.css" />
+    <title>Index</title>
+    <style>
+    </style>
+</head>
+<body>
+    @*<blockquote class="layui-elem-quote quoteBox">
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                
+            </div>
+        </div>
+    </blockquote>*@
+    
+    <div class="layui-card">
+        <div class="layui-card-header">监控开关</div>
+        <div class="layui-card-body">
+            <form class="layui-form layui-form-pane">
+                <input type="hidden" name="SCID", value="@ViewBag.SCID"/>
+                <input type="hidden" name="ID" , value="@ViewBag.ID" />
+                @Html.HiddenFor(m => m.MMLastTime)
+                @Html.HiddenFor(m => m.MMTimeRange)
+                <div class="layui-form-item">
+                    <label class="layui-form-label">监控开关</label>
+                    <div class="layui-input-inline">
+                        <select name="MMOpen" lay-verify="required">
+                            <option value="0" @(Model.MMOpen.HasValue ? (Model.MMOpen.Value == 0 ? "selected" : "") : "")>关</option>
+                            <option value="1" @(Model.MMOpen.HasValue ? (Model.MMOpen.Value == 1 ? "selected" : "") : "")>开</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">刷新周期</label>
+                    <div class="layui-input-inline">
+                        @Html.TextBoxFor(m => m.MMRefreshCycle, new { lay_verify = "required", placeholder = "请输入刷新周期", autocomplete = "off", @class = "layui-input" })
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">周期单位</label>
+                    <div class="layui-input-inline">
+                        <select name="MMCycleUnit" lay-verify="required">
+                            <option value="s" @(Model.MMCycleUnit == "s" ? "selected" : "")>秒</option>
+                            <option value="m" @(Model.MMCycleUnit == "m" ? "selected" : "")>分</option>
+                            <option value="h" @(Model.MMCycleUnit == "h" ? "selected" : "")>时</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">保存设置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script>
+        layui.use('form', function () {
+            var form = layui.form;
+            var layer = layui.layer;
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                //data.field是一个对象
+                var jsonData = JSON.stringify(data.field);
+                var $ = layui.$;
+                var url = '@Url.Action("Edit", @ViewBag.Controller)';
+                $.post(url,
+                    data.field, function (res) {
+                        var objRes = JSON.parse(res);
+                        if (objRes.status == 0) {
+                            layer.msg("设置成功", { icon: 1 });
+                        } else {
+                            layer.alert(objRes.message, { icon: 5 });
+                        }
+                    }, "json");
+                return false;
+            });
+            //设置表单数据
+            if (typeof setForm == "function")
+                setForm(form);
+        });
+
+    </script>
+</body>
+</html>

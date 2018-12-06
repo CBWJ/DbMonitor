@@ -377,6 +377,7 @@
     <Compile Include="Controllers\Oracle\OrAuditRecordController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditStasticsController.cs" />
     <Compile Include="Controllers\Oracle\OrMirrorExportController.cs" />
+    <Compile Include="Controllers\Oracle\OrMonitorSwitchController.cs" />
     <Compile Include="Controllers\Oracle\OrObjectAuditController.cs" />
     <Compile Include="Controllers\Oracle\OrPrivilegeAuditController.cs" />
     <Compile Include="Controllers\Oracle\OrStatementAuditController.cs" />
@@ -396,6 +397,7 @@
     <Compile Include="Infrastructure\Concrete\ViewEngineEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\CmdHelper.cs" />
+    <Compile Include="Utility\DataGraber.cs" />
     <Compile Include="Utility\EncodingType.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -449,6 +451,7 @@
     <Content Include="Views\DmMirrorExport\Create.cshtml" />
     <Content Include="Views\OrChanglogQuery\Index.cshtml" />
     <Content Include="Views\OrChanglogManage\Index.cshtml" />
+    <Content Include="Views\OrMonitorSwitch\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

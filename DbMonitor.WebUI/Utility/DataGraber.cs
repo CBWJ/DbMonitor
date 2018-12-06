@@ -9,37 +9,23 @@ using DbMonitor.DBAccess.Concrete;
 using System.Data;
 using System.Timers;
 
-namespace DbMonitor
+namespace DbMonitor.WebUI.Utility
 {
-    class Program
+    public class DataGraber
     {
-        static object _lockObj = new object();
-        static void Main(string[] args)
+        private static object _locker = new object();
+        private static Timer _timer;
+        private static Dictionary<long, string> _dicWorkState = new Dictionary<long, string>();
+        public static void Start()
         {
-            //MonitorManagement mm = null;
-            //using (var ctx = new DbMonitorEntities())
-            //{
-            //    //ctx.User.Add(new User {
-            //    //    ULoginName = "Admin",
-            //    //    UPassword = "123"
-            //    //});
-            //    //ctx.SaveChanges();
-            //    mm = ctx.MonitorManagement.Find(2);                
-            //}
-            //GrabData2(mm);
-
-            Timer t = new Timer();
-            t.Interval = 1000;
-            t.Elapsed += T_Elapsed;
-            t.Start();
-            //T_Elapsed(null, null);
-            Console.WriteLine("OK");
-            Console.ReadKey();
+            _timer = new Timer();
+            _timer.Interval = 1000;
+            _timer.Elapsed += _timer_Elapsed;
+            _timer.Start();
         }
 
-        private static void T_Elapsed(object sender, ElapsedEventArgs e)
+        private static void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var s = DateTime.Now.ToShortTimeString();
             List<MonitorManagement> mms = null;
             using (var ctx = new DbMonitorEntities())
             {
@@ -53,22 +39,19 @@ namespace DbMonitor
                     }
                 }
             }
-            
-            //Console.WriteLine(s);
-        }
-        static Dictionary<long, string> _dicWorkState = new Dictionary<long, string>();
+        }        
         static void ExecuteGrab(MonitorManagement mm, string dbType)
         {
             //定义个工作状态（wait,working)
             if (_dicWorkState.ContainsKey(mm.ID))
             {
-                lock (_lockObj)
+                lock (_locker)
                 {
                     var state = _dicWorkState[mm.ID];
                     //工作中返回
                     if (state == "working")
-                        return;  
-                }               
+                        return;
+                }
             }
             else
             {
@@ -93,57 +76,38 @@ namespace DbMonitor
             if (DateTime.Now >= currGrab)
             {
                 //另开进程来采集
-                Task.Factory.StartNew(new Action(()=> {
+                Task.Factory.StartNew(new Action(() => {
                     GrabData(mm, dbType);
-                }));                
+                }));
             }
         }
         static void GrabData(MonitorManagement mm, string dbType)
         {
-            lock (_lockObj)
+            lock (_locker)
             {
                 _dicWorkState[mm.ID] = "working";
-                Console.WriteLine("id:{0} working {2}-[{1}]", mm.ID, DateTime.Now, dbType);
-            }            
+            }
             try
             {
                 if (dbType == "ORACLE")
                 {
                     GrabOracleData(mm);
                 }
-                else if(dbType == "DM")
+                else if (dbType == "DM")
                 {
                     GrabDmData(mm);
                 }
             }
             catch { }
-            lock (_lockObj)
+            lock (_locker)
             {
                 _dicWorkState[mm.ID] = "wait";
-                Console.WriteLine("id:{0} wait", mm.ID);
-            }            
+            }
         }
         static void GrabOracleData(MonitorManagement mm)
         {
             DateTime dtBeg;
             DateTime dtEnd;
-            //首次采集
-            //if (string.IsNullOrWhiteSpace(mm.MMLastTime))
-            //{
-            //    //从现在开始
-            //    dtBeg = DateTime.Now;
-            //}
-            //else
-            //{
-            //    //从上次最大时间开始
-            //    dtBeg = DateTime.Parse(mm.MMLastTime);
-            //}
-            ////采集范围
-            //dtEnd = dtBeg.AddMinutes(mm.MMTimeRange.Value);
-            //if(dtEnd > DateTime.Now)
-            //{
-            //    dtEnd = DateTime.Now;
-            //}
             //从上次最大时间开始
             dtBeg = DateTime.Parse(mm.MMLastTime);
             dtEnd = DateTime.Now;
@@ -167,7 +131,7 @@ namespace DbMonitor
             var grabTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             using (var ctx = new DbMonitorEntities())
             {
-                foreach(DataRow dr in dt.Rows)
+                foreach (DataRow dr in dt.Rows)
                 {
                     ChangeLog log = new ChangeLog();
 
@@ -274,7 +238,7 @@ namespace DbMonitor
                         sbConn.AppendFormat("Server={0}:{1};User Id={2};PWD={3}",
                             sc.SCHostName, sc.SCPort, sc.SCUser, sc.SCPassword);
                     }
-                } 
+                }
             }
             return sbConn.ToString();
         }
