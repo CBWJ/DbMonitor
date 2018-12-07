@@ -376,6 +376,7 @@
     <Compile Include="Controllers\Oracle\OrAuditPolicyController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditRecordController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditStasticsController.cs" />
+    <Compile Include="Controllers\Oracle\OrDatabaseStatusController.cs" />
     <Compile Include="Controllers\Oracle\OrMirrorExportController.cs" />
     <Compile Include="Controllers\Oracle\OrObjectAuditController.cs" />
     <Compile Include="Controllers\Oracle\OrPrivilegeAuditController.cs" />
@@ -449,6 +450,7 @@
     <Content Include="Views\DmMirrorExport\Create.cshtml" />
     <Content Include="Views\OrChanglogQuery\Index.cshtml" />
     <Content Include="Views\OrChanglogManage\Index.cshtml" />
+    <Content Include="Views\OrDatabaseStatus\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
