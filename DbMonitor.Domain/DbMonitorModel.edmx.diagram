@@ -24,6 +24,7 @@
         <EntityTypeShape EntityType="DbMonitorModel.MirrorExport" Width="1.5" PointX="2.125" PointY="13" />
         <EntityTypeShape EntityType="DbMonitorModel.ChangeLog" Width="1.5" PointX="6.75" PointY="13" />
         <EntityTypeShape EntityType="DbMonitorModel.MonitorManagement" Width="1.5" PointX="8.625" PointY="13" />
+        <EntityTypeShape EntityType="DbMonitorModel.DatabaseStatus" Width="1.5" PointX="10.75" PointY="13.125" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

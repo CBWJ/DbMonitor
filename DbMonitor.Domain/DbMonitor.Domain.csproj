@@ -71,6 +71,9 @@
     <Compile Include="ChangeLog.cs">
       <DependentUpon>DbMonitorModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="DatabaseStatus.cs">
+      <DependentUpon>DbMonitorModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DbMonitorModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

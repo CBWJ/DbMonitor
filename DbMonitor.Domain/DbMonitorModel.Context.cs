@@ -38,5 +38,6 @@ namespace DbMonitor.Domain
         public virtual DbSet<MirrorExport> MirrorExport { get; set; }
         public virtual DbSet<ChangeLog> ChangeLog { get; set; }
         public virtual DbSet<MonitorManagement> MonitorManagement { get; set; }
+        public virtual DbSet<DatabaseStatus> DatabaseStatus { get; set; }
     }
 }

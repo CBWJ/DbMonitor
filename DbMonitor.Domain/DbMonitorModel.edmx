@@ -40,6 +40,22 @@
           <Property Name="CLChangeTime" Type="varchar" MaxLength="30" />
           <Property Name="CLGrabTime" Type="varchar" MaxLength="30" />
         </EntityType>
+        <EntityType Name="DatabaseStatus">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SCID" Type="integer" />
+          <Property Name="INSTANCE_NAME" Type="varchar" MaxLength="128" />
+          <Property Name="HOST_NAME" Type="varchar" MaxLength="128" />
+          <Property Name="VERSION" Type="varchar" MaxLength="128" />
+          <Property Name="STARTUP_TIME" Type="varchar" MaxLength="128" />
+          <Property Name="STATUS" Type="varchar" MaxLength="128" />
+          <Property Name="DATABASE_STATUS" Type="varchar" MaxLength="128" />
+          <Property Name="REALTIME" Type="integer" />
+          <Property Name="CreationTime" Type="varchar" MaxLength="30" />
+          <Property Name="EditingTime" Type="varchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="Dictionary">
           <Key>
             <PropertyRef Name="ID" />
@@ -258,6 +274,7 @@
         <EntityContainer Name="DbMonitorModelStoreContainer">
           <EntitySet Name="Authority" EntityType="Self.Authority" store:Type="Tables" />
           <EntitySet Name="ChangeLog" EntityType="Self.ChangeLog" store:Type="Tables" />
+          <EntitySet Name="DatabaseStatus" EntityType="Self.DatabaseStatus" store:Type="Tables" />
           <EntitySet Name="Dictionary" EntityType="Self.Dictionary" store:Type="Tables" />
           <EntitySet Name="MirrorExport" EntityType="Self.MirrorExport" store:Type="Tables" />
           <EntitySet Name="Module" EntityType="Self.Module" store:Type="Tables" />
@@ -510,6 +527,7 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <EntitySet Name="MirrorExport" EntityType="DbMonitorModel.MirrorExport" />
           <EntitySet Name="ChangeLog" EntityType="DbMonitorModel.ChangeLog" />
           <EntitySet Name="MonitorManagement" EntityType="DbMonitorModel.MonitorManagement" />
+          <EntitySet Name="DatabaseStatus" EntityType="DbMonitorModel.DatabaseStatus" />
         </EntityContainer>
         <EntityType Name="v_RoleAuth">
           <Key>
@@ -596,6 +614,22 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <Property Name="MMOpen" Type="Int64" />
           <Property Name="MMLastTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="MMTimeRange" Type="Int64" />
+        </EntityType>
+        <EntityType Name="DatabaseStatus">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SCID" Type="Int64" />
+          <Property Name="INSTANCE_NAME" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="HOST_NAME" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="VERSION" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="STARTUP_TIME" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="STATUS" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="DATABASE_STATUS" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="REALTIME" Type="Int64" />
+          <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -787,6 +821,23 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
                 <ScalarProperty Name="MMOpen" ColumnName="MMOpen" />
                 <ScalarProperty Name="MMCycleUnit" ColumnName="MMCycleUnit" />
                 <ScalarProperty Name="MMRefreshCycle" ColumnName="MMRefreshCycle" />
+                <ScalarProperty Name="SCID" ColumnName="SCID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DatabaseStatus">
+            <EntityTypeMapping TypeName="DbMonitorModel.DatabaseStatus">
+              <MappingFragment StoreEntitySet="DatabaseStatus">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="REALTIME" ColumnName="REALTIME" />
+                <ScalarProperty Name="DATABASE_STATUS" ColumnName="DATABASE_STATUS" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="STARTUP_TIME" ColumnName="STARTUP_TIME" />
+                <ScalarProperty Name="VERSION" ColumnName="VERSION" />
+                <ScalarProperty Name="HOST_NAME" ColumnName="HOST_NAME" />
+                <ScalarProperty Name="INSTANCE_NAME" ColumnName="INSTANCE_NAME" />
                 <ScalarProperty Name="SCID" ColumnName="SCID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
