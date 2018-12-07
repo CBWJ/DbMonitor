@@ -36,6 +36,7 @@ namespace DbMonitor.WebUI.Utility
                     if (sc != null && mm.MMOpen == 1)
                     {
                         ExecuteGrab(mm, sc.SCDBType);
+                        StatusDataGraber.ExecuteGrab(mm, sc.SCDBType);
                     }
                 }
             }
@@ -75,7 +76,7 @@ namespace DbMonitor.WebUI.Utility
             }
             if (DateTime.Now >= currGrab)
             {
-                //另开进程来采集
+                //另开线程来采集
                 Task.Factory.StartNew(new Action(() => {
                     GrabData(mm, dbType);
                 }));
@@ -214,7 +215,7 @@ namespace DbMonitor.WebUI.Utility
         /// </summary>
         /// <param name="scId"></param>
         /// <returns></returns>
-        static string GetSessionConnStr(long scId)
+        public static string GetSessionConnStr(long scId)
         {
             StringBuilder sbConn = new StringBuilder();
             using (var db = new DbMonitorEntities())

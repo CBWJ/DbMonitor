@@ -400,6 +400,7 @@
     <Compile Include="Utility\CmdHelper.cs" />
     <Compile Include="Utility\DataGraber.cs" />
     <Compile Include="Utility\EncodingType.cs" />
+    <Compile Include="Utility\StatusDataGraber.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
