@@ -36,7 +36,6 @@ namespace DbMonitor.WebUI.Utility
                     if (sc != null && mm.MMOpen == 1)
                     {
                         ExecuteGrab(mm, sc.SCDBType);
-                        StatusDataGraber.ExecuteGrab(mm, sc.SCDBType);
                     }
                 }
             }
@@ -80,6 +79,9 @@ namespace DbMonitor.WebUI.Utility
                 Task.Factory.StartNew(new Action(() => {
                     GrabData(mm, dbType);
                 }));
+
+                //状态抓取
+                StatusDataGraber.ExecuteGrab(mm, dbType);
             }
         }
         static void GrabData(MonitorManagement mm, string dbType)

@@ -16,27 +16,37 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             SetModuleAuthority();
             return View();
         }
-        public ActionResult List(long scId, int page = 1, int limit = 20)
+        public ActionResult List(long scId, string time, int page = 1, int limit = 20)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             try
             {
                 var status = db.DatabaseStatus.Where(m => m.SCID == scId).ToList();
-                //if (!string.IsNullOrWhiteSpace(user))
-                //{
-                //    log = log.Where(l => l.CLOperator.Contains(user.ToUpper())).ToList();
-                //}
-                //if (!string.IsNullOrWhiteSpace(obj))
-                //{
-                //    log = log.Where(l => l.CLObjectName.Contains(obj.ToUpper())).ToList();
-                //}
-                //log = log//.OrderByDescending(l => new { time = DateTime.Parse(l.CLChangeTime) })
-                //    .Skip((page - 1) * limit)
-                //    .Take(limit)
-                //    .ToList();
+                if (!string.IsNullOrWhiteSpace(time))
+                {
+                    var mm = db.MonitorManagement.Where(m => m.SCID == scId).FirstOrDefault();
+                    DateTime query = DateTime.Parse(time);
+                    DateTime dtBeg = query, dtEnd = query;
+                    switch (mm.MMCycleUnit)
+                    {
+                        case "s":
+                            dtBeg = query.AddSeconds(mm.MMRefreshCycle.Value * -1);
+                            dtEnd = query.AddSeconds(mm.MMRefreshCycle.Value);
+                            break;
+                        case "m":
+                            dtBeg = query.AddMinutes(mm.MMRefreshCycle.Value * -1);
+                            dtEnd = query.AddMinutes(mm.MMRefreshCycle.Value);
+                            break;
+                        case "h":
+                            dtBeg = query.AddHours(mm.MMRefreshCycle.Value * -1);
+                            dtEnd = query.AddHours(mm.MMRefreshCycle.Value);
+                            break;
+                    }
+                    status = status.Where(m => DateTime.Parse(m.CreationTime) >= dtBeg && DateTime.Parse(m.CreationTime) < dtEnd).ToList();
+                }
                 int cnt = status.Count;
-                status = status.OrderBy(s => s.CreationTime).Skip((page - 1) * limit).Take(limit).ToList();
+                status = status.OrderByDescending(s => s.CreationTime).Skip((page - 1) * limit).Take(limit).ToList();
                 ret.Data = JsonConvert.SerializeObject(new
                 {
                     status = 0,
