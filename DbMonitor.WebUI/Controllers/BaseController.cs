@@ -44,9 +44,12 @@ namespace DbMonitor.WebUI.Controllers
                 var t = model.GetType();
                 //设置模型值
                 var prop = t.GetProperty("CreatorID");
-                prop.SetValue(model, LoginUser.ID);
+                if (prop != null)
+                    prop.SetValue(model, LoginUser.ID);
+                
                 prop = t.GetProperty("CreationTime");
-                prop.SetValue(model, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                if (prop != null)
+                    prop.SetValue(model, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
 
                 var tDB = db.GetType();

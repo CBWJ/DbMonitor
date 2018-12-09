@@ -1,0 +1,50 @@
+﻿@model DbMonitor.Domain.Dictionary
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+}
+
+<input type="hidden" id="action" value="@Url.Action(ViewBag.Action, "Dictionary")" />
+@Html.HiddenFor(m => m.ID)
+<div class="layui-form-item">
+    <label class="layui-form-label">类型代码</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.DTypeCode, new { lay_verify = "required", placeholder = "请输入类型代码", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">类型名称</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.DTypeName, new { lay_verify = "required", placeholder = "请输入类型名称", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">项代码</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.DCode, new { lay_verify = "required", placeholder = "请输入项代码", autocomplete = "off", @class = "layui-input" })
+    </div>
+    <label class="layui-form-label">项名称</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.DName, new { lay_verify = "required", placeholder = "请输入项名称", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">是否有子项</label>
+    <div class="layui-input-inline">
+        <select name="DHasChild" lay-verify="required">
+            <option value="0" @(Model.DHasChild.HasValue ? (Model.DHasChild.Value == 0 ? "selected" : "") : "")>否</option>
+            <option value="1" @(Model.DHasChild.HasValue ? (Model.DHasChild.Value == 1 ? "selected" : "") : "")>是</option>
+        </select>   
+    </div>
+    <label class="layui-form-label">父项ID</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(m => m.DParentID, new { lay_verify = "", placeholder = "请输入父项ID", autocomplete = "off", @class = "layui-input" })
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">启用</label>
+    <div class="layui-input-inline">
+        <select name="DEnable" lay-verify="required">
+            <option value="1" @(Model.DEnable.HasValue ? (Model.DEnable.Value == 1 ? "selected" : "") : "")>是</option>
+            <option value="0" @(Model.DEnable.HasValue ? (Model.DEnable.Value == 0 ? "selected" : "") : "")>否</option>
+        </select>  
+    </div>
+</div>

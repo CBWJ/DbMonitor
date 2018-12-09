@@ -1,0 +1,37 @@
+﻿@model List<DbMonitor.Domain.ChangeLog>
+@{
+    ViewBag.Title = "CompareNormalObject";
+    Layout = "~/Views/Shared/_LayoutLayui.cshtml";
+}
+
+<div class="layui-card">
+    @*<div class="layui-card-header">对象变化</div>*@
+    <div class="layui-card-body">
+        <table class="layui-table" lay-skin="line" lay-size="sm">
+            <colgroup>
+                <col width="150">
+                <col width="150">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>时间</th>
+                    <th>事件</th>
+                    <th>变化内容</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model.OrderByDescending(l => l.CLChangeTime).ToList())
+                {
+                    <tr>
+                        <td>@m.CLChangeTime</td>
+                        <td>@m.CLChangeEvent</td>
+                        <td>@m.CLSQL_Text</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+

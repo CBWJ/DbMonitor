@@ -53,6 +53,7 @@
     <Compile Include="Concrete\DmDAL.cs" />
     <Compile Include="Concrete\OracleDAL.cs" />
     <Compile Include="Extensions\DmDALHelper.cs" />
+    <Compile Include="Extensions\OracleDALHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

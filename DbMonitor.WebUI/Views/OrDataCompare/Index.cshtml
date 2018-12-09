@@ -1,0 +1,153 @@
+﻿@model List<DbMonitor.Domain.Dictionary>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLayui.cshtml";
+}
+<input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
+<blockquote class="layui-elem-quote quoteBox">
+        <div class="layui-form layui-inline">
+            <div class="layui-input-inline">
+                <select id="user" name="user" lay-verify="required" lay-search lay-filter="user">
+                    <option value="">请选择用户名</option>
+                    @foreach (var u in (List<string>)ViewBag.Users)
+                    {
+                        <option value="@u">@u</option>
+                    }
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select id="objtype" name="objtype" lay-verify="required" lay-search lay-filter="objtype">
+                    <option value="">请选择对象类型</option>
+                    @foreach (var m in Model)
+                    {
+                        <option value="@m.DCode">@m.DName</option>
+                    }
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select id="objname" name="objname" lay-verify="required" lay-search lay-filter="objname">
+                    <option value="">请选择对象</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input searchVal" id="begtime" placeholder="请选择开始时间">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input searchVal" id="endtime" placeholder="请选择结束时间">
+            </div>
+        </div>
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialMainButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</blockquote>
+<div class="mian-content">
+    <iframe name="content" src=""></iframe>
+</div>
+<style>
+    .mian-content{
+        position: absolute;
+        bottom: 3px;
+        top: 78px;
+        right: 0;
+        left: 0;
+    }
+    .mian-content iframe{
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+</style>
+<script>
+    layui.use(['form','laydate'], function () {
+        form = layui.form;
+        form.on('select(user)', function (data) {
+            getObject();
+        });
+
+        form.on('select(objtype)', function (data) {
+            getObject();
+        });
+        function getObject(){
+            var user = $("#user").find("option:selected").val();
+            var obj = $("#objtype").find("option:selected").val();
+            selectRefresh(form, $("#objname"),
+                "@Url.Action("GetObjectName", @ViewBag.Controller)",
+                {scId:@ViewBag.SCID, user: user, objtype:obj})
+        }
+        
+        var actives ={
+            compare:function(){
+                var user = $("#user").find("option:selected").val();
+                var objtype = $("#objtype").find("option:selected").val();
+                var objname = $("#objname").find("option:selected").val();
+                var begtime = $("#begtime").val();
+                var endtime = $("#endtime").val();
+                
+                var action = "";
+                if(objtype == "TABLE" || objtype == "UTAB"){
+                    action = "CompareTable";
+                }
+                else{
+                    action = "CompareNormalObject";
+                }
+                var url = "/OrDataCompare/"+action+"?scId=@ViewBag.SCID";
+                url += "&user=" + user;
+                url += "&objtype=" + objtype;
+                url += "&objname=" + objname;
+                url += "&begtime=" + begtime;
+                url += "&endtime=" + endtime;
+                var w  = window.frames["content"];
+                w.location.replace(getHostPath() + url);
+            }
+        };
+        //顶部按钮事件
+        $(".quoteBox .layui-btn").on("click", function () {
+            var action = $(this).data("action");
+            var func = actives[action];
+            if (func != null && typeof func == "function") {
+                func();
+            }
+        });
+
+        var laydate = layui.laydate;
+        var now = new Date().Format("yyyy-MM-dd hh:mm:ss");
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#begtime' //指定元素
+            , type: 'datetime'
+            , max: now
+        });
+        laydate.render({
+            elem: '#endtime' //指定元素
+            , type: 'datetime'
+            , value: now
+        });
+
+    });
+    function getHostPath(){
+        var curWwwPath = window.document.location.href;
+        var pathname= window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathname);
+        var localhostPath = curWwwPath .substring(0,pos);
+        return localhostPath;
+    }
+    function selectRefresh(form, $sel, url, postData) {
+        $.post(url, postData,
+            function (res) {
+                var objRes = JSON.parse(res);
+                if (objRes.status == 0) {
+                    $sel.html('');
+                    //必须加空项，不然不验证
+                    var op = $("<option>").val("").text("");
+                    $sel.append(op);
+                    $.each(objRes.data, function (index, item) {
+                        op = $("<option>").val(item).text(item);
+                        $sel.append(op);
+                    });
+                    form.render('select');
+                    $sel.get(0).selectedIndex = 0;
+                }
+            }, "json")
+    }
+</script>
+

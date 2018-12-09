@@ -1,0 +1,81 @@
+﻿@model Dictionary<string, string>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutList.cshtml";
+}
+
+<blockquote class="layui-elem-quote quoteBox">
+    <div class="layui-form layui-inline">
+        <div class="layui-input-inline">
+            <select id="type" name="type" lay-verify="required" lay-search lay-filter="type">
+                <option value="">请选择类型</option>
+                @foreach (var m in Model)
+                {
+                    <option value="@m.Key">@m.Value</option>
+                }
+            </select>
+        </div>
+
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="code" placeholder="请输入项代码">
+        </div>
+    </div>  
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialMainButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</blockquote>
+<table id="datatable" lay-filter="table"></table>
+<script type="text/html" id="barDemo">
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialToolbarButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</script>
+<script>
+    //console.log("页面数据");
+    window.tableConfig = {
+        elemSelector: "#datatable",
+        tableID: "dt",
+        colConfig: [[{ type: 'checkbox', fixed: 'left' }
+                  , { field: 'DTypeCode', title: '类型代码', sort: true }
+                  , { field: 'DTypeName', title: '类型名称', sort: true }
+                  , { field: 'DCode', title: '项代码', sort: true }
+                  , { field: 'DName', title: '项名称', sort: true }
+                  , { field: 'DHasChild', title: '是否有子项', sort: true }
+                  , { field: 'DParentID', title: '父项ID', sort: true }
+                  , { field: 'DEnable', title: '启用', sort: true }
+                  , { fixed: 'right', width: 80, align: 'center', toolbar: '#barDemo' }//绑定列工具条
+                ]],
+        dataInterface: "@Url.Action("List", @ViewBag.Controller)",
+        afterRender: function (table, layer, form) {
+
+        }
+    };
+    window.dataOperation = {
+        moreAcive: {
+            search: function (table, layer) {
+                table.reload(tableConfig.tableID,//ID
+                    {
+                        where: { //设定异步数据接口的额外参数，任意设
+                            type: $("#type").find("option:selected").val(),
+                            code: $("#code").val()
+                        },
+                        page: {
+                            curr: 1
+                        }
+                    });
+            }
+        },
+        createConfig: {
+            title: "新建角色",
+            url: "@Url.Action("Create", @ViewBag.Controller)"
+        },
+        deleteConfig: {
+            url: "@Url.Action("Delete", @ViewBag.Controller)"
+        },
+        editConfig: {
+            title: "编辑角色",
+            url: "@Url.Action("Edit", @ViewBag.Controller)"
+        }
+    };
+</script>
+

@@ -1,0 +1,119 @@
+﻿@model List<DbMonitor.Domain.ChangeLog>
+@{
+    ViewBag.Title = "CompareTable";
+    Layout = "~/Views/Shared/_LayoutLayui.cshtml";
+}
+<style>
+    body{
+        padding:10px;
+    }
+    .layui-colla-content{
+        padding: 1px 1px;
+    }
+</style>
+<div class="layui-row layui-col-space10">
+    <div class="layui-col-md6">
+        <div class="layui-collapse">
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">表结构变化</h2>
+                <div class="layui-colla-content layui-show">
+                    <table class="layui-table" lay-skin="line" lay-size="sm">
+                        <colgroup>
+                            <col width="150">
+                            <col>
+                        </colgroup>
+                        @*<thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>变化内容</th>
+                            </tr>
+                        </thead>*@
+                        <tbody>                            
+                            @foreach (var m in Model.Where(l => l.CLChangeEvent.Contains("ALTER") || l.CLChangeEvent.Contains("CREATE") || l.CLChangeEvent.Contains("ALTER")).OrderByDescending(l => l.CLChangeTime).ToList())
+                            {
+                                <tr>
+                                    <td>@m.CLChangeTime</td>
+                                    <td>@m.CLSQL_Text</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md6">
+        <div class="layui-collapse">
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">INSERT数据</h2>
+                <div class="layui-colla-content layui-show">
+                    <table class="layui-table" lay-skin="line" lay-size="sm">
+                        <colgroup>
+                            <col width="150">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                            @foreach (var m in Model.Where(l => l.CLChangeEvent.Contains("INSERT")).OrderByDescending(l => l.CLChangeTime).ToList())
+                            {
+                                <tr>
+                                    <td>@m.CLChangeTime</td>
+                                    <td>@m.CLSQL_Text</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-row layui-col-space10">
+    <div class="layui-col-md6">
+        <div class="layui-collapse">
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">UPDATE数据</h2>
+                <div class="layui-colla-content layui-show">
+                    <table class="layui-table" lay-skin="line" lay-size="sm">
+                        <colgroup>
+                            <col width="150">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                            @foreach (var m in Model.Where(l => l.CLChangeEvent.Contains("UPDATE")).OrderByDescending(l => l.CLChangeTime).ToList())
+                            {
+                                <tr>
+                                    <td>@m.CLChangeTime</td>
+                                    <td>@m.CLSQL_Text</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md6">
+        <div class="layui-collapse">
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">DELETE数据</h2>
+                <div class="layui-colla-content layui-show">
+                    <table class="layui-table" lay-skin="line" lay-size="sm">
+                        <colgroup>
+                            <col width="150">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                            @foreach (var m in Model.Where(l => l.CLChangeEvent.Contains("DELETE")).OrderByDescending(l => l.CLChangeTime).ToList())
+                            {
+                                <tr>
+                                    <td>@m.CLChangeTime</td>
+                                    <td>@m.CLSQL_Text</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

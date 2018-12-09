@@ -44,6 +44,23 @@ namespace DbMonitor.DBAccess.Extensions
             return dal.GetOneColumnValue(sbSql.ToString());
         }
         /// <summary>
+        /// 获取某种所有对象
+        /// </summary>
+        /// <param name="dal"></param>
+        /// <param name="user"></param>
+        /// <param name="objtype"></param>
+        /// <returns></returns>
+        public static List<string> GetObjectName(this DmDAL dal, string user, string objtype)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            sbSql.AppendFormat(@"SELECT NAME FROM sysobjects WHERE 
+                SCHID = (SELECT ID FROM sysobjects WHERE TYPE$ = 'SCH' AND NAME ='{0}')
+                AND TYPE$='SCHOBJ' AND SUBTYPE$='{1}'",
+                    user, objtype);
+
+            return dal.GetOneColumnValue(sbSql.ToString());
+        }
+        /// <summary>
         /// 获取用户的所有的表
         /// </summary>
         /// <param name="dal"></param>

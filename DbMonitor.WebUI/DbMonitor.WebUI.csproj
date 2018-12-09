@@ -355,6 +355,7 @@
     <Content Include="Scripts\layui\lay\modules\tree.js" />
     <Content Include="Scripts\layui\lay\modules\upload.js" />
     <Content Include="Scripts\layui\lay\modules\util.js" />
+    <Content Include="Scripts\local\extension.js" />
     <Content Include="Scripts\local\glsun.control.js" />
     <Content Include="Scripts\local\jquery.leftmenu.js" />
     <Content Include="Scripts\local\tabmenu.js" />
@@ -365,6 +366,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\DictionaryController.cs" />
     <Compile Include="Controllers\Dm\DmAuditManageController.cs" />
     <Compile Include="Controllers\Dm\DmAuditRecordController.cs" />
     <Compile Include="Controllers\Dm\DmMirrorExportController.cs" />
@@ -377,6 +379,7 @@
     <Compile Include="Controllers\Oracle\OrAuditRecordController.cs" />
     <Compile Include="Controllers\Oracle\OrAuditStasticsController.cs" />
     <Compile Include="Controllers\Oracle\OrDatabaseStatusController.cs" />
+    <Compile Include="Controllers\Oracle\OrDataCompareController.cs" />
     <Compile Include="Controllers\Oracle\OrMirrorExportController.cs" />
     <Compile Include="Controllers\Oracle\OrMonitorSwitchController.cs" />
     <Compile Include="Controllers\Oracle\OrObjectAuditController.cs" />
@@ -455,6 +458,12 @@
     <Content Include="Views\OrChanglogManage\Index.cshtml" />
     <Content Include="Views\OrMonitorSwitch\Index.cshtml" />
     <Content Include="Views\OrDatabaseStatus\Index.cshtml" />
+    <Content Include="Views\Shared\_LayoutLayui.cshtml" />
+    <Content Include="Views\OrDataCompare\Index.cshtml" />
+    <Content Include="Views\OrDataCompare\CompareTable.cshtml" />
+    <Content Include="Views\Dictionary\Index.cshtml" />
+    <Content Include="Views\Dictionary\Create.cshtml" />
+    <Content Include="Views\OrDataCompare\CompareNormalObject.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
