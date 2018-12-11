@@ -1,4 +1,5 @@
 ﻿using DbMonitor.DBAccess.Concrete;
+using DbMonitor.DBAccess.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -86,17 +87,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             //用户
             using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
             {
-                //查询语句结尾不要逗号，否则报错:ORA-00911: 无效字符
-                StringBuilder sbSql = new StringBuilder();
-                sbSql.AppendLine("select username from dba_users");
-                DataTable dt = dal.ExecuteQuery(sbSql.ToString());
-                List<string> users = new List<string>();
-                foreach (DataRow row in dt.Rows)
-                {
-                    var u = row.ItemArray[0].ToString();
-                    users.Add(u);
-                }
-                ViewBag.User = users.OrderBy(u => u).ToList();
+                ViewBag.User = dal.GetAllUsers().OrderBy(u => u).ToList();
             }
             return View(scId);
         }

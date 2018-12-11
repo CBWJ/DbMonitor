@@ -9,7 +9,7 @@
 <input type="hidden" id="scId" , name="scId" value="@Model" />
 <div class="layui-form-item">
     <label class="layui-form-label">权限</label>
-    <div class="layui-input-inline">
+    <div class="layui-input-block">
         <select name="stmt" lay-verify="required" width="300px" lay-search>
             <option value=""></option>
             @foreach (var s in stmt)
@@ -21,7 +21,7 @@
 </div>
 <div class="layui-form-item">
     <label class="layui-form-label">用户</label>
-    <div class="layui-input-inline">
+    <div class="layui-input-block">
         <select name="user" lay-verify="required" lay-search>
             <option value=""></option>
             <option value="ALL">ALL</option>

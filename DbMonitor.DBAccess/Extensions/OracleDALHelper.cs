@@ -35,7 +35,7 @@ namespace DbMonitor.DBAccess.Extensions
         public static List<string> GetAllUsers(this OracleDAL dal)
         {
             StringBuilder sbSql = new StringBuilder();
-            sbSql.AppendFormat("select username from dba_users");
+            sbSql.AppendFormat("select * from dba_users where ACCOUNT_STATUS =  'OPEN'");
 
             return dal.GetOneColumnValue(sbSql.ToString());
         }
