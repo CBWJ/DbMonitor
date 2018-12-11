@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace DbMonitor.WebUI.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private IAuthProvider _authProvider = new FormsAuthProvider();
         // GET: Account
@@ -114,6 +114,47 @@ namespace DbMonitor.WebUI.Controllers
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Login");
+        }
+
+        public ActionResult ModifyPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ModifyPassword(string oldpwd, string newpwd, string newpwdrepeat)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                if (LoginUser.UPassword != oldpwd)
+                {
+                    ret.Data = JsonConvert.SerializeObject(new
+                    {
+                        status = 2,
+                        message = "原密码不正确"
+                    });
+                }
+                else
+                {
+                    var user = db.User.Find(LoginUser.ID);
+                    user.UPassword = newpwd;
+                    db.SaveChanges();
+                    ret.Data = JsonConvert.SerializeObject(new
+                    {
+                        status = 0,
+                        message = ""
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
+                });
+            }
+            return ret;
         }
     }
 }

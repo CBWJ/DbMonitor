@@ -185,7 +185,7 @@
 
 .leftmenu>ul>li>.submenu>li>.submenu>li.selected>a{
     background-color: #F1F5F9;
-    color: #4B88B7;
+    color: #009688;
 }
 
 /*鼠标悬停*/
@@ -203,7 +203,7 @@
 
 .leftmenu>ul>li>.submenu>li>.submenu>li>a:hover{
     background-color: #F1F5F9;
-    color: #4B88B7;
+    color: #009688;
     cursor: pointer;
 }
 

@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using DbMonitor.WebUI.Extensions;
 using Oracle.ManagedDataAccess.Client;
+using DbMonitor.DBAccess.Extensions;
 
 namespace DbMonitor.WebUI.Controllers.Oracle
 {
@@ -88,17 +89,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             //用户
             using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
             {
-                //查询语句结尾不要逗号，否则报错:ORA-00911: 无效字符
-                StringBuilder sbSql = new StringBuilder();
-                sbSql.AppendLine("select username from dba_users");
-                DataTable dt = dal.ExecuteQuery(sbSql.ToString());
-                List<string> users = new List<string>();
-                foreach (DataRow row in dt.Rows)
-                {
-                    var u = row.ItemArray[0].ToString();
-                    users.Add(u);
-                }
-                ViewBag.User = users.OrderBy(u => u).ToList();
+                ViewBag.User = dal.GetAllUsers();
             }
             return View(scId);
         }
@@ -112,14 +103,14 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 List<OracleParameter> policyParams = new List<OracleParameter>();
 
                 //顺序不能乱
-                policyParams.Add(new OracleParameter("object_schema", user));
+                /*policyParams.Add(new OracleParameter("object_schema", user));
                 policyParams.Add(new OracleParameter("object_name", obj));
                 policyParams.Add(new OracleParameter("policy_name", policyname));
                 policyParams.Add(new OracleParameter("audit_condition", condition));
                 policyParams.Add(new OracleParameter("audit_column", col));
 
                 policyParams.Add(new OracleParameter("handler_schema", OracleDbType.Varchar2, "", ParameterDirection.Input));
-                policyParams.Add(new OracleParameter("handler_module", OracleDbType.Varchar2, "", ParameterDirection.Input));
+                policyParams.Add(new OracleParameter("handler_module", OracleDbType.Varchar2, "", ParameterDirection.Input));*/
                 /*policyParams.Add(new OracleParameter("enable", OracleDbType.Boolean, true, ParameterDirection.Input));
                 List<string> statement = new List<string>();
 
@@ -147,11 +138,42 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 {
                     policyParams.Add(new OracleParameter("statement_types", OracleDbType.Varchar2, "NULL", ParameterDirection.Input));
                 }
-                */
+                */                
                 var arrParam = policyParams.ToArray();
+                List<string> statement = new List<string>();
+
+                if (sel == "on")
+                {
+                    statement.Add("SELECT");
+                }
+                if (ins == "on")
+                {
+                    statement.Add("INSERT");
+                }
+                if (upd == "on")
+                {
+                    statement.Add("UPDATE");
+                }
+                if (del == "on")
+                {
+                    statement.Add("DELETE");
+                }
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.AppendFormat("begin DBMS_FGA.ADD_POLICY (");
+                sbSql.AppendFormat("object_schema      =>  '{0}', ", user);
+                sbSql.AppendFormat("object_name        =>  '{0}', ", obj);
+                sbSql.AppendFormat("policy_name        =>  '{0}', ", policyname);
+                sbSql.AppendFormat("audit_condition    =>  '{0}', ", condition);
+                sbSql.AppendFormat("audit_column       =>  '{0}', ", col);
+                sbSql.AppendFormat("handler_schema     =>   NULL, ");
+                sbSql.AppendFormat("handler_module     =>   NULL, ");
+                sbSql.AppendFormat("enable             =>   TRUE, ");
+                sbSql.AppendFormat("statement_types    =>  '{0}'); ", string.Join(",", statement.ToArray()));
+                sbSql.AppendFormat("end;");
                 using (var dal = new OracleDAL(GetSessionConnStr(scId)))
                 {
-                    dal.ExecuteProcedureNonQuery("dbms_fga.add_policy", arrParam);
+                    //dal.ExecuteProcedureNonQuery("dbms_fga.add_policy", arrParam);
+                    dal.ExecuteNonQuery(sbSql.ToString());
                 }
                 ret.Data = JsonConvert.SerializeObject(new
                 {

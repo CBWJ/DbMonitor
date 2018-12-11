@@ -76,7 +76,14 @@
             var layer = layui.layer;
             var active = {
                 modifypwd: function () {
-                    layer.msg("修改密码");
+                    layer.open({
+                        type: 2,
+                        title: "修改密码",
+                        content: ' @Url.Action("ModifyPassword", "Account")',
+                        scrollbar: false,
+                        area: ['500px', '400px'],
+                        resize: false
+                    });
                 },
                 logout: function () {
                     window.location.replace("@Url.Action("Logout","Account")");
@@ -101,6 +108,9 @@
                     }
                 });
             });
+            window.modifyPwdOk = function () {
+                layer.msg("修改成功", { icon: 6 });
+            }
         });
         //刷新列表
         function refreshList() {
@@ -110,6 +120,7 @@
                 $menu.html(res);
             })
         }
+        
     </script>
     <style>
         .leftMenu {
@@ -125,7 +136,7 @@
                 <div class="navbar_left">
                     <a>
                         <i class="fa fa-paw"></i>
-                        <span>简洁后台管理系统框架——开发版</span>
+                        <span>Oracle、达梦数据库监控系统</span>
                     </a>
                 </div>
                 <ul class="main_menu">
