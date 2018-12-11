@@ -1,0 +1,11 @@
+﻿@model DbMonitor.Domain.User
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLayui.cshtml";
+}
+<blockquote class="layui-elem-quote layui-quote-nm">
+    <div>
+        @Model.UName，欢迎使用本系统。当前时间：@DateTime.Now.ToLongDateString() @DateTime.Now.ToLongTimeString()。
+    </div>
+</blockquote>
+

@@ -366,6 +366,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DictionaryController.cs" />
     <Compile Include="Controllers\Dm\DmAuditManageController.cs" />
     <Compile Include="Controllers\Dm\DmAuditRecordController.cs" />
@@ -465,6 +466,7 @@
     <Content Include="Views\Dictionary\Create.cshtml" />
     <Content Include="Views\OrDataCompare\CompareNormalObject.cshtml" />
     <Content Include="Views\Account\ModifyPassword.cshtml" />
+    <Content Include="Views\Dashboard\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
