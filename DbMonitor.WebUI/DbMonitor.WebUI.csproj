@@ -46,11 +46,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -362,6 +366,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
@@ -371,6 +376,7 @@
     <Compile Include="Controllers\Dm\DmAuditManageController.cs" />
     <Compile Include="Controllers\Dm\DmAuditRecordController.cs" />
     <Compile Include="Controllers\Dm\DmMirrorExportController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\Oracle\OrChanglogManageController.cs" />
@@ -396,6 +402,7 @@
     </Compile>
     <Compile Include="Infrastructure\Abstract\IAuthProvider.cs" />
     <Compile Include="Infrastructure\Abstract\IMirrorExport.cs" />
+    <Compile Include="Infrastructure\Concrete\AppHandleErrorAttribute.cs" />
     <Compile Include="Infrastructure\Concrete\DmMirrorExport.cs" />
     <Compile Include="Infrastructure\Concrete\FormsAuthProvider.cs" />
     <Compile Include="Infrastructure\Concrete\OracleMirrorExport.cs" />
@@ -404,6 +411,7 @@
     <Compile Include="Utility\CmdHelper.cs" />
     <Compile Include="Utility\DataGraber.cs" />
     <Compile Include="Utility\EncodingType.cs" />
+    <Compile Include="Utility\LogHelper.cs" />
     <Compile Include="Utility\StatusDataGraber.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -467,6 +475,8 @@
     <Content Include="Views\OrDataCompare\CompareNormalObject.cshtml" />
     <Content Include="Views\Account\ModifyPassword.cshtml" />
     <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\Error\Error404.cshtml" />
+    <Content Include="Views\Shared\Exception.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
