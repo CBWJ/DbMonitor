@@ -55,6 +55,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                     total = 0,
                     data = ""
                 });
+                RecordException(ex);
             }
             return ret;
         }

@@ -92,6 +92,7 @@ namespace DbMonitor.WebUI.Controllers
                     total = 0,
                     data = ""
                 });
+                RecordException(ex);
             }
             return ret;
         }

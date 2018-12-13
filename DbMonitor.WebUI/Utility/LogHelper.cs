@@ -17,16 +17,29 @@ namespace DbMonitor.WebUI.Utility
             try
             {
                 StringBuilder sbInfo = new StringBuilder();
-                //sbInfo.Append("\r\n-----------------start----------------------\r\n");
                 sbInfo.AppendFormat("请求地址：{0}\r\n", HttpContext.Current.Request.Url.AbsoluteUri);
                 sbInfo.AppendFormat("请求类型：{0}\r\n", HttpContext.Current.Request.RequestType);
                 sbInfo.AppendFormat("异常信息：{0}\r\n", ex);
-                //sbInfo.Append("--------------------end---------------------\r\n");
                 logger.Error(sbInfo);
             }
             catch
             {
                 
+            }
+        }
+
+        public static void WriteError(Exception ex, string remark="")
+        {
+            try
+            {
+                StringBuilder sbInfo = new StringBuilder();
+                sbInfo.AppendFormat("备注信息：{0}\r\n", remark);
+                sbInfo.AppendFormat("异常方法：{0}\r\n", ex.TargetSite);
+                sbInfo.AppendFormat("异常信息：{0}\r\n", ex);
+                logger.Error(sbInfo);
+            }
+            catch
+            {
             }
         }
     }
