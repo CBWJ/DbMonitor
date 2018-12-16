@@ -7,6 +7,7 @@ using DbMonitor.Domain;
 using System.Web.Security;
 using Newtonsoft.Json;
 using System.Text;
+using DbMonitor.WebUI.Utility;
 
 namespace DbMonitor.WebUI.Controllers
 {
@@ -76,6 +77,7 @@ namespace DbMonitor.WebUI.Controllers
                     status = 1,
                     message = ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }
@@ -133,6 +135,7 @@ namespace DbMonitor.WebUI.Controllers
                     status = 1,
                     message = ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }
@@ -175,6 +178,7 @@ namespace DbMonitor.WebUI.Controllers
                     status = 1,
                     message = ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }
@@ -261,6 +265,14 @@ namespace DbMonitor.WebUI.Controllers
                 }
             }
             return sbConn.ToString();
+        }
+        /// <summary>
+        /// 记录控制器异常信息
+        /// </summary>
+        /// <param name="ex"></param>
+        protected void RecordException(Exception ex)
+        {
+            LogHelper.WriteErrorFormFilter(ex);
         }
     }
 }

@@ -157,6 +157,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     total = 0,
                     data = ""
                 });
+                RecordException(ex);
             }
             return ret;
         }
@@ -216,6 +217,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     status = 1,
                     message = "发生异常：" + ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }
@@ -268,6 +270,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     status = 1,
                     message = "发生异常：" + ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }
@@ -296,6 +299,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     status = 1,
                     message = ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }
@@ -331,6 +335,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     status = 1,
                     message = ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }
@@ -361,6 +366,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     status = 1,
                     message = "发生异常：" + ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }
@@ -400,6 +406,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     status = 1,
                     message = "发生异常：" + ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }

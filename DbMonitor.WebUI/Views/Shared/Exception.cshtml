@@ -1,0 +1,58 @@
+﻿@model string
+@{
+    ViewBag.Title = "Exception";
+    Layout = "~/Views/Shared/_LayoutLayui.cshtml";
+}
+<style>
+    body {
+        background-color: #f2f2f2;
+    }
+
+    .tips-body {
+        margin-top: 30px;
+        text-align: center;
+        padding: 15px;
+    }
+
+        .tips-body .layui-icon {
+            font-size: 300px;
+            color: #de5a43;
+        }
+
+        .tips-body .tips-text {
+            width: 500px;
+            margin: 30px auto;
+            padding-top: 20px;
+            border-top: 5px solid #009688;
+            font-size: 16px;
+        }
+
+    .tips-text h1 {
+        font-size: 100px;
+        line-height: 100px;
+        color: #009688;
+    }
+
+        .tips-text h1 > span {
+            display: inline-block;
+        }
+
+    .tips-text p {
+        font-size: 20px;
+        font-weight: 300;
+        color: #999;
+    }
+</style>
+<div class="tips-body">
+    <i class="layui-icon layui-icon-face-cry"></i>
+    <div class="tips-text">
+        <h1>
+            @foreach(var c in Model)
+            {
+                <span>@c</span>
+            }
+        </h1>
+        <p>Sorry！程序发生异常了...</p>
+    </div>
+</div>
+

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DbMonitor.WebUI.App_Start;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,8 +15,12 @@ namespace DbMonitor.WebUI
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             //RegisterView();
+            //数据采集
             Utility.DataGraber.Start();
+            //日志
+            log4net.Config.XmlConfigurator.Configure();
         }
 
         private void RegisterView()

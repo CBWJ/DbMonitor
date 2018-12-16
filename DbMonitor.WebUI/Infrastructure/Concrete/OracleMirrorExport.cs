@@ -58,6 +58,7 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
                         me.MEStatus = "创建dblink失败";
                         me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                         ctx.SaveChanges();
+                        LogHelper.WriteError(ex, string.Format("导出Oracle数据库时创建dblink失败，会话ID：{0}", id));
                         return;
                     }
                 }

@@ -181,6 +181,7 @@ namespace DbMonitor.WebUI.Controllers
                     total = 0,
                     data = ""
                 });
+                RecordException(ex);
             }
             return ret;
         }
@@ -257,6 +258,7 @@ namespace DbMonitor.WebUI.Controllers
                     status = 1,
                     message = ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }

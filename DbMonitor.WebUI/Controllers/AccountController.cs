@@ -153,6 +153,7 @@ namespace DbMonitor.WebUI.Controllers
                     status = 1,
                     message = ex.Message
                 });
+                RecordException(ex);
             }
             return ret;
         }

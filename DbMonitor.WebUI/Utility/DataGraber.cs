@@ -101,7 +101,10 @@ namespace DbMonitor.WebUI.Utility
                     GrabDmData(mm);
                 }
             }
-            catch { }
+            catch(Exception ex)
+            {
+                LogHelper.WriteError(ex, string.Format("抓取审计信息，监控管理ID：{0}，会话ID：{1}", mm.ID, mm.SCID));
+            }
             lock (_locker)
             {
                 _dicWorkState[mm.ID] = "wait";

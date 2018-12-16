@@ -25,7 +25,7 @@
             this.selector = selector;
             $.extend(this.settings, options);
             $(selector).append('<ul class="tab-contextmenu"><li rel="reload"class="disable"><i class="fa fa-refresh fa-fw"></i>刷新本页</li><li rel="closeCurrent"><i class="fa fa-close fa-fw"></i>关闭本页</li><li rel="closeOther"><i class="fa fa-window-close-o fa-fw"></i>关闭其他标签页</li><li rel="closeAll"><i class="fa fa-window-close fa-fw"></i>关闭所有标签页</li></ul>');
-            $(selector).append('<div class="tab-header clearfix"><div id="scroll-header-left" class="less-header"><i class="fa fa-chevron-circle-left"></i></div><ul></ul><div id="scroll-header-right" class="less-header"><i class="fa fa-chevron-circle-right"></i></div> </div><div class="tab-content"></div>');
+            $(selector).append('<div class="tab-header clearfix"><div id="scroll-header-left" class="less-header"><i class="fa fa fa-fast-backward"></i></div><ul></ul><div id="scroll-header-right" class="less-header"><i class="fa fa-fast-forward"></i></div> </div><div class="tab-content"></div>');
             var self = this;
             //右键菜单
             if(SimpleMenu){
