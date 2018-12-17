@@ -12,8 +12,8 @@ namespace DbMonitor.WebUI.Extensions
         public static void AddConditionPrefix(this StringBuilder sbSql)
         {
             //排除子查询
-            var sql = sbSql.ToString();
-            sql = Regex.Replace(sql, @"\([\s\S]+WHERE[\s\S]+\)", "");
+            var sql = sbSql.ToString().ToUpper();
+            sql = Regex.Replace(sql, @"\(SELECT[\s\S]+WHERE[\s\S]+\)", "");
 
             if (sql.Contains("WHERE"))
                 sbSql.Append(" AND");
