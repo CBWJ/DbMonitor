@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using DbMonitor.DBAccess.Concrete;
+using DbMonitor.DBAccess.Extensions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +16,15 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         {
             ViewBag.SCID = id;
             SetModuleAuthority();
+            using (OracleDAL dal = new OracleDAL(GetSessionConnStr(id)))
+            {
+                ViewBag.Users = dal.GetAllUsers();
+                ViewBag.ObjectTypes = dal.GetAllObjectTypes();
+            }
             return View();
         }
 
-        public ActionResult List(long scId, string user, string obj, int page = 1, int limit = 20)
+        public ActionResult List(long scId, string user, string objname, int page = 1, int limit = 20)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -28,9 +35,9 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 {
                     log = log.Where(l => l.CLOperator.Contains(user.ToUpper())).ToList();
                 }
-                if (!string.IsNullOrWhiteSpace(obj))
+                if (!string.IsNullOrWhiteSpace(objname))
                 {
-                    log = log.Where(l => l.CLObjectName.Contains(obj.ToUpper())).ToList();
+                    log = log.Where(l => l.CLObjectName.Contains(objname.ToUpper())).ToList();
                 }
                 //log = log//.OrderByDescending(l => new { time = DateTime.Parse(l.CLChangeTime) })
                 //    .Skip((page - 1) * limit)

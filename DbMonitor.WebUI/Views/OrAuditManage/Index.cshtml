@@ -67,8 +67,9 @@
                 $(this).addClass("layui-this");
 
                 var url = $(this).data("src");
-                var w  = window.frames["content"];
-                w.location.replace(w.origin + url);
+                var w = window.frames["content"];
+                var host = "http://" + document.location.host;
+                w.location.replace(host + url);
             })
         })
     </script>
