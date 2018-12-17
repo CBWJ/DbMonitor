@@ -1,14 +1,30 @@
-﻿
+﻿@model List<DbMonitor.Domain.Dictionary>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutList.cshtml";
+    var users = (List<string>)ViewBag.Users;
 }
 
 <input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
 <blockquote class="layui-elem-quote quoteBox">
-    <div class="layui-inline">
+    <div class="layui-form layui-inline">
         <div class="layui-input-inline">
-            <input type="text" class="layui-input searchVal" id="option" placeholder="请输入权限选项">
+            <select id="user" name="user" lay-search>
+                <option value="">请选择用户</option>
+                @foreach (var u in users)
+                {
+                    <option value="@u">@u</option>
+                }
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select id="option" name="option" lay-search>
+                <option value="">请选择权限选项</option>
+                @foreach (var s in Model)
+                {
+                    <option value="@s.DCode">@s.DCode</option>
+                }
+            </select>
         </div>
     </div>
     @{
@@ -43,7 +59,8 @@
                 table.reload(tableConfig.tableID,//ID
                     {
                         where: { //设定异步数据接口的额外参数，任意设
-                            option: $("#option").val()
+                            option: $("#option").find("option:selected").val(),
+                            user: $("#user").find("option:selected").val()
                         },
                         page: {
                             curr: 1

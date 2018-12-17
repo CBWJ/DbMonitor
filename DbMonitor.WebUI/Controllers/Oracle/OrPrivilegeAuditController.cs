@@ -19,10 +19,16 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         {
             ViewBag.SCID = id;
             SetModuleAuthority();
-            return View();
+            using (OracleDAL dal = new OracleDAL(GetSessionConnStr(id)))
+            {
+                ViewBag.Users = dal.GetAllUsers();
+            }
+            var dic = db.Dictionary.Where(d => d.DTypeCode == "OracleAuditPrivilege" && d.DEnable == 1).
+                OrderBy(d=>d.DCode).ToList();
+            return View(dic);
         }
 
-        public ActionResult List(long scId, int page = 1, int limit = 20, string option = "")
+        public ActionResult List(long scId, int page = 1, int limit = 20, string user = "", string option = "")
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -35,6 +41,11 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 sbCount.AppendFormat("SELECT COUNT(1) FROM {0} ", tv);
                 sbSql.AppendFormat("SELECT * FROM (SELECT ROWNUM AS ROWNO, t.* FROM {0} t WHERE ", tv);
                 //筛选条件
+                if (!string.IsNullOrWhiteSpace(user))
+                {
+                    sbSql.AppendFormat("USER_NAME LIKE '%{0}%' AND ", user);
+                    sbCount.AddCondition(string.Format("USER_NAME LIKE '%{0}%'", user));
+                }
                 if (!string.IsNullOrWhiteSpace(option))
                 {
                     sbSql.AppendFormat("PRIVILEGE LIKE '%{0}%' AND ", option.ToUpper());
@@ -82,7 +93,10 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                                             "ALTER ANY PROCEDURE","CREATE ANY PROCEDURE","ALTER DATABASE","GRANT ANY ROLE",
                                             "CREATE PUBLIC DATABASE LINK","DROP ANY TABLE","ALTER ANY TABLE","CREATE ANY TABLE",
                                             "DROP USER","ALTER USER","CREATE USER","CREATE SESSION","AUDIT SYSTEM","ALTER SYSTEM"};
-            ViewBag.STMT = arrPrivilege.OrderBy(s => s).ToList();
+            ViewBag.STMT = (from d in db.Dictionary
+                            where d.DTypeCode == "OracleAuditPrivilege" && d.DEnable == 1
+                            orderby d.DTypeCode
+                            select d.DCode).OrderBy(c => c).ToList();
             //用户
             using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
             {

@@ -35,7 +35,19 @@ namespace DbMonitor.DBAccess.Extensions
         public static List<string> GetAllUsers(this OracleDAL dal)
         {
             StringBuilder sbSql = new StringBuilder();
-            sbSql.AppendFormat("select * from dba_users where ACCOUNT_STATUS =  'OPEN'");
+            sbSql.AppendFormat("select USERNAME from dba_users where ACCOUNT_STATUS =  'OPEN' ORDER BY USERNAME ASC");
+
+            return dal.GetOneColumnValue(sbSql.ToString());
+        }
+        /// <summary>
+        /// 获取所有对象类型
+        /// </summary>
+        /// <param name="dal"></param>
+        /// <returns></returns>
+        public static List<string> GetAllObjectTypes(this OracleDAL dal)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            sbSql.AppendFormat("select object_type from dba_objects group by object_type ORDER BY object_type");
 
             return dal.GetOneColumnValue(sbSql.ToString());
         }

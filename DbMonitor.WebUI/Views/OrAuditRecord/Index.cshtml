@@ -2,24 +2,52 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutList.cshtml";
+    var users = (List<string>)ViewBag.Users;
+    var types = (List<string>)ViewBag.ObjectTypes;
+    var stmts = (List<string>)ViewBag.STMT;
 }
 
 <input type="hidden" id="scId", name="scId" value="@ViewBag.SCID"/>
 <blockquote class="layui-elem-quote quoteBox">
 
-    <div class="layui-inline">
+    <div class="layui-form layui-inline">
         <div class="layui-input-inline">
-            <input type="text" class="layui-input searchVal" id="user" placeholder="请输入用户名检索">
+            <select id="user" name="user" lay-search lay-filter="user">
+                <option value="">请选择用户</option>
+                @foreach (var u in users)
+                {
+                    <option value="@u">@u</option>
+                }
+            </select>
         </div>
-    </div>
-    <div class="layui-inline">
         <div class="layui-input-inline">
-            <input type="text" class="layui-input searchVal" id="obj" placeholder="请输入对象名检索">
+            <select name="objtype" id="objtype" lay-search lay-filter="objtype">
+                <option value="">请选择对象类型</option>
+                @foreach (var u in types)
+                {
+                    <option value="@u">@u</option>
+                }
+            </select>
         </div>
-    </div>
-    <div class="layui-inline">
         <div class="layui-input-inline">
-            <input type="text" class="layui-input searchVal" id="type" placeholder="请输入语句类型检索">
+            <select name="objname" id="objname">
+                <option value="">请选择对象</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select name="type" id="type" lay-search>
+                <option value="">请选择语句类型</option>
+                @foreach (var u in stmts)
+                {
+                    <option value="@u">@u</option>
+                }
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="begtime" placeholder="请选择开始时间">
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="endtime" placeholder="请选择结束时间">
         </div>
     </div>
     @{
@@ -47,7 +75,59 @@
                   , { field: 'EXTENDED_TIMESTAMP', title: '发生时间', sort: true }
                 ]],
         dataInterface: "@Url.Action("List", "OrAuditRecord")",
-        where: { scId: '@ViewBag.SCID' }
+        where: { scId: '@ViewBag.SCID' },
+        afterRender: function(table, layer, form){
+            form.on('select(user)', function (data) {
+                //data.elem,DOM元素
+                var user = $("#user").find("option:selected").val();
+                var objtype = $("#objtype").find("option:selected").val();
+                if (user != "" && objtype != "") {
+                    freshObject(user,objtype);
+                }
+            });
+            form.on('select(objtype)', function (data) {
+                var user = $("#user").find("option:selected").val();
+                var objtype = $("#objtype").find("option:selected").val();
+                if (user != "" && objtype != "") {
+                    freshObject(user,objtype);
+                }
+            });
+            function freshObject(u, t) {
+                $.post("@Url.Action("GetObjectName", "OrObjectAudit")",
+                    {scId:@ViewBag.SCID, user: u, objtype: t },
+                        function (res) {
+                            var objRes = JSON.parse(res);
+                            if(objRes.status == 0){
+                                var $name = $("#objname");
+                                $name.html('');
+                                //必须加空项，不然不验证
+                                var op = $("<option>").val("").text("请选择对象");
+                                $name.append(op);
+                                $.each(objRes.data ,function(index, item){
+                                    op = $("<option>").val(item).text(item);
+                                    $name.append(op);
+                                });
+                                form.render('select');
+                                $name.get(0).selectedIndex=0;
+                            }
+                        },"json")
+            }
+            layui.use('laydate',function(){
+                var laydate = layui.laydate;
+                var now = new Date().Format("yyyy-MM-dd hh:mm:ss");
+                //执行一个laydate实例
+                laydate.render({
+                    elem: '#begtime' //指定元素
+                    , type: 'datetime'
+                    , max: now
+                });
+                laydate.render({
+                    elem: '#endtime' //指定元素
+                    , type: 'datetime'
+                    , value: now
+                });
+            });
+        }
     };
     window.dataOperation = {
         moreAcive: {
@@ -55,10 +135,11 @@
                 table.reload(tableConfig.tableID,//ID
                     {
                         where: { //设定异步数据接口的额外参数，任意设
-                            user: $("#username").val(),
-                            obj: $("#obj").val(),
-                            type: $("#type").val(),
-                            scId: $("#scId").val()
+                            user: $("#user").find("option:selected").val(),
+                            type: $("#type").find("option:selected").val(),
+                            objname: $("#objname").find("option:selected").val(),
+                            begtime: $("#begtime").val(),
+                            endtime: $("#endtime").val()
                         },
                         page: {
                             curr: 1

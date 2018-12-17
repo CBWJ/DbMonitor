@@ -19,10 +19,17 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         {
             ViewBag.SCID = id;
             SetModuleAuthority();
-            return View();
+            using (OracleDAL dal = new OracleDAL(GetSessionConnStr(id)))
+            {
+                ViewBag.Users = dal.GetAllUsers();
+                //ViewBag.ObjTypes = dal.GetAllObjectTypes();
+            }
+            var dic = db.Dictionary.Where(d => d.DTypeCode == "OracleObjectType" && d.DEnable == 1)
+                .OrderBy(d => d.DCode).ToList();
+            return View(dic);
         }
 
-        public ActionResult List(long scId, int page = 1, int limit = 20, string user = "", string obj = "")
+        public ActionResult List(long scId, int page = 1, int limit = 20, string user = "", string objtype = "", string objname="")
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -37,20 +44,24 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 //筛选条件
                 if (!string.IsNullOrWhiteSpace(user))
                 {
-                    sbSql.AppendFormat("OWNER LIKE '%{0}%' AND ", user.ToUpper());
-                    sbCount.AddCondition(string.Format("OWNER LIKE '%{0}%'", user.ToUpper()));
+                    sbSql.AppendFormat("OWNER LIKE '%{0}%' AND ", user);
+                    sbCount.AddCondition(string.Format("OWNER LIKE '%{0}%'", user));
                 }
-                if (!string.IsNullOrWhiteSpace(obj))
+                if (!string.IsNullOrWhiteSpace(objtype))
                 {
-                    sbSql.AppendFormat("OBJECT_NAME LIKE '%{0}%' AND ", obj.ToUpper());
-                    sbCount.AddCondition(string.Format("OBJECT_NAME LIKE '%{0}%'", obj.ToUpper()));
+                    sbSql.AppendFormat("OBJECT_TYPE LIKE '%{0}%' AND ", objtype);
+                    sbCount.AddCondition(string.Format("OBJECT_TYPE LIKE '%{0}%'", objtype));
+                }
+                if (!string.IsNullOrWhiteSpace(objname))
+                {
+                    sbSql.AppendFormat("OBJECT_NAME LIKE '%{0}%' AND ", objname);
+                    sbCount.AddCondition(string.Format("OBJECT_NAME LIKE '%{0}%'", objname));
                 }
                 sbSql.AppendFormat("ROWNUM <= {0}) table_alias WHERE table_alias.ROWNO > {1}",
                     page * limit, (page - 1) * limit);
 
                 int count = 0;
-                DataTable dt = null;
-                //string connStr = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORCL)));Persist Security Info=True;User ID=sys;Password=sys;DBA Privilege=SYSDBA;";
+                DataTable dt = null;               
                 string connStr = GetSessionConnStr(scId);
                 using (OracleDAL dal = new OracleDAL(connStr))
                 {
@@ -83,25 +94,18 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         {
             //语句
             string[] arrStatement = { "ALTER", "AUDIT", "COMMENT", "DELETE", "EXECUTE", "FLASHBACK", "GRANT", "INDEX", "INSERT", "LOCK", "READ", "RENAME", "SELECT", "UPDATE" };
-            ViewBag.STMT = arrStatement.OrderBy(s => s).ToList();
+            ViewBag.STMT = (from d in db.Dictionary
+                            where d.DTypeCode == "OracleAuditObject" && d.DEnable == 1
+                            select d.DCode).OrderBy(c => c).ToList();
             //用户
             using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
             {
                 //查询语句结尾不要逗号，否则报错:ORA-00911: 无效字符
                 StringBuilder sbSql = new StringBuilder();
-                ViewBag.User = dal.GetAllUsers().OrderBy(u => u).ToList();
-
-                sbSql.Clear();
-                sbSql.Append("select object_type from dba_objects group by object_type");
-                var dt = dal.ExecuteQuery(sbSql.ToString());
-                List<string> objects = new List<string>();
-                foreach (DataRow row in dt.Rows)
-                {
-                    var u = row.ItemArray[0].ToString();
-                    objects.Add(u);
-                }
-                ViewBag.Object = objects.OrderBy(u => u).ToList();
+                ViewBag.User = dal.GetAllUsers().OrderBy(u => u).ToList(); 
             }
+            ViewBag.ObjectTypes = db.Dictionary.Where(d => d.DTypeCode == "OracleObjectType" && d.DEnable == 1)
+                .OrderBy(d => d.DCode).ToList();
             return View(scId);
         }
         [HttpPost]

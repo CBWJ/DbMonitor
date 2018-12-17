@@ -5,6 +5,7 @@
     var stmt = (List<string>)ViewBag.STMT;
     var users = (List<string>)ViewBag.User;
     var objects = (List<string>)ViewBag.Object;
+    var objectTypes = (List<DbMonitor.Domain.Dictionary>)ViewBag.ObjectTypes;
 }
 
 <input type="hidden" id="scId" , name="scId" value="@Model" />
@@ -23,9 +24,9 @@
     <div class="layui-input-inline">
         <select name="objtype" id="objtype" lay-verify="required" lay-search lay-filter="objtype">
             <option value=""></option>
-            @foreach (var u in objects)
+            @foreach (var d in objectTypes)
             {
-                <option value="@u">@u</option>
+                <option value="@d.DCode">@d.DCode（@d.DName）</option>
             }
         </select>
     </div>

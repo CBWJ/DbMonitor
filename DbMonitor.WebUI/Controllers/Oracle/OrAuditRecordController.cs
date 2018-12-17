@@ -1,4 +1,5 @@
 ﻿using DbMonitor.DBAccess.Concrete;
+using DbMonitor.DBAccess.Extensions;
 using DbMonitor.WebUI.Extensions;
 using Newtonsoft.Json;
 using System;
@@ -18,9 +19,15 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         {
             ViewBag.SCID = id;
             SetModuleAuthority();
+            using (OracleDAL dal = new OracleDAL(GetSessionConnStr(id)))
+            {
+                ViewBag.Users = dal.GetAllUsers();
+                ViewBag.ObjectTypes = dal.GetAllObjectTypes();
+                ViewBag.STMT = dal.GetOneColumnValue("select statement_type from DBA_COMMON_AUDIT_TRAIL GROUP BY statement_type ORDER BY statement_type");
+            }
             return View();
         }
-        public ActionResult List(long scId, string user, string obj, string type, int page = 1, int limit = 20)
+        public ActionResult List(long scId, string user, string objname, string type, string begtime, string endtime, int page = 1, int limit = 20)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -38,15 +45,25 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                     sbSql.AppendFormat("DB_USER LIKE '%{0}%' AND ", user.ToUpper());
                     sbCount.AddCondition(string.Format("DB_USER LIKE '%{0}%'", user.ToUpper()));
                 }
-                if (!string.IsNullOrWhiteSpace(obj))
+                if (!string.IsNullOrWhiteSpace(objname))
                 {
-                    sbSql.AppendFormat("OBJECT_NAME LIKE '%{0}%' AND ", obj.ToUpper());
-                    sbCount.AddCondition(string.Format("OBJECT_NAME LIKE '%{0}%'", obj.ToUpper()));
+                    sbSql.AppendFormat("OBJECT_NAME LIKE '%{0}%' AND ", objname.ToUpper());
+                    sbCount.AddCondition(string.Format("OBJECT_NAME LIKE '%{0}%'", objname.ToUpper()));
                 }
                 if (!string.IsNullOrWhiteSpace(type))
                 {
                     sbSql.AppendFormat("STATEMENT_TYPE LIKE '%{0}%' AND ", type.ToUpper());
                     sbCount.AddCondition(string.Format("STATEMENT_TYPE LIKE '%{0}%'", type.ToUpper()));
+                }
+                if (!string.IsNullOrWhiteSpace(begtime))
+                {
+                    sbSql.AppendFormat("extended_timestamp >= to_date('{0}','yyyy-MM-dd HH24:mi:ss') AND ", begtime);
+                    sbCount.AddCondition(string.Format("extended_timestamp >= to_date('{0}','yyyy-MM-dd HH24:mi:ss')", begtime));
+                }
+                if (!string.IsNullOrWhiteSpace(endtime))
+                {
+                    sbSql.AppendFormat("extended_timestamp <= to_date('{0}','yyyy-MM-dd HH24:mi:ss') AND ", endtime);
+                    sbCount.AddCondition(string.Format("extended_timestamp <= to_date('{0}','yyyy-MM-dd HH24:mi:ss')", endtime));
                 }
                 sbSql.AppendFormat("ROWNUM <= {0}) table_alias WHERE table_alias.ROWNO > {1}",
                     page * limit, (page - 1) * limit);
