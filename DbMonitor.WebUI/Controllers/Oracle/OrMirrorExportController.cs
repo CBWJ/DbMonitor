@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Threading.Tasks;
 using DbMonitor.WebUI.Infrastructure.Concrete;
+using DbMonitor.DBAccess.Concrete;
+using DbMonitor.DBAccess.Extensions;
 
 namespace DbMonitor.WebUI.Controllers.Oracle
 {
@@ -17,18 +19,37 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         {
             ViewBag.SCID = id;
             SetModuleAuthority();
+            using (var dal = new OracleDAL(GetSessionConnStr(id)))
+            {
+                ViewBag.Users = dal.GetAllUsers();
+            }
             return View();
         }
 
-        public ActionResult List(long scId, int page = 1, int limit = 20, string option = "")
+        public ActionResult List(long scId, string user, string begtime, string endtime, int page = 1, int limit = 20)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
 
             try
             {
-                var exports = db.MirrorExport.Where(m=>m.SCID == scId)
-                        .OrderByDescending(m => m.CreationTime)
+                var exports = db.MirrorExport.Where(m => m.SCID == scId).ToList();
+                if (!string.IsNullOrWhiteSpace(user))
+                {
+                    exports = exports.Where(l => l.MESchemas.ToUpper().Contains(user)).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(begtime))
+                {
+                    var beg = DateTime.Parse(begtime);
+                    exports = exports.Where(l => DateTime.Parse(l.MEExportTime) >= beg).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(endtime))
+                {
+                    var end = DateTime.Parse(endtime);
+                    exports = exports.Where(l => DateTime.Parse(l.MEExportTime) < end).ToList();
+                }
+                int cnt = exports.Count();
+                exports = exports.OrderByDescending(m => m.CreationTime)
                         .Skip((page - 1) * limit)
                         .Take(limit)
                         .ToList();
@@ -36,7 +57,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 {
                     status = 0,
                     message = "",
-                    total = exports.Count,
+                    total = cnt,
                     data = exports
                 });
             }
@@ -68,6 +89,10 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 MESchemas = sc.SCUser,
                 MEExportTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")
             };
+            using(var dal = new OracleDAL(GetSessionConnStr(scId)))
+            {
+                ViewBag.Users = dal.GetAllUsers();
+            }
             return View(me);
         }
         [HttpPost]

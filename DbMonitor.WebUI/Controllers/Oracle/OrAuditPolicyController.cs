@@ -20,10 +20,14 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         {
             ViewBag.SCID = id;
             SetModuleAuthority();
+            using (var dal = new OracleDAL(GetSessionConnStr(id)))
+            {
+                ViewBag.Users = dal.GetAllUsers();
+            }
             return View();
         }
 
-        public ActionResult List(long scId, int page = 1, int limit = 20, string user = "", string obj = "", string policy="")
+        public ActionResult List(long scId, int page = 1, int limit = 20, string user = "", string objname = "", string policy="")
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -41,10 +45,10 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                     sbSql.AppendFormat("OBJECT_SCHEMA LIKE '%{0}%' AND ", user.ToUpper());
                     sbCount.AddCondition(string.Format("OBJECT_SCHEMA LIKE '%{0}%'", user.ToUpper()));
                 }
-                if (!string.IsNullOrWhiteSpace(obj))
+                if (!string.IsNullOrWhiteSpace(objname))
                 {
-                    sbSql.AppendFormat("OBJECT_NAME LIKE '%{0}%' AND ", obj.ToUpper());
-                    sbCount.AddCondition(string.Format("OBJECT_NAME LIKE '%{0}%'", obj.ToUpper()));
+                    sbSql.AppendFormat("OBJECT_NAME LIKE '%{0}%' AND ", objname.ToUpper());
+                    sbCount.AddCondition(string.Format("OBJECT_NAME LIKE '%{0}%'", objname.ToUpper()));
                 }
                 if (!string.IsNullOrWhiteSpace(policy))
                 {
@@ -271,19 +275,11 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             try
             {
                 List<string> objs = new List<string>();
-                //查询语句结尾不要逗号，否则报错:ORA-00911: 无效字符
-                StringBuilder sbSql = new StringBuilder();
-                sbSql.AppendFormat("select object_name from dba_objects where owner='{0}' and object_type = '{1}'",
-                    user, objtype);
                 using (OracleDAL dal = new OracleDAL(GetSessionConnStr(scId)))
                 {
-                    DataTable dt = dal.ExecuteQuery(sbSql.ToString());
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        var u = row.ItemArray[0].ToString();
-                        objs.Add(u);
-                    }
+                    //视图与表
+                    objs.AddRange(dal.GetAllTables(user));
+                    objs.AddRange(dal.GetObjectName(user, "VIEW"));
                 }
                 ret.Data = JsonConvert.SerializeObject(new
                 {

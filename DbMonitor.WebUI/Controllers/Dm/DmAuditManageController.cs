@@ -19,9 +19,21 @@ namespace DbMonitor.WebUI.Controllers.Dm
         {
             ViewBag.SCID = id;
             SetModuleAuthority();
-            return View();
+            using (var dal = new DmDAL(GetSessionConnStr(id)))
+            {
+                ViewBag.Users = dal.GetAllUsers();
+            }
+            var dic = db.Dictionary.Where(d => d.DTypeCode == "DmObjectType" && d.DEnable == 1)
+                .OrderBy(d => d.DCode).ToList();
+            var stmt = (from d in db.Dictionary
+                            where (d.DTypeCode == "DmAuditSTMT" || d.DTypeCode == "DmAuditObject") && d.DEnable == 1
+                            orderby d.DTypeCode
+                            select d.DCode).OrderBy(c=>c).Distinct().ToList();
+            stmt.Remove("ALL");
+            ViewBag.STMT = stmt.OrderBy(s => s).ToList();
+            return View(dic);
         }
-        public ActionResult List(long scId, string user, string obj, string type, int page = 1, int limit = 30)
+        public ActionResult List(long scId, string user, string objname, string type, int page = 1, int limit = 30)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -101,10 +113,10 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     sbCount.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
                     sbSql.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
                 }
-                if (!string.IsNullOrWhiteSpace(obj))
+                if (!string.IsNullOrWhiteSpace(objname))
                 {
-                    sbCount.AddCondition(string.Format("OBJECTNAME LIKE '%{0}%'", obj.ToUpper()));
-                    sbSql.AddCondition(string.Format("OBJECTNAME LIKE '%{0}%'", obj.ToUpper()));
+                    sbCount.AddCondition(string.Format("OBJECTNAME LIKE '%{0}%'", objname.ToUpper()));
+                    sbSql.AddCondition(string.Format("OBJECTNAME LIKE '%{0}%'", objname.ToUpper()));
                 }
                 if (!string.IsNullOrWhiteSpace(type))
                 {
@@ -176,7 +188,10 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     "MAC GROUP","MAC LABEL","MAC USER","MAC TABLE","MAC SESSION",
                     "CHECKPOINT","SAVEPOINT","EXPLAIN","NOT EXIST","DATABASE",
                     "CONNECT","COMMIT","ROLLBACK","SET TRANSACTION"};
-            ViewBag.STMT = arrStatement.ToList();
+            ViewBag.STMT = (from d in db.Dictionary
+                            where d.DTypeCode == "DmAuditSTMT" && d.DEnable == 1
+                            orderby d.DTypeCode
+                            select d.DCode).OrderBy(c => c).ToList();
 
             using (var dal = new DmDAL(GetSessionConnStr(id)))
             {
@@ -225,13 +240,17 @@ namespace DbMonitor.WebUI.Controllers.Dm
         public ActionResult CreateObject(long id)
         {
             string[] arrStatement = { "ALL", "INSERT", "UPDATE", "DELETE", "SELECT", "EXECUTE", "MERGE INTO", "EXECUTE TRIGGER", "LOCK TABLE" };
-            ViewBag.STMT = arrStatement.ToList();
+            ViewBag.STMT = (from d in db.Dictionary
+                            where d.DTypeCode == "DmAuditObject" && d.DEnable == 1
+                            orderby d.DTypeCode
+                            select d.DCode).OrderBy(c => c).ToList();
 
             using (var dal = new DmDAL(GetSessionConnStr(id)))
             {
                 ViewBag.User = dal.GetAllUsers();
-
             }
+            ViewBag.ObjectTypes = db.Dictionary.Where(d => d.DTypeCode == "DmObjectType" && d.DEnable == 1)
+                .OrderBy(d => d.DCode).ToList();
             return View(id);
         }
         [HttpPost]
@@ -283,8 +302,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
                 List<string> objs = new List<string>();
                 using (var dal = new DmDAL(GetSessionConnStr(scId)))
                 {
-                    objs.AddRange(dal.GetAllTables(user));
-                    objs.AddRange(dal.GetAllViews(user));
+                    objs.AddRange(dal.GetObjectName(user, objtype));
                 }
                 ret.Data = JsonConvert.SerializeObject(new
                 {

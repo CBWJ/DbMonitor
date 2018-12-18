@@ -24,7 +24,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             return View();
         }
 
-        public ActionResult List(long scId, string user, string objname, int page = 1, int limit = 20)
+        public ActionResult List(long scId, string user, string objname, string begtime, string endtime, int page = 1, int limit = 20)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -38,6 +38,16 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 if (!string.IsNullOrWhiteSpace(objname))
                 {
                     log = log.Where(l => l.CLObjectName.Contains(objname.ToUpper())).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(begtime))
+                {
+                    var beg = DateTime.Parse(begtime);
+                    log = log.Where(l => DateTime.Parse(l.CLChangeTime) >= beg).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(endtime))
+                {
+                    var end = DateTime.Parse(endtime);
+                    log = log.Where(l => DateTime.Parse(l.CLChangeTime) < end).ToList();
                 }
                 //log = log//.OrderByDescending(l => new { time = DateTime.Parse(l.CLChangeTime) })
                 //    .Skip((page - 1) * limit)

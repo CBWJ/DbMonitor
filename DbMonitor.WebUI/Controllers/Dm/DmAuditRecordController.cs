@@ -19,9 +19,21 @@ namespace DbMonitor.WebUI.Controllers.Dm
         {
             ViewBag.SCID = id;
             SetModuleAuthority();
-            return View();
+            using (var dal = new DmDAL(GetSessionConnStr(id)))
+            {
+                ViewBag.Users = dal.GetAllUsers();
+            }
+            var dic = db.Dictionary.Where(d => d.DTypeCode == "DmObjectType" && d.DEnable == 1)
+                .OrderBy(d => d.DCode).ToList();
+            var stmt = (from d in db.Dictionary
+                        where (d.DTypeCode == "DmAuditSTMT" || d.DTypeCode == "DmAuditObject") && d.DEnable == 1
+                        orderby d.DTypeCode
+                        select d.DCode).OrderBy(c => c).Distinct().ToList();
+            stmt.Remove("ALL");
+            ViewBag.STMT = stmt.OrderBy(s => s).ToList();
+            return View(dic);
         }
-        public ActionResult List(long scId, string user, string obj, string operation, int page = 1, int limit = 20)
+        public ActionResult List(long scId, string user, string objname, string type, string begtime, string endtime, int page = 1, int limit = 20)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -41,15 +53,25 @@ namespace DbMonitor.WebUI.Controllers.Dm
                         sbSql.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
                         sbCount.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
                     }
-                    if (!string.IsNullOrWhiteSpace(obj))
+                    if (!string.IsNullOrWhiteSpace(objname))
                     {
-                        sbSql.AddCondition(string.Format("OBJNAME LIKE '%{0}%'", obj.ToUpper()));
-                        sbCount.AddCondition(string.Format("OBJNAME LIKE '%{0}%'", obj.ToUpper()));
+                        sbSql.AddCondition(string.Format("OBJNAME LIKE '%{0}%'", objname.ToUpper()));
+                        sbCount.AddCondition(string.Format("OBJNAME LIKE '%{0}%'", objname.ToUpper()));
                     }
-                    if (!string.IsNullOrWhiteSpace(operation))
+                    if (!string.IsNullOrWhiteSpace(type))
                     {
-                        sbSql.AddCondition(string.Format("OPERATION LIKE '%{0}%'", operation.ToUpper()));
-                        sbCount.AddCondition(string.Format("OPERATION LIKE '%{0}%'", operation.ToUpper()));
+                        sbSql.AddCondition(string.Format("OPERATION LIKE '%{0}%'", type.ToUpper()));
+                        sbCount.AddCondition(string.Format("OPERATION LIKE '%{0}%'", type.ToUpper()));
+                    }
+                    if (!string.IsNullOrWhiteSpace(begtime))
+                    {
+                        sbSql.AddCondition(string.Format("OPTIME >= '{0}'", begtime));
+                        sbCount.AddCondition(string.Format("OPTIME >= '{0}'", begtime));
+                    }
+                    if (!string.IsNullOrWhiteSpace(endtime))
+                    {
+                        sbSql.AddCondition(string.Format("OPTIME < '{0}'", endtime));
+                        sbCount.AddCondition(string.Format("OPTIME < '{0}'", endtime));
                     }
                     sbSql.AppendFormat(" LIMIT {0} OFFSET {1}",
                         limit, (page - 1) * limit);

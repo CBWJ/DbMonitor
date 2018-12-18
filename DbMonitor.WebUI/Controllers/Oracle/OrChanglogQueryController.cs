@@ -39,6 +39,16 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 {
                     log = log.Where(l => l.CLObjectName.Contains(objname.ToUpper())).ToList();
                 }
+                if (!string.IsNullOrWhiteSpace(begtime))
+                {
+                    var beg = DateTime.Parse(begtime);
+                    log = log.Where(l => DateTime.Parse(l.CLChangeTime) >= beg).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(endtime))
+                {
+                    var end = DateTime.Parse(endtime);
+                    log = log.Where(l => DateTime.Parse(l.CLChangeTime) < end).ToList();
+                }
                 int cnt = log.Count;
                 log = log.OrderBy(l => l.CLChangeTime).Skip((page - 1) * limit).Take(limit).ToList();
                 ret.Data = JsonConvert.SerializeObject(new

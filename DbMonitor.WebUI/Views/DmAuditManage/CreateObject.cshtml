@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_LayoutEdit.cshtml";
     var users = (List<string>)ViewBag.User;
     var allStatement = (List<string>)ViewBag.STMT;
+    var types = (List<DbMonitor.Domain.Dictionary>)ViewBag.ObjectTypes;
 }
 
 <input type="hidden" id="scId" , name="scId" value="@Model" />
@@ -28,6 +29,18 @@
             @foreach (var s in users)
             {
                 <option value="@s">@s</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">对象类型</label>
+    <div class="layui-input-block">
+        <select name="objtype" id="objtype" lay-verify="required" lay-search lay-filter="objtype">
+            <option value="">请选择对象类型</option>
+            @foreach (var d in types)
+            {
+                <option value="@d.DCode">@d.DCode（@d.DName）</option>
             }
         </select>
     </div>
@@ -59,20 +72,25 @@
 <script>
     function setForm(form) {
         form.on('select(user)', function (data) {
-            //data.elem,DOM元素
-            var user = $("#user").find("option:selected").val();
-            selectRefresh(form, $("#tvname"),
-                "@Url.Action("GetObjectName", "DmAuditManage")",
-                {scId:@Model, user: user})
+            refreshObject(form)
+        });
+        form.on('select(objtype)', function (data) {
+            refreshObject(form);
         });
         form.on('select(obj)', function (data) {
-            //data.elem,DOM元素
             var user = $("#user").find("option:selected").val();
             var obj = $("#tvname").find("option:selected").val();
             selectRefresh(form, $("#colname"),
                 "@Url.Action("GetColumnName", "DmAuditManage")",
                 {scId:@Model, user: user, objname:obj})
         });
+    }
+    function refreshObject(form){
+        var user = $("#user").find("option:selected").val();
+        var objtype = $("#objtype").find("option:selected").val();
+        selectRefresh(form, $("#tvname"),
+            "@Url.Action("GetObjectName", "DmAuditManage")",
+        {scId:@Model, user: user, objtype: objtype});
     }
     function selectRefresh(form, $sel, url, postData){
         $.post(url, postData,

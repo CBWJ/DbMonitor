@@ -2,14 +2,26 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutList.cshtml";
+    var users = (List<string>)ViewBag.Users;
 }
 
 <input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
 <blockquote class="layui-elem-quote quoteBox">
-
-    <div class="layui-inline">
+    <div class="layui-form layui-inline">
         <div class="layui-input-inline">
-            <input type="text" class="layui-input searchVal" id="user" placeholder="请输入用户名检索">
+            <select id="user" name="user" lay-verify="required" lay-search>
+                <option value="">请选择模式</option>
+                @foreach (var u in users)
+                {
+                    <option value="@u">@u</option>
+                }
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="begtime" placeholder="请选择导出开始时间">
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="endtime" placeholder="请选择导出截止时间">
         </div>
     </div>
     @{
@@ -39,7 +51,24 @@
                   , { field: 'CreationTime', title: '创建时间', sort: true }
                 ]],
         dataInterface: "@Url.Action("List", @ViewBag.Controller)",
-        where: { scId: '@ViewBag.SCID' }
+        where: { scId: '@ViewBag.SCID' },
+        afterRender: function (table, layer, form) {
+            layui.use('laydate', function () {
+                var laydate = layui.laydate;
+                var now = new Date().Format("yyyy-MM-dd hh:mm:ss");
+                //执行一个laydate实例
+                laydate.render({
+                    elem: '#begtime' //指定元素
+                    , type: 'datetime'
+                    , max: now
+                });
+                laydate.render({
+                    elem: '#endtime' //指定元素
+                    , type: 'datetime'
+                    , max: now
+                });
+            });
+        }
     };
     window.dataOperation = {
         moreAcive: {
@@ -47,6 +76,9 @@
                 table.reload(tableConfig.tableID,//ID
                     {
                         where: { //设定异步数据接口的额外参数，任意设
+                            user: $("#user").find("option:selected").val(),
+                            begtime: $("#begtime").val(),
+                            endtime: $("#endtime").val()
                         },
                         page: {
                             curr: 1

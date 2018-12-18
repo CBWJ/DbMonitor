@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+    var users = (List<string>)ViewBag.Users;
 }
 
 @Html.HiddenFor(m => m.SCID)
@@ -13,13 +14,19 @@
     </div>
     <label class="layui-form-label">密码</label>
     <div class="layui-input-inline">
-        @Html.TextBoxFor(m => m.MEPassword, new { lay_verify = "required", placeholder = "请输入密码", autocomplete = "off", @class = "layui-input" })
+        @Html.PasswordFor(m => m.MEPassword, new { lay_verify = "required", placeholder = "请输入密码", autocomplete = "off", @class = "layui-input", value=Model.MEPassword })
     </div>
 </div>
 <div class="layui-form-item">
     <label class="layui-form-label">导出模式</label>
     <div class="layui-input-inline">
-        @Html.TextBoxFor(m => m.MESchemas, new { lay_verify = "required", placeholder = "请输入导出模式", autocomplete = "off", @class = "layui-input" })
+        <select name="MESchemas" lay-verify="required" lay-search>
+            <option value="">请选择模式</option>
+            @foreach (var u in users)
+            {
+                <option value="@u" @(Model.MESchemas.ToUpper() == u ? "selected" : "")>@u</option>
+            }
+        </select>
     </div>
     <label class="layui-form-label">导出时间点</label>
     <div class="layui-input-inline">

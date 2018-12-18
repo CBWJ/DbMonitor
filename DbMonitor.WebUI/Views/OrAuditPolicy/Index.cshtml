@@ -2,16 +2,25 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutList.cshtml";
+    var users = (List<string>)ViewBag.Users;
 }
 
 <input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
 <blockquote class="layui-elem-quote quoteBox">
-    <div class="layui-inline">
+    <div class="layui-form layui-inline">
         <div class="layui-input-inline">
-            <input type="text" class="layui-input searchVal" id="user" placeholder="请输入模式名">
+            <select id="user" name="user" lay-search lay-filter="user">
+                <option value="">请选择模式</option>
+                @foreach (var u in users)
+                {
+                    <option value="@u">@u</option>
+                }
+            </select>
         </div>
         <div class="layui-input-inline">
-            <input type="text" class="layui-input searchVal" id="obj" placeholder="请输入对象名">
+            <select name="objname" id="objname">
+                <option value="">请选择对象</option>
+            </select>
         </div>
         <div class="layui-input-inline">
             <input type="text" class="layui-input searchVal" id="policy" placeholder="请输入策略名">
@@ -75,6 +84,34 @@
                                 }
                             }, "json");
             });
+            form.on('select(user)', function (data) {
+                //data.elem,DOM元素
+                var user = $("#user").find("option:selected").val();
+                var objtype = $("#objtype").find("option:selected").val();
+                if (user != "" && objtype != "") {
+                    freshObject(user);
+                }
+            });
+            function freshObject(u) {
+                $.post("@Url.Action("GetObjectName", "OrAuditPolicy")",
+                    {scId:@ViewBag.SCID, user: u},
+                        function (res) {
+                            var objRes = JSON.parse(res);
+                            if(objRes.status == 0){
+                                var $name = $("#objname");
+                                $name.html('');
+                                //必须加空项，不然不验证
+                                var op = $("<option>").val("").text("请选择对象");
+                                $name.append(op);
+                                $.each(objRes.data ,function(index, item){
+                                    op = $("<option>").val(item).text(item);
+                                    $name.append(op);
+                                });
+                                form.render('select');
+                                $name.get(0).selectedIndex=0;
+                            }
+                        },"json")
+            }
         }
     };
     window.dataOperation = {
@@ -84,7 +121,7 @@
                     {
                         where: { //设定异步数据接口的额外参数，任意设
                             user: $("#user").val(),
-                            obj: $("#obj").val(),
+                            objname: $("#objname").find("option:selected").val(),
                             policy: $("#policy").val()
                         },
                         page: {
