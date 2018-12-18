@@ -16,12 +16,33 @@ namespace DbMonitor.WebUI.Controllers.Oracle
         {
             ViewBag.SCID = id;
             SetModuleAuthority();
-            using (OracleDAL dal = new OracleDAL(GetSessionConnStr(id)))
+            var sc = db.SessionConnection.Find(id);
+            List<DbMonitor.Domain.Dictionary> dic = null;
+            if (sc != null)
             {
-                ViewBag.Users = dal.GetAllUsers();
-                ViewBag.ObjectTypes = dal.GetAllObjectTypes();
-            }
-            return View();
+                if (sc.SCDBType == "ORACLE")
+                {
+                    using (OracleDAL dal = new OracleDAL(GetSessionConnStr(id)))
+                    {
+                        ViewBag.Users = dal.GetAllUsers();
+                    }
+                    dic = (from d in db.Dictionary
+                                           where d.DTypeCode == "OracleObjectType" && d.DEnable == 1
+                                           select d).OrderBy(s => s.DCode).ToList();
+                }
+                else if (sc.SCDBType == "DM")
+                {
+                    using (var dal = new DmDAL(GetSessionConnStr(id)))
+                    {
+                        ViewBag.Users = dal.GetAllUsers();
+                    }
+                    dic = (from d in db.Dictionary
+                                           where d.DTypeCode == "DmObjectType" && d.DEnable == 1
+                                           select d).OrderBy(s => s.DCode).ToList();
+                }
+                ViewBag.DBType = sc.SCDBType;
+            }            
+            return View(dic);
         }
 
         public ActionResult List(long scId, string user, string objname, string begtime, string endtime, int page = 1, int limit = 20)
@@ -33,7 +54,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 var log = db.ChangeLog.Where(m => m.SCID == scId).ToList();
                 if (!string.IsNullOrWhiteSpace(user))
                 {
-                    log = log.Where(l => l.CLOperator.Contains(user.ToUpper())).ToList();
+                    log = log.Where(l => l.CLSchema.Contains(user.ToUpper())).ToList();
                 }
                 if (!string.IsNullOrWhiteSpace(objname))
                 {

@@ -1,9 +1,10 @@
-﻿
+﻿@model List<DbMonitor.Domain.Dictionary>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutList.cshtml";
     var users = (List<string>)ViewBag.Users;
     var types = (List<string>)ViewBag.ObjectTypes;
+    var dbType = (string)ViewBag.DBType;
 }
 
 <input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
@@ -11,7 +12,7 @@
     <div class="layui-form layui-inline">
         <div class="layui-input-inline">
             <select id="user" name="user" lay-search lay-filter="user">
-                <option value="">请选择用户</option>
+                <option value="">请选择模式</option>
                 @foreach (var u in users)
                 {
                     <option value="@u">@u</option>
@@ -21,9 +22,9 @@
         <div class="layui-input-inline">
             <select name="objtype" id="objtype" lay-search lay-filter="objtype">
                 <option value="">请选择对象类型</option>
-                @foreach (var u in types)
+                @foreach (var d in Model)
                 {
-                    <option value="@u">@u</option>
+                    <option value="@d.DCode">@d.DCode（@d.DName）</option>
                 }
             </select>
         </div>
@@ -83,7 +84,7 @@
                 }
             });
             function freshObject(u, t) {
-                $.post("@Url.Action("GetObjectName", "OrObjectAudit")",
+                $.post("@Url.Action("GetObjectName", dbType == "ORACLE" ? "OrObjectAudit" : "DmAuditManage")",
                     {scId:@ViewBag.SCID, user: u, objtype: t },
                         function (res) {
                             var objRes = JSON.parse(res);
