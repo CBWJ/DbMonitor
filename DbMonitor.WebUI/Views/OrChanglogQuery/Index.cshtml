@@ -64,7 +64,7 @@
                   , { field: 'CLOperator', title: '操作人', sort: true }
                   , { field: 'CLChangeTime', title: '变更时间', sort: true }
                 ]],
-        dataInterface: "@Url.Action("List", @ViewBag.Controller)",
+        dataInterface: "@Url.Action("List", ViewBag.Controller)",
         where: { scId: '@ViewBag.SCID' },
         afterRender: function(table, layer, form){
             form.on('select(user)', function (data) {

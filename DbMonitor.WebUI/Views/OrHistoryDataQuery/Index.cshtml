@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLayui.cshtml";
+}
+
+<input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
+<blockquote class="layui-elem-quote quoteBox">
+    <div class="layui-form layui-inline">
+        <div class="layui-input-inline">
+            <select id="user" name="user" lay-verify="required" lay-search lay-filter="user">
+                <option value="">请选择模式名</option>
+                @foreach (var u in (List<string>)ViewBag.Users)
+                {
+                    <option value="@u">@u</option>
+                }
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select id="objtype" name="objtype" lay-verify="required" lay-search lay-filter="objtype">
+                <option value="">请选择对象类型</option>
+                <option value="TABLE">表</option>
+                <option value="VIEW">视图</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select id="objname" name="objname" lay-verify="required" lay-search lay-filter="objname">
+                <option value="">请选择对象</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="endtime" placeholder="请选择截止时间">
+        </div>
+    </div>
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialMainButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</blockquote>
+<table id="datatable" lay-filter="table"></table>
+<script>
+    layui.use(['form','laydate', 'table', 'layer'], function () {
+        var form = layui.form;
+        form.on('select(user)', function (data) {
+            getObject();
+        });
+
+        form.on('select(objtype)', function (data) {
+            getObject();
+        });
+        function getObject(){
+            var user = $("#user").find("option:selected").val();
+            var obj = $("#objtype").find("option:selected").val();
+            selectRefresh(form, $("#objname"),
+                "@Url.Action("GetObjectName", "OrObjectAudit")",
+                {scId:@ViewBag.SCID, user: user, objtype:obj})
+        }
+        var layer = layui.layer;
+        var actives ={
+            search: function () {
+                @*table.reload("dt",//ID
+                    {
+                        where: { //设定异步数据接口的额外参数，任意设
+                            scId: @ViewBag.SCID,
+                            user: $("#user").find("option:selected").val(),
+                            objname: $("#objname").find("option:selected").val(),
+                            endtime: $("#endtime").val()
+                        },
+                        page: {
+                            curr: 1
+                        }
+                    });*@
+                var postData = {
+                    scId: @ViewBag.SCID,
+                    user: $("#user").find("option:selected").val(),
+                    objname: $("#objname").find("option:selected").val(),
+                    endtime: $("#endtime").val()
+                };
+                $.get("@Url.Action("GetColumnName", ViewBag.Controller)", postData,
+                    function(data){
+                        console.log(data);
+                        var objRes = JSON.parse(data);
+                        if(objRes.status == 0){
+                            if(objRes.data.length > 0){
+
+                            }else{
+                                layer.msg('没有数据');
+                            }
+                        }
+                    }, "json");
+            }
+        };
+        //顶部按钮事件
+        $(".quoteBox .layui-btn").on("click", function () {
+            var action = $(this).data("action");
+            var func = actives[action];
+            if (func != null && typeof func == "function") {
+                func();
+            }
+        });
+
+        var laydate = layui.laydate;
+        var now = new Date().Format("yyyy-MM-dd hh:mm:ss");
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#endtime' //指定元素
+            , type: 'datetime'
+            , max: now
+        });
+
+    });
+    function getHostPath(){
+        var curWwwPath = window.document.location.href;
+        var pathname= window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathname);
+        var localhostPath = curWwwPath .substring(0,pos);
+        return localhostPath;
+    }
+    function selectRefresh(form, $sel, url, postData) {
+        $.post(url, postData,
+            function (res) {
+                var objRes = JSON.parse(res);
+                if (objRes.status == 0) {
+                    $sel.html('');
+                    //必须加空项，不然不验证
+                    var op = $("<option>").val("").text("");
+                    $sel.append(op);
+                    $.each(objRes.data, function (index, item) {
+                        op = $("<option>").val(item).text(item);
+                        $sel.append(op);
+                    });
+                    form.render('select');
+                    $sel.get(0).selectedIndex = 0;
+                }
+            }, "json")
+    }
+</script>

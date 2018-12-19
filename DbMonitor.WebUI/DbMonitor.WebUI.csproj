@@ -387,6 +387,7 @@
     <Compile Include="Controllers\Oracle\OrAuditStasticsController.cs" />
     <Compile Include="Controllers\Oracle\OrDatabaseStatusController.cs" />
     <Compile Include="Controllers\Oracle\OrDataCompareController.cs" />
+    <Compile Include="Controllers\Oracle\OrHistoryDataQueryController.cs" />
     <Compile Include="Controllers\Oracle\OrMirrorExportController.cs" />
     <Compile Include="Controllers\Oracle\OrMonitorSwitchController.cs" />
     <Compile Include="Controllers\Oracle\OrObjectAuditController.cs" />
@@ -477,6 +478,7 @@
     <Content Include="Views\Dashboard\Index.cshtml" />
     <Content Include="Views\Error\Error404.cshtml" />
     <Content Include="Views\Shared\Exception.cshtml" />
+    <Content Include="Views\OrHistoryDataQuery\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

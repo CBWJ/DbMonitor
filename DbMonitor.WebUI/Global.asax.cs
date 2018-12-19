@@ -15,6 +15,7 @@ namespace DbMonitor.WebUI
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            //注册全局过滤器，异常
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             //RegisterView();
             //数据采集
