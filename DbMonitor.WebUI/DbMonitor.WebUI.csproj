@@ -375,6 +375,7 @@
     <Compile Include="Controllers\DictionaryController.cs" />
     <Compile Include="Controllers\Dm\DmAuditManageController.cs" />
     <Compile Include="Controllers\Dm\DmAuditRecordController.cs" />
+    <Compile Include="Controllers\Dm\DmFlashBackQueryController.cs" />
     <Compile Include="Controllers\Dm\DmMirrorExportController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -387,7 +388,7 @@
     <Compile Include="Controllers\Oracle\OrAuditStasticsController.cs" />
     <Compile Include="Controllers\Oracle\OrDatabaseStatusController.cs" />
     <Compile Include="Controllers\Oracle\OrDataCompareController.cs" />
-    <Compile Include="Controllers\Oracle\OrHistoryDataQueryController.cs" />
+    <Compile Include="Controllers\Oracle\OrFlashBackQueryController.cs" />
     <Compile Include="Controllers\Oracle\OrMirrorExportController.cs" />
     <Compile Include="Controllers\Oracle\OrMonitorSwitchController.cs" />
     <Compile Include="Controllers\Oracle\OrObjectAuditController.cs" />
@@ -479,6 +480,8 @@
     <Content Include="Views\Error\Error404.cshtml" />
     <Content Include="Views\Shared\Exception.cshtml" />
     <Content Include="Views\OrHistoryDataQuery\Index.cshtml" />
+    <Content Include="Views\OrFlashBackQuery\Index.cshtml" />
+    <Content Include="Views\DmFlashBackQuery\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
