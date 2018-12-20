@@ -25,5 +25,8 @@ namespace DbMonitor.Domain
         public string CLOperator { get; set; }
         public string CLChangeTime { get; set; }
         public string CLGrabTime { get; set; }
+        public string CLOldData { get; set; }
+        public string CLNewData { get; set; }
+        public string CLChangeType { get; set; }
     }
 }

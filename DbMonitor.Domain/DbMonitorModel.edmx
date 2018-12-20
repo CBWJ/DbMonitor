@@ -36,6 +36,9 @@
           <Property Name="CLSchema" Type="varchar" MaxLength="50" />
           <Property Name="CLObjectType" Type="varchar" MaxLength="50" />
           <Property Name="CLSQL_Text" Type="varchar" MaxLength="2000" />
+          <Property Name="CLOldData" Type="varchar" MaxLength="1000" />
+          <Property Name="CLNewData" Type="varchar" MaxLength="1000" />
+          <Property Name="CLChangeType" Type="varchar" MaxLength="50" />
           <Property Name="CLOperator" Type="varchar" MaxLength="50" />
           <Property Name="CLChangeTime" Type="varchar" MaxLength="30" />
           <Property Name="CLGrabTime" Type="varchar" MaxLength="30" />
@@ -602,6 +605,9 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <Property Name="CLOperator" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CLChangeTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="CLGrabTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CLOldData" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="CLNewData" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="CLChangeType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="MonitorManagement">
           <Key>
@@ -799,6 +805,9 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <EntitySetMapping Name="ChangeLog">
             <EntityTypeMapping TypeName="DbMonitorModel.ChangeLog">
               <MappingFragment StoreEntitySet="ChangeLog">
+                <ScalarProperty Name="CLChangeType" ColumnName="CLChangeType" />
+                <ScalarProperty Name="CLNewData" ColumnName="CLNewData" />
+                <ScalarProperty Name="CLOldData" ColumnName="CLOldData" />
                 <ScalarProperty Name="CLGrabTime" ColumnName="CLGrabTime" />
                 <ScalarProperty Name="CLChangeTime" ColumnName="CLChangeTime" />
                 <ScalarProperty Name="CLOperator" ColumnName="CLOperator" />

@@ -81,7 +81,7 @@ namespace DbMonitor.WebUI.Utility
                 }));
 
                 //状态抓取
-                StatusDataGraber.ExecuteGrab(mm, dbType);
+                //StatusDataGraber.ExecuteGrab(mm, dbType);
             }
         }
         static void GrabData(MonitorManagement mm, string dbType)
