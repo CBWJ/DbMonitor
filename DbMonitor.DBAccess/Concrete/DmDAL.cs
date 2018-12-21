@@ -77,5 +77,17 @@ namespace DbMonitor.DBAccess.Concrete
             conn.ConnectionString = ConnectionString;
             conn.Open();
         }
+
+        public DataTable ExecuteProcedureQuery(string sqlText, params DbParameter[] parameters)
+        {
+            DataTable dataTable = new DataTable();
+            var cmd = conn.CreateCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = sqlText;
+            cmd.Parameters.AddRange(parameters);
+            var adapter = new DmDataAdapter(cmd);
+            adapter.Fill(dataTable);
+            return dataTable;
+        }
     }
 }

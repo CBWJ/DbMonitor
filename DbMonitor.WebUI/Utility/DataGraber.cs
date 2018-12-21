@@ -8,6 +8,8 @@ using DbMonitor.DBAccess;
 using DbMonitor.DBAccess.Concrete;
 using System.Data;
 using System.Timers;
+using Oracle.ManagedDataAccess.Client;
+using System.Text.RegularExpressions;
 
 namespace DbMonitor.WebUI.Utility
 {
@@ -118,7 +120,7 @@ namespace DbMonitor.WebUI.Utility
             dtBeg = DateTime.Parse(mm.MMLastTime);
             dtEnd = DateTime.Now;
             //采集SQL
-            StringBuilder sbSql = new StringBuilder();
+            /*StringBuilder sbSql = new StringBuilder();
             sbSql.Append("SELECT t.DB_USER,t.OBJECT_SCHEMA,t.OBJECT_NAME,t.STATEMENT_TYPE,t.SQL_TEXT,to_char(t.EXTENDED_TIMESTAMP,'YYYY-MM-DD HH24:MI:SS') TIMESTAMP,o.OBJECT_TYPE ");
             sbSql.Append("FROM DBA_COMMON_AUDIT_TRAIL t ");
             sbSql.Append("LEFT JOIN dba_objects o ");
@@ -127,12 +129,17 @@ namespace DbMonitor.WebUI.Utility
             sbSql.AppendFormat("and t.STATEMENT_TYPE not in('SELECT') ");
             sbSql.AppendFormat("and t.EXTENDED_TIMESTAMP >= to_date('{0}','yyyy-mm-dd hh24:mi:ss') ", dtBeg.ToString("yyyy-MM-dd HH:mm:ss"));
             sbSql.AppendFormat("and t.EXTENDED_TIMESTAMP < to_date('{0}','yyyy-mm-dd hh24:mi:ss') ", dtEnd.ToString("yyyy-MM-dd HH:mm:ss"));
-
+            */
             DataTable dt = null;
             string connStr = GetSessionConnStr(mm.SCID.Value);
             using (OracleDAL dal = new OracleDAL(connStr))
             {
-                dt = dal.ExecuteQuery(sbSql.ToString());
+                //dt = dal.ExecuteQuery(sbSql.ToString());
+                dt = dal.ExecuteProcedureQuery("DB_MONITOR.P_GetChangeLog",
+                    new OracleParameter("begtime", OracleDbType.Varchar2, dtBeg.ToString("yyyy-MM-dd HH:mm:ss"), ParameterDirection.Input),
+                    new OracleParameter("endtime", OracleDbType.Varchar2, dtEnd.ToString("yyyy-MM-dd HH:mm:ss"), ParameterDirection.Input),
+                    new OracleParameter("out_data", OracleDbType.RefCursor, ParameterDirection.Output)
+                    );
             }
             var grabTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             using (var ctx = new DbMonitorEntities())
@@ -149,9 +156,11 @@ namespace DbMonitor.WebUI.Utility
                     log.CLObjectType = dr["OBJECT_TYPE"].ToString();
                     log.CLSQL_Text = dr["SQL_TEXT"].ToString();
                     log.CLOperator = dr["DB_USER"].ToString();
-                    log.CLChangeTime = dr["TIMESTAMP"].ToString();
+                    log.CLChangeTime = dr["OP_TIME"].ToString();
                     log.CLGrabTime = grabTime;
-
+                    log.CLOldData = dr["OLD_DATA"].ToString();
+                    log.CLNewData = dr["NEW_DATA"].ToString();
+                    log.CLChangeType = dr["CHANGE_TYPE"].ToString();
                     ctx.ChangeLog.Add(log);
                 }
                 var editMM = ctx.MonitorManagement.Find(mm.ID);
@@ -190,6 +199,7 @@ namespace DbMonitor.WebUI.Utility
                 dt = dal.ExecuteQuery(sbSql.ToString());
             }
             var grabTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            bool bAdd = false;
             using (var ctx = new DbMonitorEntities())
             {
                 foreach (DataRow dr in dt.Rows)
@@ -207,7 +217,22 @@ namespace DbMonitor.WebUI.Utility
                     log.CLChangeTime = dr["TIMESTAMP"].ToString();
                     log.CLGrabTime = grabTime;
 
-                    ctx.ChangeLog.Add(log);
+                    if(log.CLChangeEvent.StartsWith("CREATE") || log.CLChangeEvent.StartsWith("ALTER") || log.CLChangeEvent.StartsWith("DROP") ||
+                        log.CLChangeEvent.StartsWith("TRUNCATE") || log.CLChangeEvent.StartsWith("INSERT") || log.CLChangeEvent.StartsWith("UPDATE") ||
+                        log.CLChangeEvent.StartsWith("DELETE"))
+                    {
+                        bAdd = true;
+                        switch (log.CLChangeEvent)
+                        {
+                            case "CREATE TABLE":
+                                log.CLNewData = GetObjectNameFormDDL(log.CLSQL_Text.ToUpper(), "CREATE TABLE");
+                                log.CLChangeType = "创建表";
+                                break;
+                            default:break;
+                        }
+                    }
+                    if(bAdd)
+                        ctx.ChangeLog.Add(log);
                 }
                 var editMM = ctx.MonitorManagement.Find(mm.ID);
                 editMM.MMLastTime = dtEnd.ToString("yyyy-MM-dd HH:mm:ss");
@@ -247,6 +272,23 @@ namespace DbMonitor.WebUI.Utility
                 }
             }
             return sbConn.ToString();
+        }
+        /// <summary>
+        /// 从DDL语言提取对象名
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static string GetObjectNameFormDDL(string sql, string type)
+        {
+            string ret = "";
+            Regex reg = new Regex(type + @"\s+([a-zA-Z]+)");
+            var m = reg.Match(sql);
+            if (m.Groups.Count == 2)
+            {
+                ret = m.Groups[1].Value;
+            }
+            return ret;
         }
     }
 }

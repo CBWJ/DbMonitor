@@ -43,5 +43,12 @@ namespace DbMonitor.DBAccess.Abstract
         /// <param name="parameters"></param>
         /// <returns></returns>
         int ExecuteProcedureNonQuery(string sqlText, params DbParameter[] parameters);
+        /// <summary>
+        /// 执行存储过程查询
+        /// </summary>
+        /// <param name="sqlText"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        DataTable ExecuteProcedureQuery(string sqlText, params DbParameter[] parameters);
     }
 }
