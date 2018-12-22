@@ -18,8 +18,18 @@ namespace DbMonitor.WebUI.Utility
         private static object _locker = new object();
         private static Timer _timer;
         private static Dictionary<long, string> _dicWorkState = new Dictionary<long, string>();
+        private static Dictionary<string, string> _dicDmDDL = new Dictionary<string, string>();
         public static void Start()
         {
+            using (var ctx = new DbMonitorEntities())
+            {
+                //加载数据
+                var dmDDL = ctx.Dictionary.Where(d => d.DTypeCode == "DmDDL" && d.DEnable == 1).ToList();
+                foreach(var d in dmDDL)
+                {
+                    _dicDmDDL.Add(d.DCode, d.DName);
+                }
+            }
             _timer = new Timer();
             _timer.Interval = 1000;
             _timer.Elapsed += _timer_Elapsed;
@@ -162,13 +172,14 @@ namespace DbMonitor.WebUI.Utility
                     log.CLNewData = dr["NEW_DATA"].ToString();
                     log.CLChangeType = dr["CHANGE_TYPE"].ToString();
                     ctx.ChangeLog.Add(log);
-                }
-                var editMM = ctx.MonitorManagement.Find(mm.ID);
-                editMM.MMLastTime = dtEnd.ToString("yyyy-MM-dd HH:mm:ss");
-                ctx.SaveChanges();
+                    var editMM = ctx.MonitorManagement.Find(mm.ID);
+                    editMM.MMLastTime = dtEnd.ToString("yyyy-MM-dd HH:mm:ss");
+                    ctx.SaveChanges();
+                }                
                 Console.WriteLine("id:{0} grab {1} items", mm.ID, dt.Rows.Count);
             }
         }
+
         static void GrabDmData(MonitorManagement mm)
         {
             DateTime dtBeg;
@@ -199,11 +210,12 @@ namespace DbMonitor.WebUI.Utility
                 dt = dal.ExecuteQuery(sbSql.ToString());
             }
             var grabTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            bool bAdd = false;
+            bool bAdd;
             using (var ctx = new DbMonitorEntities())
             {
                 foreach (DataRow dr in dt.Rows)
                 {
+                    bAdd = true;
                     ChangeLog log = new ChangeLog();
 
                     log.SCID = mm.SCID;
@@ -217,26 +229,60 @@ namespace DbMonitor.WebUI.Utility
                     log.CLChangeTime = dr["TIMESTAMP"].ToString();
                     log.CLGrabTime = grabTime;
 
-                    if(log.CLChangeEvent.StartsWith("CREATE") || log.CLChangeEvent.StartsWith("ALTER") || log.CLChangeEvent.StartsWith("DROP") ||
-                        log.CLChangeEvent.StartsWith("TRUNCATE") || log.CLChangeEvent.StartsWith("INSERT") || log.CLChangeEvent.StartsWith("UPDATE") ||
-                        log.CLChangeEvent.StartsWith("DELETE"))
+                    var sql_Upper = log.CLSQL_Text.ToUpper();
+                    if (_dicDmDDL.ContainsKey(log.CLChangeEvent))
                     {
-                        bAdd = true;
-                        switch (log.CLChangeEvent)
+                        var objName = GetObjectNameFormDDL(sql_Upper, log.CLChangeEvent);
+
+                        if (log.CLChangeEvent.Contains("CREATE"))
                         {
-                            case "CREATE TABLE":
-                                log.CLNewData = GetObjectNameFormDDL(log.CLSQL_Text.ToUpper(), "CREATE TABLE");
-                                log.CLChangeType = "创建表";
-                                break;
-                            default:break;
+                            log.CLOldData = "";
+                            log.CLNewData = objName;
                         }
+                        else if (log.CLChangeEvent.Contains("ALTER"))
+                        {
+                            var pos = sql_Upper.IndexOf(objName);
+                            log.CLNewData = sql_Upper.Substring(pos + objName.Length);
+                        }
+                        else if (log.CLChangeEvent.Contains("DROP"))
+                        {
+                            log.CLOldData = objName;
+                            log.CLNewData = "";
+                        }
+                        log.CLChangeType = _dicDmDDL[log.CLChangeEvent];
                     }
-                    if(bAdd)
+                    //数据操纵
+                    else if (log.CLChangeEvent == "INSERT")
+                    {
+                        var pos = sql_Upper.IndexOf("VALUES") + 6;
+                        var lastPos = sql_Upper.LastIndexOf(")");
+                        log.CLOldData = "";
+                        log.CLNewData = sql_Upper.Substring(pos, lastPos - pos);
+                        log.CLChangeType = "插入数据";
+                    }
+                    else if (log.CLChangeEvent == "UPDATE")
+                    {
+                        var pos = sql_Upper.IndexOf("SET");
+                        log.CLOldData = "";
+                        log.CLNewData = sql_Upper.Substring(pos);
+                        log.CLChangeType = "更新数据";
+                    }
+                    else if (log.CLChangeEvent == "DELETE")
+                    {
+                        var pos = sql_Upper.IndexOf(log.CLObjectName);
+                        log.CLOldData = "";
+                        log.CLNewData = sql_Upper.Substring(pos + log.CLObjectName.Length);
+                        log.CLChangeType = "删除数据";
+                    }
+                    else
+                        bAdd = false;
+                    if (bAdd)
                         ctx.ChangeLog.Add(log);
-                }
-                var editMM = ctx.MonitorManagement.Find(mm.ID);
-                editMM.MMLastTime = dtEnd.ToString("yyyy-MM-dd HH:mm:ss");
-                ctx.SaveChanges();
+                    //有数据才更新数据库
+                    var editMM = ctx.MonitorManagement.Find(mm.ID);
+                    editMM.MMLastTime = dtEnd.ToString("yyyy-MM-dd HH:mm:ss");
+                    ctx.SaveChanges();
+                }                
                 Console.WriteLine("id:{0} grab {1} items", mm.ID, dt.Rows.Count);
             }
         }
@@ -282,7 +328,16 @@ namespace DbMonitor.WebUI.Utility
         public static string GetObjectNameFormDDL(string sql, string type)
         {
             string ret = "";
-            Regex reg = new Regex(type + @"\s+([a-zA-Z]+)");
+            string pattern = "";
+            if (type.Contains("CREATE"))
+            {
+                pattern = type + @"\s(\S+)\s*\(";
+            }
+            else
+            {
+                pattern = type + @"\s(\S+)\s*";
+            }
+            Regex reg = new Regex(pattern);
             var m = reg.Match(sql);
             if (m.Groups.Count == 2)
             {
