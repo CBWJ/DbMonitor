@@ -195,11 +195,12 @@ namespace DbMonitor.WebUI.Utility
             sbSql.Append("a.OPERATION, ");
             sbSql.Append("a.SQL_TEXT, ");
             sbSql.Append(" TO_CHAR(a.OPTIME,'yyyy-mm-dd HH24:MI:SS') TIMESTAMP, ");
-            sbSql.Append("s.SUBTYPE$ OBJTYPE ");
+            sbSql.Append("'' AS OBJTYPE ");
             sbSql.Append("FROM SYSAUDITOR.V$AUDITRECORDS  a ");
-            sbSql.Append("LEFT JOIN sysobjects s  ");
-            sbSql.Append("ON a.SCHID = s.SCHID ");
-            sbSql.Append("WHERE SUCC_FLAG = 'Y' ");
+            //sbSql.Append("LEFT JOIN sysobjects s  ");
+            //sbSql.Append("ON a.SCHID = s.SCHID ");
+            //sbSql.Append("WHERE SUCC_FLAG = 'Y' ");
+            sbSql.Append("WHERE OPERATION NOT IN ('SELECT') ");
             sbSql.AppendFormat("AND a.OPTIME >= to_date('{0}', 'yyyy-mm-dd HH24:MI:SS') ", dtBeg.ToString("yyyy-MM-dd HH:mm:ss"));
             sbSql.AppendFormat("AND  a.OPTIME < to_date('{0}', 'yyyy-mm-dd HH24:MI:SS') ", dtEnd.ToString("yyyy-MM-dd HH:mm:ss"));
 
@@ -211,77 +212,79 @@ namespace DbMonitor.WebUI.Utility
             }
             var grabTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             bool bAdd;
-            using (var ctx = new DbMonitorEntities())
-            {
-                foreach (DataRow dr in dt.Rows)
+            if(dt.Rows.Count > 0) {
+                using (var ctx = new DbMonitorEntities())
                 {
-                    bAdd = true;
-                    ChangeLog log = new ChangeLog();
-
-                    log.SCID = mm.SCID;
-                    log.CLChangeEvent = dr["OPERATION"].ToString();
-                    log.CLContent = "";
-                    log.CLObjectName = dr["OBJNAME"].ToString();
-                    log.CLSchema = dr["SCHNAME"].ToString();
-                    log.CLObjectType = dr["OBJTYPE"].ToString();
-                    log.CLSQL_Text = dr["SQL_TEXT"].ToString();
-                    log.CLOperator = dr["USERNAME"].ToString();
-                    log.CLChangeTime = dr["TIMESTAMP"].ToString();
-                    log.CLGrabTime = grabTime;
-
-                    var sql_Upper = log.CLSQL_Text.ToUpper();
-                    if (_dicDmDDL.ContainsKey(log.CLChangeEvent))
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        var objName = GetObjectNameFormDDL(sql_Upper, log.CLChangeEvent);
+                        bAdd = true;
+                        ChangeLog log = new ChangeLog();
 
-                        if (log.CLChangeEvent.Contains("CREATE"))
+                        log.SCID = mm.SCID;
+                        log.CLChangeEvent = dr["OPERATION"].ToString();
+                        log.CLContent = "";
+                        log.CLObjectName = dr["OBJNAME"].ToString();
+                        log.CLSchema = dr["SCHNAME"].ToString();
+                        log.CLObjectType = dr["OBJTYPE"].ToString();
+                        log.CLSQL_Text = dr["SQL_TEXT"].ToString();
+                        log.CLOperator = dr["USERNAME"].ToString();
+                        log.CLChangeTime = dr["TIMESTAMP"].ToString();
+                        log.CLGrabTime = grabTime;
+
+                        var sql_Upper = log.CLSQL_Text.ToUpper();
+                        if (_dicDmDDL.ContainsKey(log.CLChangeEvent))
                         {
+                            var objName = GetObjectNameFormDDL(sql_Upper, log.CLChangeEvent);
+
+                            if (log.CLChangeEvent.Contains("CREATE"))
+                            {
+                                log.CLOldData = "";
+                                log.CLNewData = objName;
+                            }
+                            else if (log.CLChangeEvent.Contains("ALTER"))
+                            {
+                                var pos = sql_Upper.IndexOf(objName);
+                                log.CLNewData = sql_Upper.Substring(pos + objName.Length);
+                            }
+                            else if (log.CLChangeEvent.Contains("DROP"))
+                            {
+                                log.CLOldData = objName;
+                                log.CLNewData = "";
+                            }
+                            log.CLChangeType = _dicDmDDL[log.CLChangeEvent];
+                        }
+                        //数据操纵
+                        else if (log.CLChangeEvent == "INSERT")
+                        {
+                            var pos = sql_Upper.IndexOf("VALUES") + 6;
+                            var lastPos = sql_Upper.LastIndexOf(")");
                             log.CLOldData = "";
-                            log.CLNewData = objName;
+                            log.CLNewData = sql_Upper.Substring(pos, lastPos - pos);
+                            log.CLChangeType = "插入数据";
                         }
-                        else if (log.CLChangeEvent.Contains("ALTER"))
+                        else if (log.CLChangeEvent == "UPDATE")
                         {
-                            var pos = sql_Upper.IndexOf(objName);
-                            log.CLNewData = sql_Upper.Substring(pos + objName.Length);
+                            var pos = sql_Upper.IndexOf("SET");
+                            log.CLOldData = "";
+                            log.CLNewData = sql_Upper.Substring(pos);
+                            log.CLChangeType = "更新数据";
                         }
-                        else if (log.CLChangeEvent.Contains("DROP"))
+                        else if (log.CLChangeEvent == "DELETE")
                         {
-                            log.CLOldData = objName;
-                            log.CLNewData = "";
+                            var pos = sql_Upper.IndexOf(log.CLObjectName);
+                            log.CLOldData = "";
+                            log.CLNewData = sql_Upper.Substring(pos + log.CLObjectName.Length);
+                            log.CLChangeType = "删除数据";
                         }
-                        log.CLChangeType = _dicDmDDL[log.CLChangeEvent];
+                        else
+                            bAdd = false;
+                        if (bAdd)
+                            ctx.ChangeLog.Add(log);
+                        //有数据才更新数据库
+                        var editMM = ctx.MonitorManagement.Find(mm.ID);
+                        editMM.MMLastTime = dtEnd.ToString("yyyy-MM-dd HH:mm:ss");
+                        ctx.SaveChanges();
                     }
-                    //数据操纵
-                    else if (log.CLChangeEvent == "INSERT")
-                    {
-                        var pos = sql_Upper.IndexOf("VALUES") + 6;
-                        var lastPos = sql_Upper.LastIndexOf(")");
-                        log.CLOldData = "";
-                        log.CLNewData = sql_Upper.Substring(pos, lastPos - pos);
-                        log.CLChangeType = "插入数据";
-                    }
-                    else if (log.CLChangeEvent == "UPDATE")
-                    {
-                        var pos = sql_Upper.IndexOf("SET");
-                        log.CLOldData = "";
-                        log.CLNewData = sql_Upper.Substring(pos);
-                        log.CLChangeType = "更新数据";
-                    }
-                    else if (log.CLChangeEvent == "DELETE")
-                    {
-                        var pos = sql_Upper.IndexOf(log.CLObjectName);
-                        log.CLOldData = "";
-                        log.CLNewData = sql_Upper.Substring(pos + log.CLObjectName.Length);
-                        log.CLChangeType = "删除数据";
-                    }
-                    else
-                        bAdd = false;
-                    if (bAdd)
-                        ctx.ChangeLog.Add(log);
-                    //有数据才更新数据库
-                    var editMM = ctx.MonitorManagement.Find(mm.ID);
-                    editMM.MMLastTime = dtEnd.ToString("yyyy-MM-dd HH:mm:ss");
-                    ctx.SaveChanges();
                 }                
                 Console.WriteLine("id:{0} grab {1} items", mm.ID, dt.Rows.Count);
             }
@@ -329,21 +332,60 @@ namespace DbMonitor.WebUI.Utility
         {
             string ret = "";
             string pattern = "";
-            if (type.Contains("CREATE"))
+            pattern = GetNamePattern(sql, type);
+            Regex reg = new Regex(pattern);
+            var m = reg.Match(sql);
+            if (m.Groups.Count > 0)
+            {
+                ret = m.Groups[m.Groups.Count - 1].Value;
+            }
+            return ret;
+        }
+
+        private static string GetNamePattern(string sql, string type)
+        {
+            string pattern;
+            if (type == "CREATE TABLE")
             {
                 pattern = type + @"\s(\S+)\s*\(";
             }
+            else if (type == "CREATE VIEW")
+            {
+                pattern = @"CREATE[\sA-Z]+VIEW\s+(\S+)\s*";
+            }
+            else if (type == "CREATE TRIGGER")
+            {
+                pattern = @"CREATE[\sA-Z]+TRIGGER\s+(\S+)\s*";
+            }
+            else if (type == "CREATE INDEX")
+            {
+                pattern = @"CREATE[\sA-Z]+INDEX\s+(\S+)\s*";
+            }
+            else if (type == "CREATE PROCEDURE")
+            {
+                if(sql.Contains("PROCEDURE"))
+                    pattern = @"CREATE[\sA-Z]+PROCEDURE\s+(\S+)\s*\(|CREATE[\sA-Z]+PROCEDURE\s+(\S+)\s*";
+                else
+                    pattern = @"CREATE[\sA-Z]+FUNCTION\s+(\S+)\s*\(|CREATE[\sA-Z]+FUNCTION\s+(\S+)\s*";
+            }
+            else if (type == "DROP PROCEDURE")
+            {
+                if(sql.Contains("FUNCTION"))
+                {
+                    pattern = @"DROP\s*FUNCTION\s+(\S+)\s*";
+                }
+                else
+                {
+                    pattern = @"DROP\s*PROCEDURE\s+(\S+)\s*";
+                }
+            }
             else
             {
-                pattern = type + @"\s(\S+)\s*";
+                var arrSplit = type.Split(' ');
+
+                pattern = string.Join(@"\s*",arrSplit) + @"\s+(\S+)\s*";
             }
-            Regex reg = new Regex(pattern);
-            var m = reg.Match(sql);
-            if (m.Groups.Count == 2)
-            {
-                ret = m.Groups[1].Value;
-            }
-            return ret;
+            return pattern;
         }
     }
 }

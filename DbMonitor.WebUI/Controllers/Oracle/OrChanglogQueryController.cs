@@ -51,7 +51,11 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             try
             {
-                var log = db.ChangeLog.Where(m => m.SCID == scId).ToList();
+                var log = new List<DbMonitor.Domain.ChangeLog>();
+                using (var ctx = new DbMonitor.Domain.DbMonitorEntities())
+                {
+                    log = ctx.ChangeLog.Where(m => m.SCID == scId).ToList();
+                }
                 if (!string.IsNullOrWhiteSpace(user))
                 {
                     log = log.Where(l => l.CLSchema.Contains(user.ToUpper())).ToList();
