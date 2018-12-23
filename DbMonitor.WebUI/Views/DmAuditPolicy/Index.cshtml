@@ -1,0 +1,140 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutList.cshtml";
+    var users = (List<string>)ViewBag.Users;
+}
+
+<input type="hidden" id="scId" , name="scId" value="@ViewBag.SCID" />
+<blockquote class="layui-elem-quote quoteBox">
+    <div class="layui-form layui-inline">
+        <div class="layui-input-inline">
+            <select id="user" name="user" lay-search lay-filter="user">
+                <option value="">请选择模式</option>
+                @foreach (var u in users)
+                {
+                    <option value="@u">@u</option>
+                }
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select name="objname" id="objname">
+                <option value="">请选择对象</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input searchVal" id="policy" placeholder="请输入策略名">
+        </div>
+    </div>
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialMainButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</blockquote>
+<table id="datatable" lay-filter="table"></table>
+<script type="text/html" id="barDemo">
+    @{
+        Html.RenderPartial("~/Views/Shared/_PartialToolbarButton.cshtml", (List<DbMonitor.Domain.Authority>)ViewBag.Authority);
+    }
+</script>
+<script>
+    //console.log("页面数据");
+    window.tableConfig = {
+        elemSelector: "#datatable",
+        tableID: "dt",
+        colConfig: [[{ type: 'checkbox', fixed: 'left' }
+                  , { field: 'APName', title: '策略名', sort: true }
+                  , { field: 'APUser', title: '用户', sort: true }
+                  , { field: 'APSchema', title: '模式', sort: true }
+                  , { field: 'APObjectName', title: '对象', sort: true }
+                  , { field: 'APColumnName', title: '列名', sort: true }
+                  , { field: 'APCondition', title: '条件', sort: true }
+                  , { field: 'APStatement', title: '语句', sort: true }
+                  , { field: 'APWhen', title: '审计时机', sort: true }
+                  , { fixed: 'right', width: 80, align: 'center', toolbar: '#barDemo' }//绑定列工具条
+                ]],
+        dataInterface: "@Url.Action("List", ViewBag.Controller)",
+        where: { scId: '@ViewBag.SCID' },
+        afterRender: function (table, layer, form) {
+            form.on('select(user)', function (data) {
+                //data.elem,DOM元素
+                var user = $("#user").find("option:selected").val();
+                var objtype = $("#objtype").find("option:selected").val();
+                if (user != "" && objtype != "") {
+                    freshObject(user);
+                }
+            });
+            function freshObject(u) {
+                $.post("@Url.Action("GetObjectName", ViewBag.Controller)",
+                    {scId:@ViewBag.SCID, user: u},
+                        function (res) {
+                            var objRes = JSON.parse(res);
+                            if(objRes.status == 0){
+                                var $name = $("#objname");
+                                $name.html('');
+                                //必须加空项，不然不验证
+                                var op = $("<option>").val("").text("请选择对象");
+                                $name.append(op);
+                                $.each(objRes.data ,function(index, item){
+                                    op = $("<option>").val(item).text(item);
+                                    $name.append(op);
+                                });
+                                form.render('select');
+                                $name.get(0).selectedIndex=0;
+                            }
+                        },"json")
+            }
+        }
+    };
+    window.dataOperation = {
+        moreAcive: {
+            search: function (table, layer) {
+                table.reload(tableConfig.tableID,//ID
+                    {
+                        where: { //设定异步数据接口的额外参数，任意设
+                            user: $("#user").val(),
+                            objname: $("#objname").find("option:selected").val(),
+                            policy: $("#policy").val()
+                        },
+                        page: {
+                            curr: 1
+                        }
+                    });
+            }
+        },
+        moreTBActive: {
+            @*del: function (layer, obj) {
+                layer.confirm('真的删除该审计吗？', { icon: 3, title: '提示' }, function (index) {
+                    //向服务端发送删除指令
+                    var data = obj.data;
+                    var url, postData = {
+                        user: data.OBJECT_SCHEMA,
+                        objname: data.OBJECT_NAME,
+                        policy: data.POLICY_NAME,
+                        scId: '@ViewBag.SCID'
+                    };
+                    url = "@Url.Action("Delete", ViewBag.Controller)";
+                    //$.extend(postData, obj.data, { scId: '@ViewBag.SCID' });
+                    layer.close(index);
+                    $.post(url, postData,
+                            function (res) {
+                                var objRes = JSON.parse(res);
+                                if (objRes.status == 0) {
+                                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                } else {
+                                    layer.alert(objRes.message, { icon: 5 });
+                                }
+                            }, "json");
+                });
+            }*@
+        },
+        createConfig: {
+            title: "新建审计策略",
+            url: "@Url.Action("Create", ViewBag.Controller)?scId=@ViewBag.SCID"
+        },
+        deleteConfig: {
+            url: "@Url.Action("Delete", ViewBag.Controller)"
+        },
+        editConfig: {
+        }
+    };
+</script>

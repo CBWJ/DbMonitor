@@ -6,6 +6,7 @@
 }
 
 <input type="hidden" id="scId" , name="scId" value="@Model" />
+<input type="hidden" id="condition" name="condition">
 <div class="layui-form-item">
     <label class="layui-form-label">策略名</label>
     <div class="layui-input-inline">
@@ -31,15 +32,24 @@
     </div>
     <label class="layui-form-label">列</label>
     <div class="layui-input-inline">
-        <select id="col" name="col" lay-verify="required" lay-search>
+        <select id="col" name="col" lay-verify="required" lay-search lay-filter="col">
             <option value=""></option>
         </select>
     </div>
 </div>
 <div class="layui-form-item">
-    <label class="layui-form-label">条件</label>
-    <div class="layui-input-block">
-        <input type="text" name="condition" required lay-verify="required" placeholder="请输入条件" autocomplete="off" class="layui-input">
+    <div class="layui-inline">
+        <label class="layui-form-label">条件</label>
+        <div class="layui-input-inline" style="width: 140px;">
+            <select id="operator" lay-verify="required" lay-filter="operator"></select>
+        </div>
+        <div class="layui-input-inline" style="width: 163px;">
+            <input id="query_value_1" type="text" placeholder="值1(SQL格式)" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid">-</div>
+        <div class="layui-input-inline" style="width: 163px;">
+            <input id="query_value_2" type="text" name="price_max" placeholder="值2(SQL格式)" autocomplete="off" class="layui-input">
+        </div>
     </div>
 </div>
 <div class="layui-form-item">
@@ -52,7 +62,24 @@
     </div>
 </div>
 <script>
+    var conditions = {
+        "等于":{operator1: '=',operator2: '',operatorCount:1},
+        "不等于":{operator1: '<>',operator2: '',operatorCount:1},
+        "大于":{operator1: '>',operator2: '',operatorCount:1},
+        "小于":{operator1: '<',operator2: '',operatorCount:1},
+        "大于等于":{operator1: '>=',operator2: '',operatorCount:1},
+        "小于等于":{operator1: '<=',operator2: '',operatorCount:1},
+        "介于":{operator1: 'BETWEEN',operator2: 'AND',operatorCount:2},
+        "不介于":{operator1: 'NOT BETWEEN',operator2: 'AND',operatorCount:2},
+        "包含":{operator1: 'LIKE',operator2: '',operatorCount:1},
+        "不包含":{operator1: 'NOT LIKE',operator2: '',operatorCount:1},
+        "在列表中":{operator1: 'IN',operator2: '',operatorCount:1},
+        "不在列表中":{operator1: 'NOT IN',operator2: '',operatorCount:1},
+        "是NULL":{operator1: 'IS NULL',operator2: '',operatorCount:0},
+        "不是NULL":{operator1: 'IS NOT NULL',operator2: '',operatorCount:0}
+    };
     function setForm(form) {
+        var colName = "";
         form.on('select(user)', function (data) {
             //data.elem,DOM元素
             var user = $("#user").find("option:selected").val();
@@ -69,6 +96,58 @@
                 "@Url.Action("GetColumnName", "OrAuditPolicy")",
                 {scId:@Model, user: user, objname:obj})
         });
+        form.on('select(col)', function (data) {
+            //data.elem,DOM元素
+            colName = $("#col").find("option:selected").val();
+            console.log(colName);
+            generateCondition(colName);
+        });
+        //条件
+        var $sel = $('#operator');
+        $sel.html('');
+        var op = $("<option>").val('').text('请选择运输符');
+        $sel.append(op);
+        for(var p in conditions){
+            op = $("<option>").val(p).text(p);
+            $sel.append(op);
+        }
+        form.render('select');
+
+        form.on('select(operator)', function (data) {
+            generateCondition(colName);
+        });
+        $("#query_value_1").on("change",function(){
+            generateCondition(colName);
+        });
+        $("#query_value_2").on("change",function(){
+            generateCondition(colName);
+        });
+    }
+    function generateCondition(col){
+        var opv = $("#operator").find("option:selected").val();
+        var val1 = $("#query_value_1").val();
+        var val2 = $("#query_value_2").val();
+        var opobj = conditions[opv];
+        if(!opobj) return "";
+        var condition = '';
+        switch(opobj.operatorCount){
+            case 0:
+                condition = col + " " + opobj.operator1;
+                break;
+            case 1:
+                if(val1 !== '')
+                    condition = col + " " + opobj.operator1 + " " + val1;
+                break;
+            case 2:
+                if(val1 !== '' && val2 !== '')
+                    condition = col + " " + opobj.operator1 + " " + val1 + " " + opobj.operator2 + " " + val2;
+                break;
+        }
+        if(condition != '')
+            condition = condition.replace(/\'/g, "''");
+        $("#condition").val(condition);
+        console.log(condition);
+        return condition;
     }
     function selectRefresh(form, $sel, url, postData){
         $.post(url, postData,

@@ -4,7 +4,22 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=F:\Workspace\DbMonitor\Code\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=E:\Project\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AuditPolicy">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="APName" Type="varchar" MaxLength="128" />
+          <Property Name="SCID" Type="integer" />
+          <Property Name="APUser" Type="varchar" MaxLength="128" />
+          <Property Name="APSchema" Type="varchar" MaxLength="128" />
+          <Property Name="APObjectName" Type="varchar" MaxLength="128" />
+          <Property Name="APColumnName" Type="varchar" MaxLength="128" />
+          <Property Name="APCondition" Type="varchar" MaxLength="128" />
+          <Property Name="APStatement" Type="varchar" MaxLength="30" />
+          <Property Name="APWhen" Type="varchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="Authority">
           <Key>
             <PropertyRef Name="ID" />
@@ -275,6 +290,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DbMonitorModelStoreContainer">
+          <EntitySet Name="AuditPolicy" EntityType="Self.AuditPolicy" store:Type="Tables" />
           <EntitySet Name="Authority" EntityType="Self.Authority" store:Type="Tables" />
           <EntitySet Name="ChangeLog" EntityType="Self.ChangeLog" store:Type="Tables" />
           <EntitySet Name="DatabaseStatus" EntityType="Self.DatabaseStatus" store:Type="Tables" />
@@ -531,6 +547,7 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <EntitySet Name="ChangeLog" EntityType="DbMonitorModel.ChangeLog" />
           <EntitySet Name="MonitorManagement" EntityType="DbMonitorModel.MonitorManagement" />
           <EntitySet Name="DatabaseStatus" EntityType="DbMonitorModel.DatabaseStatus" />
+          <EntitySet Name="AuditPolicy" EntityType="DbMonitorModel.AuditPolicy" />
         </EntityContainer>
         <EntityType Name="v_RoleAuth">
           <Key>
@@ -636,6 +653,21 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <Property Name="REALTIME" Type="Int64" />
           <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="AuditPolicy">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="APName" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="SCID" Type="Int64" />
+          <Property Name="APUser" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="APSchema" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="APObjectName" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="APColumnName" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="APCondition" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="APStatement" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="APWhen" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -848,6 +880,22 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
                 <ScalarProperty Name="HOST_NAME" ColumnName="HOST_NAME" />
                 <ScalarProperty Name="INSTANCE_NAME" ColumnName="INSTANCE_NAME" />
                 <ScalarProperty Name="SCID" ColumnName="SCID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AuditPolicy">
+            <EntityTypeMapping TypeName="DbMonitorModel.AuditPolicy">
+              <MappingFragment StoreEntitySet="AuditPolicy">
+                <ScalarProperty Name="APWhen" ColumnName="APWhen" />
+                <ScalarProperty Name="APStatement" ColumnName="APStatement" />
+                <ScalarProperty Name="APCondition" ColumnName="APCondition" />
+                <ScalarProperty Name="APColumnName" ColumnName="APColumnName" />
+                <ScalarProperty Name="APObjectName" ColumnName="APObjectName" />
+                <ScalarProperty Name="APSchema" ColumnName="APSchema" />
+                <ScalarProperty Name="APUser" ColumnName="APUser" />
+                <ScalarProperty Name="SCID" ColumnName="SCID" />
+                <ScalarProperty Name="APName" ColumnName="APName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

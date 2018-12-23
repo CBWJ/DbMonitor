@@ -374,6 +374,7 @@
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DictionaryController.cs" />
     <Compile Include="Controllers\Dm\DmAuditManageController.cs" />
+    <Compile Include="Controllers\Dm\DmAuditPolicyController.cs" />
     <Compile Include="Controllers\Dm\DmAuditRecordController.cs" />
     <Compile Include="Controllers\Dm\DmFlashBackQueryController.cs" />
     <Compile Include="Controllers\Dm\DmMirrorExportController.cs" />
@@ -482,6 +483,8 @@
     <Content Include="Views\OrHistoryDataQuery\Index.cshtml" />
     <Content Include="Views\OrFlashBackQuery\Index.cshtml" />
     <Content Include="Views\DmFlashBackQuery\Index.cshtml" />
+    <Content Include="Views\DmAuditPolicy\Index.cshtml" />
+    <Content Include="Views\DmAuditPolicy\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
