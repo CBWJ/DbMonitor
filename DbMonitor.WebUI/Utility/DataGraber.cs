@@ -252,6 +252,32 @@ namespace DbMonitor.WebUI.Utility
                                 log.CLNewData = "";
                             }
                             log.CLChangeType = _dicDmDDL[log.CLChangeEvent];
+
+                            switch (log.CLChangeEvent)
+                            {
+                                case "CREATE TABLE":
+                                case "ALTER TABLE":
+                                case "DROP TABLE":
+                                case "TRUNCATE TABLE":
+                                    log.CLObjectType = "UTAB";
+                                    break;
+                                case "CREATE VIEW":
+                                case "DROP VIEW":
+                                    log.CLObjectType = "VIEW";
+                                    break;
+                                case "CREATE PROCEDURE":
+                                case "DROP PROCEDURE":
+                                    log.CLObjectType = "PROC";
+                                    break;
+                                case "CREATE TRIGGER":
+                                case "DROP TRIGGER":
+                                    log.CLObjectType = "TRIG";
+                                    break;
+                                case "CREATE INDEX":
+                                case "DROP INDEX":
+                                    log.CLObjectType = "INDEX";
+                                    break;
+                            }
                         }
                         //数据操纵
                         else if (log.CLChangeEvent == "INSERT")
@@ -261,6 +287,7 @@ namespace DbMonitor.WebUI.Utility
                             log.CLOldData = "";
                             log.CLNewData = sql_Upper.Substring(pos, lastPos - pos);
                             log.CLChangeType = "插入数据";
+                            log.CLObjectType = "UTAB";
                         }
                         else if (log.CLChangeEvent == "UPDATE")
                         {
@@ -268,6 +295,7 @@ namespace DbMonitor.WebUI.Utility
                             log.CLOldData = "";
                             log.CLNewData = sql_Upper.Substring(pos);
                             log.CLChangeType = "更新数据";
+                            log.CLObjectType = "UTAB";
                         }
                         else if (log.CLChangeEvent == "DELETE")
                         {
@@ -275,6 +303,7 @@ namespace DbMonitor.WebUI.Utility
                             log.CLOldData = "";
                             log.CLNewData = sql_Upper.Substring(pos + log.CLObjectName.Length);
                             log.CLChangeType = "删除数据";
+                            log.CLObjectType = "UTAB";
                         }
                         else
                             bAdd = false;

@@ -26,7 +26,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 {
                     ViewBag.Users = dal.GetAllUsers().OrderBy(s => s).ToList();
                 }
-                dic = db.Dictionary.Where(d => d.DTypeCode == "OracleCompare").ToList();
+                dic = db.Dictionary.Where(d => d.DTypeCode == "OracleObjectType" && d.DEnable == 1).ToList();
             }
             else
             {
@@ -34,7 +34,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 {
                     ViewBag.Users = dal.GetAllUsers().OrderBy(s => s).ToList();
                 }
-                dic = db.Dictionary.Where(d => d.DTypeCode == "DmCompare").ToList();
+                dic = db.Dictionary.Where(d => d.DTypeCode == "DmObjectType" && d.DEnable == 1).ToList();
             }
             return View(dic);
         }

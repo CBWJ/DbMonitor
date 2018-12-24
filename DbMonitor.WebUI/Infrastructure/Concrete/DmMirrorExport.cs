@@ -108,7 +108,7 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
                                 dal.ExecuteNonQuery(sql);
                                 
                             }
-                            sql = string.Format("create user {0} identified by {0}", me.MESchemas);
+                            sql = string.Format("create user {0} identified by {0} default tablespace BACKUP", me.MESchemas);
                             dal.ExecuteNonQuery(sql);
                         }
                         sbExp.Clear();
