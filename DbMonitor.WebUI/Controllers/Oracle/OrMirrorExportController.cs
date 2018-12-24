@@ -136,5 +136,38 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             }
             return ret;
         }
+
+        [HttpPost]
+        public ActionResult Import(int id)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                var mirror = db.MirrorExport.Find(id);
+                mirror.MEImportStatus = "提交导出";
+                db.SaveChanges();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
+
+                Task.Factory.StartNew(new Action(() => {
+                    OracleMirrorExport omr = new OracleMirrorExport();
+                    ///omr.ExecuteExport(id);
+                    omr.ExecuteImport(id);
+                }));
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
+                });
+                RecordException(ex);
+            }
+            return ret;
+        }
     }
 }

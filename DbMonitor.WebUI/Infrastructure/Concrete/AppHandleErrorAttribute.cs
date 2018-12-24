@@ -17,10 +17,14 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
             var message = error.Message;
             //设置为true，则说明过滤器处理了该异常
             filterContext.ExceptionHandled = true;
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            dic.Add("code", code.ToString());
+            dic.Add("msg", message);
+            
             filterContext.Result = new ViewResult
             {
                 ViewName = "Exception",
-                ViewData = new ViewDataDictionary<string>(code.ToString())
+                ViewData = new ViewDataDictionary(dic)
             };
             LogHelper.WriteErrorFormFilter(filterContext.Exception);
         }

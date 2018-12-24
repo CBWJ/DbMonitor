@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+    var schemas = (List<string>)ViewBag.Schemas;
 }
 
 @Html.HiddenFor(m => m.SCID)
@@ -19,7 +20,14 @@
 <div class="layui-form-item">
     <label class="layui-form-label">导出模式</label>
     <div class="layui-input-inline">
-        @Html.TextBoxFor(m => m.MESchemas, new { lay_verify = "required", placeholder = "请输入导出模式", autocomplete = "off", @class = "layui-input" })
+        @*@Html.TextBoxFor(m => m.MESchemas, new { lay_verify = "required", placeholder = "请输入导出模式", autocomplete = "off", @class = "layui-input" })*@
+        <select id="MESchemas" name="MESchemas" lay-verify="required" lay-search lay-filter="schema">
+            <option value=""></option>
+            @foreach (var s in schemas)
+            {
+                <option value="@s">@s</option>
+            }
+        </select>
     </div>
     <label class="layui-form-label">导出时间点</label>
     <div class="layui-input-inline">

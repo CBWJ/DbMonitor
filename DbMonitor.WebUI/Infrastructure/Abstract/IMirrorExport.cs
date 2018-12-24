@@ -9,5 +9,7 @@ namespace DbMonitor.WebUI.Infrastructure.Abstract
     public interface IMirrorExport
     {
         void ExecuteExport(long id);
+
+        void ExecuteImport(long id);
     }
 }

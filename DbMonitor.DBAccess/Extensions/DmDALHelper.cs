@@ -44,6 +44,18 @@ namespace DbMonitor.DBAccess.Extensions
             return dal.GetOneColumnValue(sbSql.ToString());
         }
         /// <summary>
+        /// 获取所有模式
+        /// </summary>
+        /// <param name="dal"></param>
+        /// <returns></returns>
+        public static List<string> GetAllSchemas(this DmDAL dal)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            sbSql.AppendFormat("SELECT * FROM sysobjects WHERE TYPE$='SCH' AND SUBTYPE$ IS NULL");
+
+            return dal.GetOneColumnValue(sbSql.ToString());
+        }
+        /// <summary>
         /// 获取某种所有对象
         /// </summary>
         /// <param name="dal"></param>

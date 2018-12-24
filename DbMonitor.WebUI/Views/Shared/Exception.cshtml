@@ -1,4 +1,4 @@
-﻿@model string
+﻿@model Dictionary<string, string>
 @{
     ViewBag.Title = "Exception";
     Layout = "~/Views/Shared/_LayoutLayui.cshtml";
@@ -47,12 +47,13 @@
     <i class="layui-icon layui-icon-face-cry"></i>
     <div class="tips-text">
         <h1>
-            @foreach(var c in Model)
+            @foreach(var c in Model["code"])
             {
                 <span>@c</span>
             }
         </h1>
         <p>Sorry！程序发生异常了...</p>
+        <p>@Model["msg"]</p>
     </div>
 </div>
 

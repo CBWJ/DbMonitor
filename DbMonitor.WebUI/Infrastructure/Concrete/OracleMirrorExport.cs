@@ -98,10 +98,9 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
                     string text = File.ReadAllText(logfile, EncodingType.GetType(logfile));
                     Console.WriteLine(text);
 
-                    string pattern = @"/\(于.*完成\)/";
+                    string pattern = @"作业[\s\S]+完成";
 
-                    var m = Regex.Match(text, pattern);
-                    if (m != null)
+                    if (Regex.IsMatch(text, pattern))
                     {
                         me.MEStatus = "导出成功";
                         me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
@@ -117,6 +116,73 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
                 else
                 {
                     me.MEStatus = "导出失败";
+                    me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                    ctx.SaveChanges();
+                }
+            }
+        }
+
+        public void ExecuteImport(long id)
+        {
+            using (var ctx = new DbMonitorEntities())
+            {
+                var me = ctx.MirrorExport.Find(id);
+                var dic = ctx.Dictionary.Where(d => d.DTypeCode == "OracleExport" && d.DEnable == 1).ToList();
+                var sc = ctx.SessionConnection.Find(me.SCID);
+
+                me.MEImportStatus = "开始导入";
+                me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                me.MEImportTime = me.EditingTime;
+                ctx.SaveChanges();
+
+                List<string> cmds = new List<string>();
+                //变量设置是必须的
+                string directory = dic.Where(d => d.DCode == "directory").FirstOrDefault().DName,
+                        oracle_base = dic.Where(d => d.DCode == "oracle_base").FirstOrDefault().DName,
+                        oracle_home = dic.Where(d => d.DCode == "oracle_home").FirstOrDefault().DName,
+                        oracle_sid = dic.Where(d => d.DCode == "oracle_sid").FirstOrDefault().DName,
+                        user_local = dic.Where(d => d.DCode == "user").FirstOrDefault().DName,
+                        pwd_local = dic.Where(d => d.DCode == "pwd").FirstOrDefault().DName;
+
+                cmds.Add(string.Format("set ORACLE_BASE={0}", oracle_base));
+                cmds.Add(string.Format("set ORACLE_HOME=%ORACLE_BASE%{0}", oracle_home));
+                cmds.Add(string.Format("set ORACLE_SID={0}", oracle_sid));
+                cmds.Add(@"set PATH=%path%;%ORACLE_HOME%\bin");
+
+                string file = me.MEFileName, implog = me.MELogFile.Replace(".log","") + "_imp.log";
+                //使用StringBuilder注意参数之间的空格
+                StringBuilder sbExp = new StringBuilder();
+                sbExp.AppendFormat("%ORACLE_HOME%\\bin\\impdp {0}/{1} directory={2} dumpfile={3} logfile={4}",
+                    user_local, pwd_local, directory, file, implog);
+
+                cmds.Add(sbExp.ToString());
+                CmdHelper.Execute(cmds.ToArray());
+
+                var backup_dir = dic.Where(d => d.DCode == "backup_dir").FirstOrDefault().DName;
+                var logfile = Path.Combine(backup_dir, implog);
+                me.MEImportLogFile = implog;
+
+                bool bOK = false;
+                if (File.Exists(logfile))
+                {
+                    string text = File.ReadAllText(logfile, EncodingType.GetType(logfile));
+
+                    string pattern = @"作业[\s\S]+完成";
+                    
+                    if (Regex.IsMatch(text, pattern))
+                    {
+                        bOK = true;
+                    }
+                }
+                if (bOK)
+                {
+                    me.MEImportStatus = "导入成功";
+                    me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                    ctx.SaveChanges();
+                }
+                else
+                {
+                    me.MEImportStatus = "导入失败";
                     me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                     ctx.SaveChanges();
                 }

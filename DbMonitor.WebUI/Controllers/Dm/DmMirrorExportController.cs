@@ -86,6 +86,10 @@ namespace DbMonitor.WebUI.Controllers.Dm
                 MESchemas = sc.SCUser,
                 MEExportTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")
             };
+            using(var dal = new DmDAL(GetSessionConnStr(scId)))
+            {
+                ViewBag.Schemas = dal.GetAllSchemas();
+            }
             return View(me);
         }
         [HttpPost]

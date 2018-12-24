@@ -27,5 +27,8 @@ namespace DbMonitor.Domain
         public Nullable<long> CreatorID { get; set; }
         public string CreationTime { get; set; }
         public string EditingTime { get; set; }
+        public string MEImportStatus { get; set; }
+        public string MEImportTime { get; set; }
+        public string MEImportLogFile { get; set; }
     }
 }

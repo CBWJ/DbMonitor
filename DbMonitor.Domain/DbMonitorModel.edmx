@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=E:\Project\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DbMonitorModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=F:\Workspace\DbMonitor\Code\DbMonitor\DbMonitor.WebUI\App_Data\DbMonitor.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AuditPolicy">
           <Key>
             <PropertyRef Name="ID" />
@@ -104,6 +104,9 @@
           <Property Name="CreatorID" Type="integer" />
           <Property Name="CreationTime" Type="varchar" MaxLength="30" />
           <Property Name="EditingTime" Type="varchar" MaxLength="30" />
+          <Property Name="MEImportStatus" Type="varchar" MaxLength="20" />
+          <Property Name="MEImportTime" Type="varchar" MaxLength="30" />
+          <Property Name="MEImportLogFile" Type="varchar" MaxLength="256" />
         </EntityType>
         <EntityType Name="Module">
           <Key>
@@ -606,6 +609,9 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <Property Name="CreatorID" Type="Int64" />
           <Property Name="CreationTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="EditingTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="MEImportStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MEImportTime" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="MEImportLogFile" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ChangeLog">
           <Key>
@@ -818,6 +824,9 @@ FROM [v_RoleAuth] AS [v_RoleAuth]</DefiningQuery>
           <EntitySetMapping Name="MirrorExport">
             <EntityTypeMapping TypeName="DbMonitorModel.MirrorExport">
               <MappingFragment StoreEntitySet="MirrorExport">
+                <ScalarProperty Name="MEImportLogFile" ColumnName="MEImportLogFile" />
+                <ScalarProperty Name="MEImportTime" ColumnName="MEImportTime" />
+                <ScalarProperty Name="MEImportStatus" ColumnName="MEImportStatus" />
                 <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
                 <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
                 <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
