@@ -34,6 +34,18 @@
     </div>
 </div>
 <div class="layui-form-item">
+    <label class="layui-form-label">选择模式</label>
+    <div class="layui-input-block">
+        <select id="schema" name="schemaname" lay-verify="required" lay-search lay-filter="schema">
+            <option value=""></option>
+            @foreach (var s in users)
+            {
+                <option value="@s">@s</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
     <label class="layui-form-label">对象类型</label>
     <div class="layui-input-block">
         <select name="objtype" id="objtype" lay-verify="required" lay-search lay-filter="objtype">
@@ -71,14 +83,14 @@
 </div>
 <script>
     function setForm(form) {
-        form.on('select(user)', function (data) {
+        form.on('select(schema)', function (data) {
             refreshObject(form)
         });
         form.on('select(objtype)', function (data) {
             refreshObject(form);
         });
         form.on('select(obj)', function (data) {
-            var user = $("#user").find("option:selected").val();
+            var user = $("#schema").find("option:selected").val();
             var obj = $("#tvname").find("option:selected").val();
             selectRefresh(form, $("#colname"),
                 "@Url.Action("GetColumnName", "DmAuditManage")",
@@ -86,7 +98,7 @@
         });
     }
     function refreshObject(form){
-        var user = $("#user").find("option:selected").val();
+        var user = $("#schema").find("option:selected").val();
         var objtype = $("#objtype").find("option:selected").val();
         selectRefresh(form, $("#tvname"),
             "@Url.Action("GetObjectName", "DmAuditManage")",

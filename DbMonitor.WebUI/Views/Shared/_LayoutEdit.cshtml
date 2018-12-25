@@ -38,6 +38,7 @@
                 var jsonData = JSON.stringify(data.field);
                 var $ = layui.$;
                 var url = $("#action").val();
+                var loadIndex = layer.load(1, { shade: [0.3, '#000'] }); //换了种风格
                 $.post(url,
                     data.field, function (res) {
                         var objRes = JSON.parse(res);
@@ -47,6 +48,7 @@
                             parent.refreshList();
                             
                         } else {
+                            layer.close(loadIndex);
                             layer.alert(objRes.message, { icon: 5 });
                         }
                     }, "json");

@@ -48,6 +48,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     string subTable = @"(SELECT ad.*,
                                     obj1.NAME AS USERNAME,
                                     obj2.NAME AS OBJECTNAME,
+                                    (SELECT NAME FROM sysobjects WHERE TYPE$='SCH' AND SUBTYPE$ IS NULL AND ID = (SELECT SCHID FROM sysobjects WHERE ID = ad.TVPID)) AS SCHEMANAME,
                                     (SELECT NAME FROM SYSCOLUMNS WHERE ID = ad.TVPID AND COLID = ad.COLID) AS COLNAME,
                                     (CASE LEVEL WHEN 1 THEN '语句级' WHEN 2 THEN '对象级' ELSE '' END) AS SLEVEL,
                                     (CASE TYPE 	WHEN 0 THEN 'ALL'
@@ -256,6 +257,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
         [HttpPost]
         public ActionResult CreateObject(long scId, string type,
                                             string username,
+                                            string schemaname,
                                             string tvname,
                                             string colname,
                                             string whenever)
@@ -268,7 +270,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
 
                     StringBuilder sbSql = new StringBuilder();
                     sbSql.AppendFormat("SP_AUDIT_OBJECT('{0}', '{1}', '{2}', '{3}'",
-                        type, username, username, tvname);
+                        type, username, schemaname, tvname);
                     if (!string.IsNullOrWhiteSpace(colname))
                     {
                         sbSql.AppendFormat(",'{0}'", colname);
@@ -391,6 +393,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
         [HttpPost]
         public ActionResult DeleteObject(long scId, string type,
                                             string username,
+                                            string schemaname,
                                             string tvname,
                                             string colname,
                                             string whenever)
@@ -403,7 +406,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
 
                     StringBuilder sbSql = new StringBuilder();
                     sbSql.AppendFormat("SP_NOAUDIT_OBJECT('{0}', '{1}', '{2}', '{3}'",
-                        type, username, username, tvname);
+                        type, username, schemaname, tvname);
                     if (!string.IsNullOrWhiteSpace(colname))
                     {
                         sbSql.AppendFormat(",'{0}'", colname);
