@@ -144,7 +144,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             try
             {
                 var mirror = db.MirrorExport.Find(id);
-                mirror.MEImportStatus = "提交导出";
+                mirror.MEImportStatus = "提交导入";
                 db.SaveChanges();
                 ret.Data = JsonConvert.SerializeObject(new
                 {

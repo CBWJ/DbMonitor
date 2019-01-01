@@ -88,7 +88,8 @@ namespace DbMonitor.WebUI.Controllers.Dm
             };
             using(var dal = new DmDAL(GetSessionConnStr(scId)))
             {
-                ViewBag.Schemas = dal.GetAllSchemas();
+                //ViewBag.Schemas = dal.GetAllSchemas();
+                ViewBag.Schemas = dal.GetAllUsers();
             }
             return View(me);
         }
@@ -120,6 +121,38 @@ namespace DbMonitor.WebUI.Controllers.Dm
                 Task.Factory.StartNew(new Action(() =>
                 {
                     new DmMirrorExport().ExecuteExport(mirror.ID);
+                }));
+            }
+            catch (Exception ex)
+            {
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 1,
+                    message = ex.Message
+                });
+                RecordException(ex);
+            }
+            return ret;
+        }
+
+        [HttpPost]
+        public ActionResult Import(int id)
+        {
+            JsonResult ret = new JsonResult();
+            try
+            {
+                var mirror = db.MirrorExport.Find(id);
+                mirror.MEImportStatus = "提交导入";
+                db.SaveChanges();
+                ret.Data = JsonConvert.SerializeObject(new
+                {
+                    status = 0,
+                    message = ""
+                });
+
+                Task.Factory.StartNew(new Action(() => {
+                    DmMirrorExport omr = new DmMirrorExport();
+                    omr.ExecuteImport(id);
                 }));
             }
             catch (Exception ex)

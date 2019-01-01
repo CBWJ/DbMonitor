@@ -95,13 +95,13 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
                         ctx.SaveChanges();
 
                         //导入到本地
-                        var local_user = dic.Where(d => d.DCode == "user").FirstOrDefault().DName;
+                       /* var local_user = dic.Where(d => d.DCode == "user").FirstOrDefault().DName;
                         var local_pwd = dic.Where(d => d.DCode == "pwd").FirstOrDefault().DName;
                         var imp_log = me.MELogFile.Replace(".log", "_exp2.log");
                         using (var dal = new DmDAL(connStr))
                         {
                             var sql = string.Format("SELECT COUNT(1) FROM DBA_USERS WHERE USERNAME='{0}'", me.MESchemas);
-                            var cnt = (int)dal.ExecuteScalar(sql);
+                            var cnt = Convert.ToInt32(dal.ExecuteScalar(sql));
                             if(cnt == 1)
                             {
                                 sql = string.Format("DROP USER {0} CASCADE", me.MESchemas);
@@ -116,23 +116,23 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
                            local_user, local_pwd, me.MEFileName, imp_log, backup_dir);
 
                         me.MEImportStatus = "开始自动导入";
-                        me.MEImportTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                        me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                         ctx.SaveChanges();
 
                         bool bImportOK = false;
                         bImportOK = ImportTask(home, backup_dir, imp_log, sbExp.ToString());
                         if (bImportOK)
                         {
-                            me.MEStatus = "自动导入成功";
+                            me.MEImportStatus = "自动导入成功";
                             me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                             ctx.SaveChanges();
                         }
                         else
                         {
-                            me.MEStatus = "自动导入失败";
+                            me.MEImportStatus = "自动导入失败";
                             me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                             ctx.SaveChanges();
-                        }
+                        }*/
                     }
                     else
                     {
@@ -150,7 +150,53 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
 
         public void ExecuteImport(long id)
         {
-           
+            using (var ctx = new DbMonitorEntities())
+            {
+                var me = ctx.MirrorExport.Find(id);
+                var dic = ctx.Dictionary.Where(d => d.DTypeCode == "DmExport" && d.DEnable == 1).ToList();
+
+                //导入到本地
+                var home = dic.Where(d => d.DCode == "dm_home").First().DName;
+                var backup_dir = dic.Where(d => d.DCode == "backup_dir").FirstOrDefault().DName;
+                var local_user = dic.Where(d => d.DCode == "user").FirstOrDefault().DName;
+                var local_pwd = dic.Where(d => d.DCode == "pwd").FirstOrDefault().DName;
+                var imp_log = me.MELogFile.Replace(".log", "_imp.log");
+                using (var dal = new DmDAL(connStr))
+                {
+                    var sql = string.Format("SELECT COUNT(1) FROM DBA_USERS WHERE USERNAME='{0}'", me.MESchemas);
+                    var cnt = Convert.ToInt32(dal.ExecuteScalar(sql));
+                    if (cnt == 1)
+                    {
+                        sql = string.Format("DROP USER {0} CASCADE", me.MESchemas);
+                        dal.ExecuteNonQuery(sql);
+
+                    }
+                    sql = string.Format("create user {0} identified by {0} default tablespace BACKUP", me.MESchemas);
+                    dal.ExecuteNonQuery(sql);
+                }
+                StringBuilder sbExp = new StringBuilder();
+                sbExp.AppendFormat("%DM_HOME%\\bin\\dimp USERID={0}/{1} FILE={2} LOG={3} DIRECTORY={4}",
+                   local_user, local_pwd, me.MEFileName, imp_log, backup_dir);
+
+                me.MEImportStatus = "开始导入";
+                me.MEImportTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                ctx.SaveChanges();
+
+                bool bImportOK = false;
+                bImportOK = ImportTask(home, backup_dir, imp_log, sbExp.ToString());
+                if (bImportOK)
+                {
+                    me.MEImportStatus = "导入成功";
+                    me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                    ctx.SaveChanges();
+                }
+                else
+                {
+                    me.MEImportStatus = "导入失败";
+                    me.EditingTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                    ctx.SaveChanges();
+                }
+            }
         }
 
         public bool ImportTask(string home, string backup_dir, string log, string cmd)

@@ -40,8 +40,8 @@
         elemSelector: "#datatable",
         tableID: "dt",
         colConfig:  [[{ type: 'checkbox', fixed: 'left' }
-                  , { field: 'MEUser', title: '用户名', sort: true }
-                  , { field: 'MEPassword', title: '密码', sort: true }
+                  //, { field: 'MEUser', title: '用户名', sort: true }
+                  //, { field: 'MEPassword', title: '密码', sort: true }
                   , { field: 'MEDirectory', title: '导出目录', sort: true }
                   , { field: 'MESchemas', title: '导出模式', sort: true }
                   , { field: 'MEFileName', title: '文件名', sort: true }
@@ -49,6 +49,8 @@
                   , { field: 'MEExportTime', title: '导出时间点', sort: true }
                   , { field: 'MEStatus', title: '导出状态', sort: true }
                   , { field: 'CreationTime', title: '创建时间', sort: true }
+                  , { field: 'MEImportStatus', title: '导入状态', sort: true }
+                  , { field: 'MEImportTime', title: '导入时间', sort: true }
                 ]],
         dataInterface: "@Url.Action("List", @ViewBag.Controller)",
         where: { scId: '@ViewBag.SCID' },
@@ -84,6 +86,31 @@
                             curr: 1
                         }
                     });
+            },
+            impMirror: function (table, layer) {
+                var checkStatus = table.checkStatus(tableConfig.tableID)
+                            , data = checkStatus.data;
+                if (data.length != 1) {
+                    layer.alert('请选中一行！', { icon: 2 });
+                    return;
+                }
+                var btn = $(".layui-btn[data-action=impMirror]");
+                if (btn.hasClass("layui-btn-disabled"))
+                    return;
+                btn.addClass("layui-btn-disabled");
+                //alert(data[0].ID);
+                $.post("@Url.Action("Import", ViewBag.Controller)", { id: data[0].ID }, function (data) {
+                    var objData = JSON.parse(data);
+                    if (objData.status == 0) {
+                        setTimeout(function () {
+                            btn.removeClass("layui-btn-disabled");
+                        }, 5000);
+                    }
+                    else {
+                        layer.alert(data.message, { icon: 5 });
+                        btn.removeClass("layui-btn-disabled");
+                    }
+                }, "json");
             }
         },
         createConfig: {

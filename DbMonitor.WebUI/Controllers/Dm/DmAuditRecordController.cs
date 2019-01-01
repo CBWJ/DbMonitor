@@ -47,7 +47,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     StringBuilder sbCount = new StringBuilder();
 
                     sbCount.Append("SELECT COUNT(*) FROM SYSAUDITOR.V$AUDITRECORDS");
-                    sbSql.Append("SELECT * FROM SYSAUDITOR.V$AUDITRECORDS");
+                    sbSql.Append("SELECT ar.*,'' AS POLICY_NAME FROM SYSAUDITOR.V$AUDITRECORDS ar");
                     if (!string.IsNullOrWhiteSpace(user))
                     {
                         sbSql.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
@@ -79,6 +79,48 @@ namespace DbMonitor.WebUI.Controllers.Dm
 
                     int count = Convert.ToInt32(dal.ExecuteScalar(sbCount.ToString()));
                     var dt = dal.ExecuteQuery(sbSql.ToString());
+                    var policies = db.AuditPolicy.Where(p => p.SCID == scId).ToList();
+                    if (dt.Rows.Count > 0 && policies.Count > 0)
+                    {
+                        
+                        foreach(DataRow row in dt.Rows)
+                        {
+                            var username = row["USERNAME"].ToString();
+                            var schema = row["SCHNAME"].ToString();
+                            var obj = row["OBJNAME"].ToString();
+                            var op = row["OPERATION"].ToString();
+                            var sqlUpperCase = row["SQL_TEXT"].ToString().ToUpper();
+
+                            if (schema == "" || obj == "") continue;
+                            var policy = policies.Where(p => p.APUser == username && p.APSchema == schema && p.APObjectName == obj && p.APStatement == op &&
+                                                        sqlUpperCase.Contains(p.APCondition)).FirstOrDefault();
+                            /*var po = policies.FirstOrDefault();
+                            if (po.APUser == username)
+                            {
+                                Console.WriteLine("abc");
+                            }
+                            if (po.APSchema == schema)
+                            {
+                                Console.WriteLine("abc");
+                            }
+                            if (po.APObjectName == obj)
+                            {
+                                Console.WriteLine("abc");
+                            }
+                            if (po.APStatement == op)
+                            {
+                                Console.WriteLine("abc");
+                            }
+                            if (sqlUpperCase.Contains(po.APCondition))
+                            {
+                                Console.WriteLine("");
+                            }*/
+                            if (policy != null)
+                            {
+                                row["POLICY_NAME"] = policy.APName;
+                            }
+                        }
+                    }
                     ret.Data = JsonConvert.SerializeObject(new
                     {
                         status = 0,
