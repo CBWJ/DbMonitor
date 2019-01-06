@@ -224,3 +224,32 @@
 	-moz-transition:display 1s ease-in;
 	transition:display 1s ease-in;
 }
+
+/*红色主题*/
+.skin-red .leftmenu>ul>li.selected>a{
+    color: #E30000;
+}
+.skin-red .leftmenu>ul .submenu li.selected>a{
+    color: #E30000;
+}
+.skin-red .leftmenu>ul>li>.submenu>li>.submenu>li.selected>a{
+    color: #E30000;
+}
+.skin-red .leftmenu>ul .submenu li.selected>a::after{
+    border-right-color: #E30000;
+}
+/*鼠标悬停*/
+.skin-red .leftmenu>ul>li>a:hover{
+    color: #E30000;
+}
+
+.skin-red .leftmenu>ul .submenu li>a:hover{
+    color: #E30000;
+}
+
+.skin-red .leftmenu>ul>li>.submenu>li>.submenu>li>a:hover{
+    color: #E30000;
+}
+.skin-red .leftmenu>ul>li>a::before{
+    background-color: #E30000;
+}

@@ -265,6 +265,7 @@
     <Content Include="Scripts\layui\css\modules\layer\default\loading-0.gif" />
     <Content Include="Scripts\layui\css\modules\layer\default\loading-1.gif" />
     <Content Include="Scripts\layui\css\modules\layer\default\loading-2.gif" />
+    <Content Include="Scripts\layui\css\modules\layer\red\style.css" />
     <Content Include="Scripts\layui\font\iconfont.svg" />
     <Content Include="Scripts\layui\images\face\0.gif" />
     <Content Include="Scripts\layui\images\face\1.gif" />

@@ -132,3 +132,10 @@ html,body{
 .skin-red .main_body_top{
     background: linear-gradient(#D40000, #E30000); /* 标准的语法 */
 }
+.skin-red .content_menu .menu_trigger .trigger_button{
+    background-color: #E30000;
+}
+
+.skin-red .content_menu .menu_trigger .normal_button{
+    background-color: #673AB7;
+}

@@ -190,3 +190,18 @@
     background-color: #87B87F;
     color: #fff;
 }
+
+/*ºìÉ«Ö÷Ìâ*/
+.skin-red .tab-header ul li a:hover{
+    color:#E30000;
+}
+.skin-red .tab-header>ul>li.selected a{
+    color: #E30000;
+}
+.skin-red .tab-header ul .selected{
+    color:#E30000;
+    border:1px solid #E30000;
+}
+.skin-red .tab-content{
+    border-top-color:#E30000;
+}

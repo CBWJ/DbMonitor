@@ -6,8 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="~/Scripts/layui/css/layui.css">
     <title>Index</title>
+    <style>
+        .skin-red .layui-elem-quote{
+            border-left: 5px solid #E30000;
+        }
+        /*格式分页样式*/
+        .skin-red .layui-laypage a:hover {
+            color: #E30000;
+        }
+        .skin-red .layui-laypage .layui-laypage-curr .layui-laypage-em {
+            background-color: #E30000;
+        }
+    </style>
 </head>
-<body>
+<body class="skin-red">
     @RenderBody()
     <script src="~/Scripts/layui/layui.js"></script>
     <script src="~/Scripts/jquery-3.0.0.min.js"></script>
@@ -41,6 +53,10 @@
             var table = layui.table;
             var layer = layui.layer;
             var form = layui.form;
+            layer.config({
+                extend: 'red/style.css', //加载您的扩展样式
+                skin: 'layer-ext-red'
+            });
             //执行渲染
             table.render({
                 elem: tableConfig.elemSelector//指定原始表格元素选择器（推荐id选择器）

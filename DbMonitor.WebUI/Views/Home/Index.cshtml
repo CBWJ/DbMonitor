@@ -74,6 +74,10 @@
         });
         layui.use("layer", function () {
             var layer = layui.layer;
+            layer.config({
+                extend: 'red/style.css', //加载您的扩展样式
+                skin: 'layer-ext-red'
+            });
             var active = {
                 modifypwd: function () {
                     layer.open({
@@ -129,7 +133,7 @@
         }
     </style>
 </head>
-<body>
+<body class="skin-red">
     <div class="main_body">
         <div class="main_body_top">
             <div class="navbar">
