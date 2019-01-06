@@ -15,6 +15,7 @@
     display: block;
     position: relative;
     border-left: 0;
+    border-left: 1px solid #ccc;
 }
 .tab-header-right{
     width: auto;
@@ -113,6 +114,7 @@
     z-index: 0;
     border-left: 0;
     border-top-color:#009688;
+    border-left: 1px solid #009688;
 }
 .tab-content div{
     height: 100%;
@@ -203,5 +205,8 @@
     border:1px solid #E30000;
 }
 .skin-red .tab-content{
-    border-top-color:#E30000;
+    border-top-color: #E30000;
+}
+.skin-red .tab-content{
+    border-left-color: #E30000;
 }

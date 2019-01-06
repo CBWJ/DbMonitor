@@ -116,7 +116,6 @@ html,body{
     left: 0px;
     right: 0px;
     top:0px;
-    border-left: 1px solid #ccc;
 
     transition: margin-left 0.2s;
     -moz-transition: margin-left 0.2s;	/* Firefox 4 */
