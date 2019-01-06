@@ -127,3 +127,8 @@ html,body{
 .container_fold{
     margin-left: 40px;
 }
+
+/*红色主题*/
+.skin-red .main_body_top{
+    background: linear-gradient(#D40000, #E30000); /* 标准的语法 */
+}
