@@ -4,6 +4,7 @@
 
 @{
     Layout = null;
+    List<Dictionary> dicSys = (List<Dictionary>)ViewBag.SystemSettings;
 }
 
 <!DOCTYPE html>
@@ -144,9 +145,9 @@
         <div class="main_body_top">
             <div class="navbar">
                 <div class="navbar_left">
-                    <img class="logo" src="~/images/logo.png"/>
+                    <img class="logo" src="~/images//logo/@dicSys.Where(d=>d.DCode == "Logo").First().DName"/>
                     <a>
-                        <span>Oracle、达梦数据库监控系统</span>
+                        <span>@dicSys.Where(d => d.DCode == "SystemName").First().DName</span>
                     </a>
                 </div>
                 <ul class="main_menu">

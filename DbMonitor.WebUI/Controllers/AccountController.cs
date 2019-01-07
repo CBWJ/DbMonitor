@@ -33,6 +33,9 @@ namespace DbMonitor.WebUI.Controllers
                     u.UPassword = "***";
                 }
             }
+            //系统设置
+            List<Dictionary> dicSys = db.Dictionary.Where(d=> d.DTypeCode == "SysSettings" && d.DEnable == 1).ToList();
+            ViewBag.SystemSettings = dicSys;
             return View(u);
         }
         [HttpPost]

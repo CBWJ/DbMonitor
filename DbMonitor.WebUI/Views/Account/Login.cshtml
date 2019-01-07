@@ -1,6 +1,8 @@
-﻿@model DbMonitor.Domain.User
+﻿@using DbMonitor.Domain;
+@model DbMonitor.Domain.User
 @{
     Layout = null;
+    List<Dictionary> dicSys = (List<Dictionary>)ViewBag.SystemSettings;
 }
 
 <!DOCTYPE html>
@@ -23,6 +25,7 @@
             border: 1px solid #E30000;
             /*background-color: #fff;*/
             border-radius:5px;
+            background-color: rgba(208,208,208,0.8);
         }
         .login-logo{
             font-size: 35px;
@@ -88,10 +91,10 @@
     <div class="login-box">
         <div class="login-logo">
             <div class="logo-image">
-                <img src="~/images/logo.png"/>
+                <img src="~/images/logo/@dicSys.Where(d=>d.DCode == "Logo").First().DName"/>
             </div>
             <div class="logo-text">
-                数据库监控系统
+                @dicSys.Where(d => d.DCode == "SystemName").First().DName
             </div>            
         </div>
         <div class="login-box-body">
@@ -119,7 +122,7 @@
             </form>
         </div>
         <div class="login-bottom">
-            CopyRight 2018-2019
+            @dicSys.Where(d => d.DCode == "CopyRight").First().DName
         </div>
     </div>
     <script src="~/Scripts/layui/layui.js"></script>

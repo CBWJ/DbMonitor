@@ -17,6 +17,9 @@ namespace DbMonitor.WebUI.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
+            //系统设置
+            List<Dictionary> dicSys = db.Dictionary.Where(d => d.DTypeCode == "SysSettings" && d.DEnable == 1).ToList();
+            ViewBag.SystemSettings = dicSys;
             return View(LoginUser);
         }
 
