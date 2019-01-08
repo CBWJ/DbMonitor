@@ -16,22 +16,24 @@
     <style>
         body{
             background: #d2d6de;
-            background-image: url("../../images/background.png");
+            background-image: url("../../images/background.jpg");
             background-size: cover;
         }
         .login-box{
             width: 400px;
             margin: 10% auto;
-            border: 1px solid #E30000;
+            border: 1px solid #FF5722;
             /*background-color: #fff;*/
             border-radius:5px;
-            background-color: rgba(208,208,208,0.8);
+            background-color: rgba(255,255,255,0.8);
         }
         .login-logo{
             font-size: 35px;
             text-align: center;
             font-weight: 300;
             height:100px;
+            /*background: linear-gradient(#2F4056, #2F4056);
+            border-bottom:1px solid #2F4056;*/
         }
         .login-box-body{
             /*background: #fff;*/
@@ -59,11 +61,14 @@
             border-color: #FF5722!important;
         }
         .login-bottom{
+            height: 30px;
+            line-height: 30px;
             color:#333;
-            font-size: 16px;
+            font-size: 14px;
             text-align: center;
-            padding-bottom: 10px;
-            margin-top: -10px;
+            border-radius: 0 0 5px 5px;
+            /*background: linear-gradient(#393D49,#393D49);
+            border-top:1px solid #FF5722;*/
         }
         .login-logo div{
             float:left;
@@ -78,12 +83,14 @@
             height: 90px;
         }
         .login-logo .logo-text{
+            font-size: 28px;
             width:300px;
             height:100px;            
             text-align: center;
             line-height:100px;
             overflow-x:hidden;
             white-space:nowrap;
+            color: #333;
         }
     </style>
 </head>
@@ -115,7 +122,7 @@
                 </div>
                 <div class="layui-form-item input-icon">
                     <div class="layui-input-block">
-                        <input type="checkbox" name="rememberme" title="记住我">
+                        <input type="checkbox" name="rememberme" lay-skin="primary" title="一周内自动登陆">
                         <button type="submit" class="layui-btn layui-layout-right" lay-submit lay-filter="login">登录</button>
                     </div>
                 </div>

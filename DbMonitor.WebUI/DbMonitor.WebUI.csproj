@@ -149,6 +149,7 @@
     <Content Include="images\arrow_right.png" />
     <Content Include="images\arrow_up.png" />
     <Content Include="images\attention.png" />
+    <Content Include="images\background.jpg" />
     <Content Include="images\backward.png" />
     <Content Include="images\bag.png" />
     <Content Include="images\base.png" />
@@ -194,6 +195,8 @@
     <Content Include="images\lamp_inactive.png" />
     <Content Include="images\lock.png" />
     <Content Include="images\logo.png" />
+    <Content Include="images\logo\green_button_48.png" />
+    <Content Include="images\logo\icons8-the-flash-sign-96.png" />
     <Content Include="images\logo\logo.png" />
     <Content Include="images\minus.png" />
     <Content Include="images\minus_2.png" />
@@ -222,7 +225,6 @@
     <Content Include="images\rss.png" />
     <Content Include="images\save_as.png" />
     <Content Include="images\save_diskette_floppy_disk.png" />
-    <Content Include="images\background.png" />
     <Content Include="images\search_lense.png" />
     <Content Include="images\shield_protect_off.png" />
     <Content Include="images\shield_protect_on.png" />
@@ -401,6 +403,7 @@
     <Compile Include="Controllers\Oracle\OrStatementAuditController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SessionConnController.cs" />
+    <Compile Include="Controllers\SystemSettingsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Extensions\HtmlHelperExtension.cs" />
     <Compile Include="Extensions\SqlBuildHelper.cs" />
@@ -489,6 +492,7 @@
     <Content Include="Views\DmFlashBackQuery\Index.cshtml" />
     <Content Include="Views\DmAuditPolicy\Index.cshtml" />
     <Content Include="Views\DmAuditPolicy\Create.cshtml" />
+    <Content Include="Views\SystemSettings\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
