@@ -1,15 +1,9 @@
 ﻿
 @{
-    Layout = null;
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLayui.cshtml";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="~/Scripts/layui/css/layui.css">
     <style>
         .layui-tab-content{
             position: absolute;
@@ -28,9 +22,7 @@
             border: 0;
         }
     </style>
-    <title>Index</title>
-</head>
-<body>
+
     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
         <ul class="layui-tab-title">
             <li class="layui-this" data-src="/OrStatementAudit/Index/@ViewBag.SCID">语句审计</li>
@@ -40,22 +32,8 @@
         </ul>
         <div class="layui-tab-content">
             <iframe name="content" src="~/OrStatementAudit/Index/@ViewBag.SCID"></iframe>
-            @*<div class="layui-tab-item layui-show">
-        <iframe src="~/OrStatementAudit/Index/@ViewBag.SCID"></iframe>
-    </div>
-    <div class="layui-tab-item">
-        <iframe src="~/OrPrivilegeAudit/Index/@ViewBag.SCID"></iframe>
-    </div>
-    <div class="layui-tab-item">
-        <iframe src="~/OrObjectAudit/Index/@ViewBag.SCID"></iframe>
-    </div>
-    <div class="layui-tab-item">
-        <iframe src="~/OrAuditPolicy/Index/@ViewBag.SCID"></iframe>
-    </div>*@
         </div>
     </div>
-    <script src="~/Scripts/layui/layui.js"></script>
-    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
     <script>
         //layui.use('element', function () {
 
@@ -73,5 +51,3 @@
             })
         })
     </script>
-</body>
-</html>

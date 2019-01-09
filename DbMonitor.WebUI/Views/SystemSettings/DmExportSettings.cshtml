@@ -1,0 +1,80 @@
+﻿@model List<DbMonitor.Domain.Dictionary>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLayui.cshtml";
+}
+<style>
+    .logo {
+        width: 48px;
+        height: 48px;
+        border: 1px solid #eee;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 300px;
+    }
+
+    .layui-form-label {
+        width: 100px;
+    }
+</style>
+<br />
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">备份文件夹</label>
+        <div class="layui-input-inline">
+            <input type="text" name="backup_dir" required lay-verify="required" placeholder="请输入备份文件夹" autocomplete="off" class="layui-input"
+                   value="@Model.Where(d => d.DCode == "backup_dir").First().DName">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">达梦安装目录</label>
+        <div class="layui-input-inline">
+            <input type="text" name="dm_home" required lay-verify="required" placeholder="请输入达梦安装目录" autocomplete="off" class="layui-input"
+                   value="@Model.Where(d => d.DCode == "dm_home").First().DName">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="user" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input"
+                   value="@Model.Where(d => d.DCode == "user").First().DName">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="pwd" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input"
+                   value="@Model.Where(d => d.DCode == "pwd").First().DName">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">保存设置</button>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form', 'upload'], function () {
+        var form = layui.form;
+        var layer = layui.layer;
+        var upload = layui.upload;
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            //data.field是一个对象
+            var jsonData = JSON.stringify(data.field);
+            var $ = layui.$;
+            var url = '@Url.Action("DmExportSettings", "SystemSettings")';
+            $.post(url,
+                data.field, function (res) {
+                    var objRes = JSON.parse(res);
+                    if (objRes.status == 0) {
+                        layer.msg("设置成功", { icon: 1 });
+                    } else {
+                        layer.alert(objRes.message, { icon: 5 });
+                    }
+                }, "json");
+            return false;
+        });
+    });
+</script>

@@ -493,6 +493,9 @@
     <Content Include="Views\DmAuditPolicy\Index.cshtml" />
     <Content Include="Views\DmAuditPolicy\Create.cshtml" />
     <Content Include="Views\SystemSettings\Index.cshtml" />
+    <Content Include="Views\SystemSettings\Edit.cshtml" />
+    <Content Include="Views\SystemSettings\OracleExportSettings.cshtml" />
+    <Content Include="Views\SystemSettings\DmExportSettings.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

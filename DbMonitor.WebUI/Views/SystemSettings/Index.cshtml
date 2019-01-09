@@ -1,101 +1,49 @@
-﻿@model List<DbMonitor.Domain.Dictionary>
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutLayui.cshtml";
 }
+
 <style>
-    .logo{
-        width: 48px;
-        height: 48px;
-        border:1px solid #eee;
+    .layui-tab-content {
+        position: absolute;
+        bottom: 3px;
+        top: 60px;
+        right: 0;
+        left: 0;
+        padding: 0;
     }
-    .layui-form-item .layui-input-inline{
-        width: 300px;
-    }
+
+        .layui-tab-content .layui-tab-item {
+            height: 100%;
+        }
+
+        .layui-tab-content iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
 </style>
-<br />
-<form class="layui-form">
-    <div class="layui-form-item">
-        <label class="layui-form-label">系统名称</label>
-        <div class="layui-input-inline">
-            <input type="text" name="sysname" required lay-verify="required" placeholder="请输入系统名称" autocomplete="off" class="layui-input"
-                   value="@Model.Where(d => d.DCode == "SystemName").First().DName">
-        </div>
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this" data-src="@Url.Action("Edit", "SystemSettings")">网站设置</li>
+        <li data-src="@Url.Action("OracleExportSettings", "SystemSettings")">Oracle导出设置</li>
+        <li data-src="@Url.Action("DmExportSettings", "SystemSettings")">达梦导出设置</li>
+    </ul>
+    <div class="layui-tab-content">
+        <iframe name="content" src="@Url.Action("Edit", "SystemSettings")"></iframe>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">版权信息</label>
-        <div class="layui-input-inline">
-            <input type="text" name="copyright" required lay-verify="required" placeholder="请输入版权信息" autocomplete="off" class="layui-input"
-                   value="@Model.Where(d => d.DCode == "CopyRight").First().DName">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">网站Logo</label>
-        <div class="layui-input-inline">
-            <input type="text" id="logo" name="logo" required lay-verify="required" placeholder="请上传网站Logo" autocomplete="off" class="layui-input"
-                   value="@Model.Where(d => d.DCode == "Logo").First().DName" disabled>
-        </div>        
-    </div>
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <img class="logo" src="~/images/logo/@Model.Where(d=>d.DCode == "Logo").First().DName" />
-            <button type="button" class="layui-btn layui-btn-normal" id="btnUpload">
-                <i class="layui-icon">&#xe67c;</i>上传图片
-            </button>
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="formDemo">保存设置</button>
-        </div>
-    </div>
-</form>
+</div>
 <script>
-    layui.use(['form', 'upload'], function () {
-        var form = layui.form;
-        var layer = layui.layer;
-        var upload = layui.upload;
-        //监听提交
-        form.on('submit(formDemo)', function (data) {
-            //data.field是一个对象
-            var jsonData = JSON.stringify(data.field);
-            var $ = layui.$;
-            var url = '@Url.Action("Edit", ViewBag.Controller as string)';
-            $.post(url,
-                data.field, function (res) {
-                    var objRes = JSON.parse(res);
-                    if (objRes.status == 0) {
-                        layer.msg("设置成功", { icon: 1 });
-                    } else {
-                        layer.alert(objRes.message, { icon: 5 });
-                    }
-                }, "json");
-            return false;
-        });
-        //设置表单数据
-        if (typeof setForm == "function")
-            setForm(form);
-        //执行实例
-        var uploadInst = upload.render({
-            elem: '#btnUpload' //绑定元素
-          , url: '@Url.Action("UploadLogo", ViewBag.Controller as string)' //上传接口
-          , accept: 'images'
-          , acceptMime: 'image/*'
-           , field: 'imageFile'
-          , done: function (res) {
-              //上传完毕回调
-              console.log(res);
-              if (res.code == 0) {
-                  $("#logo").val(res.msg);
-                  $(".logo").attr("src", '/images/logo/' + res.msg);
-                  layer.msg('上传成功', { icon: 1 });
-              } else {
-                  layer.alert(res.msg, { icon: 5 });
-              }
-          }
-          , error: function () {
-              //请求异常回调
-          }
-        });
-    });
+        $(".layui-tab-title li").each(function (index, domEle) {
+            $(domEle).on("click", function () {
+                if ($(this).hasClass("layui-this")) return;
+                $(".layui-tab-title .layui-this").removeClass("layui-this");
+                $(this).addClass("layui-this");
+
+                var url = $(this).data("src");
+                var w = window.frames["content"];
+                var host = "http://" + document.location.host;
+                w.location.replace(host + url);
+            })
+        })
 </script>
