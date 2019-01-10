@@ -5,7 +5,11 @@
     var modules = (List<string>) ViewBag.AllAuthModule;
     var ownId = (List<long>)ViewBag.OwnMAID;
 }
-
+<style>
+    .layui-form-item .layui-form-label{
+        width:200px;
+    }
+</style>
 <input type="hidden" id="action" value="@Url.Action("Athorize", "Role")" />
 <input type="hidden" name="rId" value="@ViewBag.RID" />
 @foreach (var module in modules)

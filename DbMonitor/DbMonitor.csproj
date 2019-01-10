@@ -73,6 +73,7 @@
     <None Include="App.config" />
     <None Include="DBMonitor.pdm" />
     <None Include="packages.config" />
+    <None Include="使用说明书.docx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DbMonitor.DBAccess\DbMonitor.DBAccess.csproj">

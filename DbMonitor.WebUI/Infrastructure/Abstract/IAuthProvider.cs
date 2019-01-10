@@ -15,5 +15,6 @@ namespace DbMonitor.WebUI.Infrastructure.Abstract
         bool Authenticate(string username, string password);
         void SetAuthCookie(HttpResponseBase response, string username);
         bool IsUserExisted(string username);
+        bool IsUserLocked(string username);
     }
 }

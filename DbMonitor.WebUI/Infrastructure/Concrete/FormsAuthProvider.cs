@@ -59,5 +59,20 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
             }
             return false;
         }
+
+        public bool IsUserLocked(string username)
+        {
+            using (var context = new DbMonitorEntities())
+            {
+                var user = (from u in context.User
+                            where u.ULoginName == username
+                            select u).FirstOrDefault();
+                if(user != null && user.UIsLock == 1)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

@@ -64,6 +64,10 @@ namespace DbMonitor.WebUI.Controllers
                         {
                             if(_authProvider.IsUserExisted(ticket.Name))
                                 cookieOK = true;
+                            if (_authProvider.IsUserLocked(ticket.Name))
+                            {
+                                throw new InvalidOperationException("用户已锁定！");
+                            }
                         }
                     }
                 }
@@ -71,6 +75,10 @@ namespace DbMonitor.WebUI.Controllers
                 {
                     if (_authProvider.Authenticate(user.ULoginName, user.UPassword))
                     {
+                        if (_authProvider.IsUserLocked(user.ULoginName))
+                        {
+                            throw new InvalidOperationException("用户已锁定！");
+                        }
                         if (bRememerMe)
                         {
                             _authProvider.SetAuthCookie(Response, user.ULoginName);
