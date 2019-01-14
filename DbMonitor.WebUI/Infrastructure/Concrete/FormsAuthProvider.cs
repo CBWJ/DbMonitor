@@ -35,7 +35,7 @@ namespace DbMonitor.WebUI.Infrastructure.Concrete
                 return;
             //创建票据
             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, username,
-                DateTime.Now, DateTime.Now.AddMinutes(1), true, "");
+                DateTime.Now, DateTime.Now.AddDays(7), true, "");
             //加密票据
             string authTicket = FormsAuthentication.Encrypt(ticket);
             //创建Cookie 

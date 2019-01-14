@@ -12,14 +12,23 @@
 
     <div class="layui-form layui-inline">
         <div class="layui-input-inline">
-            <select id="user" name="user" lay-search lay-filter="user">
-                <option value="">请选择用户</option>
+            <select id="operator" name="operator" lay-search lay-filter="user">
+                <option value="">请选择操作用户</option>
                 @foreach (var u in users)
                 {
                     <option value="@u">@u</option>
                 }
             </select>
         </div>
+        <div class="layui-input-inline">
+            <select id="user" name="user" lay-search lay-filter="user">
+                <option value="">请选择模式</option>
+                @foreach (var u in users)
+                {
+                    <option value="@u">@u</option>
+                }
+            </select>
+        </div>        
         <div class="layui-input-inline">
             <select name="objtype" id="objtype" lay-search lay-filter="objtype">
                 <option value="">请选择对象类型</option>
@@ -30,7 +39,7 @@
             </select>
         </div>
         <div class="layui-input-inline">
-            <select name="objname" id="objname">
+            <select name="objname" id="objname" lay-search>
                 <option value="">请选择对象</option>
             </select>
         </div>
@@ -66,8 +75,8 @@
         elemSelector: "#datatable",
         tableID: "dt",
         colConfig:  [[{ type: 'checkbox', fixed: 'left' }
-                  , { field: 'DB_USER', title: '用户名', sort: true }
-                  , { field: 'OBJECT_SCHEMA', title: '对象架构', sort: true }
+                  , { field: 'DB_USER', title: '操作用户', sort: true }
+                  , { field: 'OBJECT_SCHEMA', title: '对象模式', sort: true }
                   , { field: 'OBJECT_NAME', title: '目标对象', sort: true }
                   , { field: 'POLICY_NAME', title: '策略名', sort: true }
                   , { field: 'STATEMENT_TYPE', title: '语句类型', sort: true }
@@ -135,7 +144,8 @@
                 table.reload(tableConfig.tableID,//ID
                     {
                         where: { //设定异步数据接口的额外参数，任意设
-                            user: $("#user").find("option:selected").val(),
+                            user: $("#operator").find("option:selected").val(),
+                            schema: $("#user").find("option:selected").val(),
                             type: $("#type").find("option:selected").val(),
                             objname: $("#objname").find("option:selected").val(),
                             begtime: $("#begtime").val(),

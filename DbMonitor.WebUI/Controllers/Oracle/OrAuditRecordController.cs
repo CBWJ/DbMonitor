@@ -27,7 +27,7 @@ namespace DbMonitor.WebUI.Controllers.Oracle
             }
             return View();
         }
-        public ActionResult List(long scId, string user, string objname, string type, string begtime, string endtime, int page = 1, int limit = 20)
+        public ActionResult List(long scId, string schema, string user, string objname, string type, string begtime, string endtime, int page = 1, int limit = 20)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -40,6 +40,11 @@ namespace DbMonitor.WebUI.Controllers.Oracle
                 sbCount.AppendFormat("SELECT COUNT(1) FROM {0}", tv);
                 sbSql.AppendFormat("SELECT * FROM (SELECT ROWNUM AS ROWNO, t.* FROM {0} t WHERE ", tv);
                 //筛选条件
+                if (!string.IsNullOrWhiteSpace(schema))
+                {
+                    sbSql.AppendFormat("OBJECT_SCHEMA LIKE '%{0}%' AND ", schema.ToUpper());
+                    sbCount.AddCondition(string.Format("OBJECT_SCHEMA LIKE '%{0}%'", schema.ToUpper()));
+                }
                 if (!string.IsNullOrWhiteSpace(user))
                 {
                     sbSql.AppendFormat("DB_USER LIKE '%{0}%' AND ", user.ToUpper());

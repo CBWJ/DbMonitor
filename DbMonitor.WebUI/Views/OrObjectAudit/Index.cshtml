@@ -11,7 +11,7 @@
     <div class="layui-form layui-inline">
         <div class="layui-input-inline">
             <select id="user" name="user" lay-verify="required" lay-search lay-filter="user">
-                <option value="">请选择用户</option>
+                <option value="">请选择模式</option>
                 @foreach (var u in users)
                 {
                     <option value="@u">@u</option>
@@ -58,7 +58,7 @@
         elemSelector: "#datatable",
         tableID: "dt",
         colConfig: [[{ type: 'checkbox', fixed: 'left' }
-                  , { field: 'OWNER', title: '用户', sort: true }
+                  , { field: 'OWNER', title: '模式', sort: true }
                   , { field: 'OBJECT_NAME', title: '对象名', sort: true }
                   , { field: 'OBJECT_TYPE', title: '对象类型', sort: true }
                   , { field: 'ALT', title: 'ALTER ', sort: true }
