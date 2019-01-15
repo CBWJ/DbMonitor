@@ -8,7 +8,7 @@
         <div class="layui-form layui-inline">
             <div class="layui-input-inline">
                 <select id="user" name="user" lay-verify="required" lay-search lay-filter="user">
-                    <option value="">请选择用户名</option>
+                    <option value="">请选择模式名</option>
                     @foreach (var u in (List<string>)ViewBag.Users)
                     {
                         <option value="@u">@u</option>
