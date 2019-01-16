@@ -33,7 +33,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
             ViewBag.STMT = stmt.OrderBy(s => s).ToList();
             return View(dic);
         }
-        public ActionResult List(long scId, string user, string objname, string type, int page = 1, int limit = 30)
+        public ActionResult List(long scId, string user, string schema, string objname, string type, int page = 1, int limit = 30)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -113,6 +113,11 @@ namespace DbMonitor.WebUI.Controllers.Dm
                 {
                     sbCount.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
                     sbSql.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
+                }
+                if (!string.IsNullOrWhiteSpace(schema))
+                {
+                    sbCount.AddCondition(string.Format("SCHEMANAME LIKE '%{0}%'", schema.ToUpper()));
+                    sbSql.AddCondition(string.Format("SCHEMANAME LIKE '%{0}%'", schema.ToUpper()));
                 }
                 if (!string.IsNullOrWhiteSpace(objname))
                 {

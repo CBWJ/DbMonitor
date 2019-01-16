@@ -20,6 +20,15 @@
             </select>
         </div>
         <div class="layui-input-inline">
+            <select id="schema" name="schema" lay-verify="required" lay-search lay-filter="schema">
+                <option value="">请选择模式</option>
+                @foreach (var u in users)
+                {
+                    <option value="@u">@u</option>
+                }
+            </select>
+        </div>
+        <div class="layui-input-inline">
             <select name="objtype" id="objtype" lay-verify="required" lay-search lay-filter="objtype">
                 <option value="">请选择对象类型</option>
                 @foreach (var d in Model)
@@ -79,16 +88,16 @@
         dataInterface: "@Url.Action("List", ViewBag.Controller)",
         where: { scId: '@ViewBag.SCID' },
         afterRender: function(table, layer, form){
-            form.on('select(user)', function (data) {
+            form.on('select(schema)', function (data) {
                 //data.elem,DOM元素
-                var user = $("#user").find("option:selected").val();
+                var user = $("#schema").find("option:selected").val();
                 var objtype = $("#objtype").find("option:selected").val();
                 if (user != "" && objtype != "") {
                     freshObject(user,objtype);
                 }
             });
             form.on('select(objtype)', function (data) {
-                var user = $("#user").find("option:selected").val();
+                var user = $("#schema").find("option:selected").val();
                 var objtype = $("#objtype").find("option:selected").val();
                 if (user != "" && objtype != "") {
                     freshObject(user,objtype);
@@ -138,6 +147,7 @@
                     {
                         where: { //设定异步数据接口的额外参数，任意设
                             user: $("#user").find("option:selected").val(),
+                            schema: $("#schema").find("option:selected").val(),
                             objname: $("#objname").find("option:selected").val(),
                             type: $("#type").find("option:selected").val(),
                             begtime: $("#begtime").val(),

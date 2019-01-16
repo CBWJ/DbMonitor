@@ -33,7 +33,7 @@ namespace DbMonitor.WebUI.Controllers.Dm
             ViewBag.STMT = stmt.OrderBy(s => s).ToList();
             return View(dic);
         }
-        public ActionResult List(long scId, string user, string objname, string type, string begtime, string endtime, int page = 1, int limit = 20)
+        public ActionResult List(long scId, string user,string schema, string objname, string type, string begtime, string endtime, int page = 1, int limit = 20)
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -52,6 +52,11 @@ namespace DbMonitor.WebUI.Controllers.Dm
                     {
                         sbSql.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
                         sbCount.AddCondition(string.Format("USERNAME LIKE '%{0}%'", user.ToUpper()));
+                    }
+                    if (!string.IsNullOrWhiteSpace(schema))
+                    {
+                        sbSql.AddCondition(string.Format("SCHNAME LIKE '%{0}%'", schema.ToUpper()));
+                        sbCount.AddCondition(string.Format("SCHNAME LIKE '%{0}%'", schema.ToUpper()));
                     }
                     if (!string.IsNullOrWhiteSpace(objname))
                     {
@@ -86,13 +91,13 @@ namespace DbMonitor.WebUI.Controllers.Dm
                         foreach(DataRow row in dt.Rows)
                         {
                             var username = row["USERNAME"].ToString();
-                            var schema = row["SCHNAME"].ToString();
+                            var schemaname = row["SCHNAME"].ToString();
                             var obj = row["OBJNAME"].ToString();
                             var op = row["OPERATION"].ToString();
                             var sqlUpperCase = row["SQL_TEXT"].ToString().ToUpper();
 
-                            if (schema == "" || obj == "") continue;
-                            var policy = policies.Where(p => p.APUser == username && p.APSchema == schema && p.APObjectName == obj && p.APStatement == op &&
+                            if (schemaname == "" || obj == "") continue;
+                            var policy = policies.Where(p => p.APUser == username && p.APSchema == schemaname && p.APObjectName == obj && p.APStatement == op &&
                                                         sqlUpperCase.Contains(p.APCondition)).FirstOrDefault();
                             /*var po = policies.FirstOrDefault();
                             if (po.APUser == username)
