@@ -139,19 +139,28 @@ namespace DbMonitor.WebUI.Controllers
             //return ret;
         }
 
-        public ActionResult List(int page = 1, int limit = 20, string username = "")
+        public ActionResult List(int page = 1, int limit = 20, string rolename = "")
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-
+            var roles = db.Role.ToList();
+            if (!string.IsNullOrWhiteSpace(rolename))
+            {
+                roles = roles.Where(r => r.RName.Contains(rolename)).ToList();
+            }
+            int cnt = roles.Count();
+            roles = roles.OrderByDescending(m => m.CreationTime)
+                    .Skip((page - 1) * limit)
+                    .Take(limit)
+                    .ToList();
             try
             {
                 ret.Data = JsonConvert.SerializeObject(new
                 {
                     status = 0,
                     message = "",
-                    total = db.Role.Count(),
-                    data = db.Role
+                    total = cnt,
+                    data = roles
                 });
             }
             catch (Exception ex)

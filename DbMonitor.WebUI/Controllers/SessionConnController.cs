@@ -68,19 +68,28 @@ namespace DbMonitor.WebUI.Controllers
 
             return DeleteModel<Domain.SessionConnection>(idList);
         }
-        public ActionResult List(int page = 1, int limit = 20, string username = "")
+        public ActionResult List(int page = 1, int limit = 20, string connectionname = "")
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-
+            var conns = db.SessionConnection.ToList();
+            if (!string.IsNullOrWhiteSpace(connectionname))
+            {
+                conns = conns.Where(c => c.SCName.Contains(connectionname)).ToList();
+            }
+            int cnt = conns.Count();
+            conns = conns.OrderByDescending(m => m.CreationTime)
+                    .Skip((page - 1) * limit)
+                    .Take(limit)
+                    .ToList();
             try
             {
                 ret.Data = JsonConvert.SerializeObject(new
                 {
                     status = 0,
                     message = "",
-                    total = db.SessionConnection.Count(),
-                    data = db.SessionConnection
+                    total = cnt,
+                    data = conns
                 });
             }
             catch (Exception ex)

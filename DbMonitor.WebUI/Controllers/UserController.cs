@@ -150,15 +150,24 @@ namespace DbMonitor.WebUI.Controllers
         {
             JsonResult ret = new JsonResult();
             ret.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-
+            var users = db.User.ToList();
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                users = users.Where(u=>u.UName.Contains(username)).ToList();
+            }
+            int cnt = users.Count();
+            users = users.OrderByDescending(m => m.CreationTime)
+                    .Skip((page - 1) * limit)
+                    .Take(limit)
+                    .ToList();
             try
             {
                 ret.Data = JsonConvert.SerializeObject(new
                 {
                     status = 0,
                     message = "",
-                    total = db.User.Count(),
-                    data = db.User
+                    total = cnt,
+                    data = users
                 });
             }
             catch (Exception ex)
